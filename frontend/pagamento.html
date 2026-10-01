@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pagamento</title>
+
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://sdk.mercadopago.com/js/v2"></script>
+</head>
+
+<body>
+
+<header class="header">
+  <div class="logo" data-casal-iniciais>P & A</div>
+  <div style="font-size:12px;">🔒 Ambiente Seguro</div>
+</header>
+
+<section class="pagamento-container">
+
+  <h1 class="nomes" data-casal-nomes>Paulo & Alana</h1>
+
+  <p class="subtitulo">VOCÊ ESTÁ PRESENTEANDO</p>
+
+  <div class="checkoutProduto">
+    <img id="fotoProduto" alt="">
+    <h2 id="nomeProdutoCheckout"></h2>
+    <p id="valorOriginal" class="valorOriginalCheckout"></p>
+    <p id="valorRestante" class="valorRestanteCheckout"></p>
+  </div>
+
+  <input id="nome" class="inputNome" placeholder="Seu nome">
+
+  <input id="email" type="email" class="inputNome" placeholder="Seu e-mail">
+
+  <h3 class="tituloPagamento">Como deseja nos presentear?</h3>
+
+  <div class="checkoutCard">
+    <div class="checkoutTitulo" onclick="abrirOpcao('parcial')">
+      💚 <strong>PARTE DO VALOR</strong>
+      <small>Contribua com qualquer quantia.</small>
+    </div>
+
+    <div id="parcial" class="checkoutConteudo">
+      <input
+        id="valorContribuicao"
+        type="number"
+        min="1"
+        step="0.01"
+        class="inputNome"
+        placeholder="Digite o valor que deseja contribuir">
+
+      <h4>Forma de pagamento</h4>
+
+      <div class="opcao" onclick="selecionar(this,'pix')">
+        <span>PIX</span>
+        <img src="https://img.icons8.com/color/512/pix.png" class="iconePagamento" alt="PIX">
+      </div>
+
+      <div class="opcao" onclick="selecionar(this,'cartao')">
+        <span>Cartão de Crédito</span>
+        <img src="https://cdn-icons-png.flaticon.com/512/633/633611.png" class="iconePagamento" alt="Cartão">
+      </div>
+
+      <button class="btnFinalizar" onclick="continuarPagamento('parcial')">
+        CONTINUAR
+      </button>
+    </div>
+  </div>
+
+  <div class="checkoutCard">
+    <div class="checkoutTitulo" onclick="abrirOpcao('total')">
+      🎁 <strong>VALOR COMPLETO</strong>
+      <small>Presenteie o restante deste item.</small>
+    </div>
+
+    <div id="total" class="checkoutConteudo">
+      <p>Valor restante: <strong id="valorCompletoTexto"></strong></p>
+
+      <h4>Forma de pagamento</h4>
+
+      <div class="opcao" onclick="selecionar(this,'pix')">
+        <span>PIX</span>
+        <img src="https://img.icons8.com/color/512/pix.png" class="iconePagamento" alt="PIX">
+      </div>
+
+      <div class="opcao" onclick="selecionar(this,'cartao')">
+        <span>Cartão de Crédito</span>
+        <img src="https://cdn-icons-png.flaticon.com/512/633/633611.png" class="iconePagamento" alt="Cartão">
+      </div>
+
+      <button class="btnFinalizar" onclick="continuarPagamento('total')">
+        CONTINUAR
+      </button>
+    </div>
+  </div>
+
+  <div id="areaPagamento"></div>
+
+</section>
+
+<div id="popupPagamentoAprovado" style="
+  display:none;
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.7);
+  align-items:center;
+  justify-content:center;
+  z-index:99999;
+">
+  <div style="
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    text-align:center;
+    max-width:360px;
+  ">
+    <h2>Pagamento aprovado! ❤️</h2>
+    <p>Obrigado por fazer parte deste momento.</p>
+  </div>
+</div>
+
+<script src="utils.js"></script>
+<script src="casamento-context.js"></script>
+<script src="checkout.js"></script>
+
+</body>
+</html>

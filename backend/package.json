@@ -1,14 +1,14 @@
 {
   "name": "asgard-wedding-api",
-  "version": "1.0.0",
-  "description": "Base multi-casal da Asgard Wedding",
+  "version": "3.0.0",
+  "description": "Asgard Wedding API multi-casal",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=18 <27"
   },
   "dependencies": {
     "cors": "^2.8.5",
