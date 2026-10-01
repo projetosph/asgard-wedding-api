@@ -2,10 +2,12 @@ const express = require("express");
 const cors = require("cors");
 const { pool, buscarCasamentoPorSlug, buscarPresenteDoCasamento } = require("./db");
 const { criarPix, criarPagamentoCartao, consultarPagamento } = require("./services/mercadoPago");
+const oauthRoutes = require("./oauthRoutes");
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit:"1mb" }));
+app.use(oauthRoutes);
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_URL = process.env.PUBLIC_URL || "https://asgard-wedding-api.onrender.com";
