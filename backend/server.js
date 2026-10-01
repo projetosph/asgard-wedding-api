@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const webhookRoutes = require("./webhookRoutes");
 
 const {
   pool,
@@ -23,6 +24,7 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "1mb" }));
 app.use(oauthRoutes);
+app.use(webhookRoutes);
 
 const PORT = process.env.PORT || 3000;
 
