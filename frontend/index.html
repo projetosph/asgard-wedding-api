@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asgard Wedding</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo" data-casal-iniciais>P & A</div>
+  <div style="display:flex; gap:10px;">
+    <a href="presentes.html" data-preservar-casamento class="btnHeader">Lista de Presentes</a>
+    <a href="login.html" class="btnHeader adminBtn">
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Administrador">
+    </a>
+  </div>
+</header>
+
+<section class="versiculos">
+  <div class="versiculos-track">
+    <span>Colossenses 3:14: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."</span>
+    <span>Mateus 19:6: "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."</span>
+    <span>Colossenses 3:14: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."</span>
+    <span>Mateus 19:6: "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."</span>
+  </div>
+</section>
+
+<section class="hero">
+  <h1 data-casal-nomes>Paulo & Alana</h1>
+  <img src="assets/bg/separador.png" class="separador" alt="">
+  <p class="subHero" data-casamento-data>07 de Setembro de 2026</p>
+  <p class="subHero" data-casamento-horario>Pontualmente às 15h30</p>
+  <p data-erro-casamento></p>
+</section>
+
+<section class="grid">
+  <div class="box">
+    <h3>LISTA DE PRESENTES</h3>
+    <a href="presentes.html" data-preservar-casamento class="btn">ACESSAR</a>
+  </div>
+
+  <div class="box">
+    <h3>LISTA DE PRESENÇA</h3>
+    <a href="presenca.html" data-preservar-casamento class="btn">CONFIRMAR</a>
+  </div>
+
+  <div class="box boxLocal">
+    <h3>LOCAL</h3>
+    <div class="localInfo">
+      <strong class="localNome" data-local-nome>Local do casamento</strong>
+      <p class="localEndereco" data-local-endereco>Endereço</p>
+    </div>
+
+    <iframe data-mapa-iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa do casamento"></iframe>
+
+    <a data-mapa-link class="linkMapa" href="#" target="_blank" rel="noopener noreferrer">
+      ABRIR NO MAPS
+    </a>
+  </div>
+
+  <div class="box">
+    <h3>RECADO</h3>
+    <input id="nomeRecado" placeholder="Seu nome" class="inputNome">
+    <textarea id="mensagemRecado" placeholder="Deixe sua mensagem. Enter envia; Shift + Enter quebra a linha."></textarea>
+    <button type="button" id="btnEnviarRecado" class="btn">ENVIAR</button>
+  </div>
+</section>
+
+<section class="hero">
+  <p class="subHero">O grande dia acontecerá em...</p>
+  <p id="contador" class="contadorPremium"></p>
+</section>
+
+<footer class="footer">
+  <h3 class="logoFooter">ASGARD TECH</h3>
+  <p class="frase">Feito com ❤ para todos os casais</p>
+  <small>© 2026 Asgard TECH</small>
+</footer>
+
+<script src="utils.js"></script>
+<script src="casamento-context.js"></script>
+<script src="home.js"></script>
+</body>
+</html>

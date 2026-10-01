@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmar Presença</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="header">
+  <div class="logo" data-casal-iniciais>P & A</div>
+  <a href="index.html" data-preservar-casamento class="btnHeader">Início</a>
+</header>
+
+<section class="hero">
+  <h1 data-casal-nomes>Paulo & Alana</h1>
+  <img src="assets/bg/separador.png" class="separador" alt="">
+  <p class="subHero">Confirme sua presença</p>
+</section>
+
+<section class="grid">
+  <div class="box">
+    <h3>LISTA DE PRESENÇA</h3>
+
+    <input id="nomePresenca" class="inputNome" type="text" placeholder="Seu nome e sobrenome">
+
+    <input id="quantidadePresenca" class="inputNome" type="number" min="1" step="1" placeholder="Quantidade de pessoas">
+
+    <div id="listaNomesConvidados"></div>
+
+    <textarea id="mensagemPresenca" placeholder="Mensagem para os noivos (opcional)"></textarea>
+
+    <button id="btnConfirmarPresenca" type="button" class="btn">
+      CONFIRMAR PRESENÇA
+    </button>
+  </div>
+</section>
+
+<footer class="footer">
+  <h3 class="logoFooter">ASGARD TECH</h3>
+  <p class="frase">Feito com ❤ para todos os casais</p>
+  <small>© 2026 Asgard TECH</small>
+</footer>
+
+<script src="utils.js"></script>
+<script src="casamento-context.js"></script>
+<script src="presenca.js"></script>
+</body>
+</html>
