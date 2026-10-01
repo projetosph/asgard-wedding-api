@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asgard Wedding — Admin</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <main class="login-shell">
+    <section class="login-card">
+      <div class="brand-mark">AW</div>
+
+      <h1>Asgard Wedding</h1>
+      <p class="muted">Painel administrativo</p>
+
+      <form id="loginForm">
+        <label>E-mail</label>
+        <input id="email" type="email" autocomplete="username" required>
+
+        <label>Senha</label>
+        <input id="senha" type="password" autocomplete="current-password" required>
+
+        <button type="submit">ENTRAR</button>
+
+        <p id="loginErro" class="erro"></p>
+      </form>
+    </section>
+  </main>
+
+  <script src="admin-auth.js"></script>
+</body>
+</html>

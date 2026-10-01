@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Asgard Wedding — Painel ADM</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+
+  <aside class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-mark">AW</div>
+      <div>
+        <strong>Asgard Wedding</strong>
+        <small>Administração</small>
+      </div>
+    </div>
+
+    <nav>
+      <button class="nav-item active" data-view="dashboard">Dashboard</button>
+      <button class="nav-item" data-view="casamentos">Casamentos</button>
+      <button class="nav-item" data-view="novo">+ Novo casamento</button>
+    </nav>
+
+    <button id="btnSair" class="btn-link">Sair</button>
+  </aside>
+
+  <main class="admin-main">
+    <header class="topbar">
+      <div>
+        <h1 id="tituloPagina">Dashboard</h1>
+        <p class="muted">Gestão da plataforma Asgard Wedding</p>
+      </div>
+      <div id="usuarioNome" class="user-pill"></div>
+    </header>
+
+    <section id="view-dashboard" class="view active">
+      <div class="cards-grid">
+        <article class="metric-card">
+          <span>Casamentos</span>
+          <strong id="mCasamentos">—</strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Publicados</span>
+          <strong id="mPublicados">—</strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Mercado Pago conectado</span>
+          <strong id="mMp">—</strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Convidados confirmados</span>
+          <strong id="mConfirmados">—</strong>
+        </article>
+
+        <article class="metric-card">
+          <span>Arrecadado</span>
+          <strong id="mArrecadado">—</strong>
+        </article>
+      </div>
+    </section>
+
+    <section id="view-casamentos" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Casamentos</h2>
+          <p class="muted">Todos os clientes cadastrados na plataforma.</p>
+        </div>
+
+        <button id="btnNovoCasamento">+ NOVO CASAMENTO</button>
+      </div>
+
+      <div id="listaCasamentos" class="wedding-list"></div>
+    </section>
+
+    <section id="view-novo" class="view">
+      <div class="section-head">
+        <div>
+          <h2>Novo casamento</h2>
+          <p class="muted">Cadastre um novo cliente sem usar o DBeaver.</p>
+        </div>
+      </div>
+
+      <form id="formNovoCasamento" class="form-card">
+        <div class="form-grid">
+          <div>
+            <label>Noivo</label>
+            <input id="novoNoivo" required>
+          </div>
+
+          <div>
+            <label>Noiva</label>
+            <input id="novoNoiva" required>
+          </div>
+
+          <div>
+            <label>Slug</label>
+            <input id="novoSlug" placeholder="joao-e-maria" required>
+          </div>
+
+          <div>
+            <label>Data</label>
+            <input id="novoData" type="date" required>
+          </div>
+
+          <div>
+            <label>Horário</label>
+            <input id="novoHorario" type="time">
+          </div>
+
+          <div>
+            <label>Template</label>
+            <select id="novoTemplate">
+              <option value="template-01">Template 01</option>
+            </select>
+          </div>
+
+          <div class="span-2">
+            <label>Local</label>
+            <input id="novoLocalNome">
+          </div>
+
+          <div class="span-2">
+            <label>Endereço</label>
+            <input id="novoLocalEndereco">
+          </div>
+
+          <div>
+            <label>Status</label>
+            <select id="novoStatus">
+              <option value="rascunho">Rascunho</option>
+              <option value="publicado">Publicado</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit">CRIAR CASAMENTO</button>
+        <p id="novoMensagem"></p>
+      </form>
+    </section>
+  </main>
+
+  <div id="modalCasamento" class="modal hidden">
+    <div class="modal-card">
+      <button id="modalFechar" class="modal-close">×</button>
+      <h2 id="modalTitulo">Casamento</h2>
+
+      <div id="modalConteudo"></div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
