@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: "pages"
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -28,13 +28,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Verificar frontend
+        run: |
+          echo "Arquivos do frontend:"
+          ls -la frontend
+          echo "Verificando presentes.html:"
+          test -f frontend/presentes.html
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
       - name: Upload frontend
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./frontend
+          path: frontend
 
       - name: Deploy
         id: deployment
