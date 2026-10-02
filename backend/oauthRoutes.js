@@ -13,6 +13,10 @@ const {
   criptografar
 } = require("./services/mercadoPagoOAuth");
 
+const {
+  validarTicketMercadoPago
+} = require("./middleware/mercadoPagoConnectTicket");
+
 const router = express.Router();
 
 function escaparHtml(valor) {
@@ -26,6 +30,7 @@ function escaparHtml(valor) {
 
 router.get(
   "/api/casamentos/:slug/mercadopago/conectar",
+  validarTicketMercadoPago,
   async (req, res) => {
     try {
       const casamento = await buscarCasamentoPorSlug(req.params.slug);

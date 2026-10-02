@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 
 const { pool } = require("./db");
 const { hashSenha, verificarSenha } = require("./services/senha");
+const { validarSenha } = require("./services/passwordPolicy");
 const { autenticar } = require("./middleware/auth");
 
 const router = express.Router();
@@ -16,7 +17,9 @@ function gerarToken(usuario) {
     {
       sub: String(usuario.id),
       perfil: usuario.perfil,
-      casamentoId: usuario.casamento_id ? String(usuario.casamento_id) : null,
+      casamentoId: usuario.casamento_id
+        ? String(usuario.casamento_id)
+        : null,
       nome: usuario.nome,
       email: usuario.email
     },
@@ -35,44 +38,65 @@ router.post("/api/auth/bootstrap-admin", async (req, res) => {
     const esperado = String(process.env.ADMIN_BOOTSTRAP_SECRET || "");
 
     if (!esperado || recebido !== esperado) {
-      return res.status(403).json({ erro: "Bootstrap não autorizado." });
+      return res.status(403).json({
+        erro: "Bootstrap não autorizado."
+      });
     }
 
     const { rows: admins } = await pool.query(
-      `SELECT id FROM usuarios WHERE perfil='admin' LIMIT 1`
+      `SELECT id
+       FROM usuarios
+       WHERE perfil = 'admin'
+       LIMIT 1`
     );
 
     if (admins.length) {
-      return res.status(409).json({ erro: "Já existe um administrador cadastrado." });
+      return res.status(409).json({
+        erro: "Já existe um administrador cadastrado."
+      });
     }
 
     const nome = String(req.body.nome || "").trim();
     const email = String(req.body.email || "").trim().toLowerCase();
     const senha = String(req.body.senha || "");
 
-    if (!nome || !email || senha.length < 8) {
+    const politica = validarSenha(senha);
+
+    if (!nome || !email || !politica.valida) {
       return res.status(400).json({
-        erro: "Informe nome, e-mail e senha com pelo menos 8 caracteres."
+        erro: politica.erros[0] || "Nome e e-mail são obrigatórios."
       });
     }
 
     const { rows } = await pool.query(
-      `INSERT INTO usuarios (nome,email,senha_hash,perfil)
+      `INSERT INTO usuarios (
+         nome,
+         email,
+         senha_hash,
+         perfil
+       )
        VALUES ($1,$2,$3,'admin')
        RETURNING id,nome,email,perfil,criado_em`,
-      [nome,email,hashSenha(senha)]
+      [nome, email, hashSenha(senha)]
     );
 
-    return res.status(201).json({ criado:true, usuario:rows[0] });
+    return res.status(201).json({
+      criado: true,
+      usuario: rows[0]
+    });
 
   } catch (erro) {
-    console.error("Erro bootstrap:", erro);
+    console.error("Erro bootstrap ADM:", erro);
 
     if (erro.code === "23505") {
-      return res.status(409).json({ erro:"Esse e-mail já está cadastrado." });
+      return res.status(409).json({
+        erro: "Esse e-mail já está cadastrado."
+      });
     }
 
-    return res.status(500).json({ erro:"Não foi possível criar o administrador." });
+    return res.status(500).json({
+      erro: "Não foi possível criar o administrador."
+    });
   }
 });
 
@@ -81,44 +105,71 @@ router.post("/api/auth/login", async (req, res) => {
     const email = String(req.body.email || "").trim().toLowerCase();
     const senha = String(req.body.senha || "");
 
+    if (!email || !senha) {
+      return res.status(400).json({
+        erro: "Informe e-mail e senha."
+      });
+    }
+
     const { rows } = await pool.query(
-      `SELECT id,casamento_id,nome,email,senha_hash,perfil,ativo
+      `SELECT
+         id,
+         casamento_id,
+         nome,
+         email,
+         senha_hash,
+         perfil,
+         ativo
        FROM usuarios
-       WHERE email=$1
+       WHERE email = $1
        LIMIT 1`,
       [email]
     );
 
     const usuario = rows[0];
 
-    if (!usuario || !usuario.ativo || !verificarSenha(senha, usuario.senha_hash)) {
-      return res.status(401).json({ erro:"E-mail ou senha inválidos." });
+    if (
+      !usuario ||
+      !usuario.ativo ||
+      !verificarSenha(senha, usuario.senha_hash)
+    ) {
+      return res.status(401).json({
+        erro: "E-mail ou senha inválidos."
+      });
     }
 
     await pool.query(
-      `UPDATE usuarios SET ultimo_login_em=NOW(), atualizado_em=NOW() WHERE id=$1`,
+      `UPDATE usuarios
+       SET ultimo_login_em = NOW(),
+           atualizado_em = NOW()
+       WHERE id = $1`,
       [usuario.id]
     );
 
     return res.json({
       token: gerarToken(usuario),
       usuario: {
-        id:usuario.id,
-        casamentoId:usuario.casamento_id,
-        nome:usuario.nome,
-        email:usuario.email,
-        perfil:usuario.perfil
+        id: usuario.id,
+        casamentoId: usuario.casamento_id,
+        nome: usuario.nome,
+        email: usuario.email,
+        perfil: usuario.perfil
       }
     });
 
   } catch (erro) {
     console.error("Erro login:", erro);
-    return res.status(500).json({ erro:"Não foi possível entrar agora." });
+
+    return res.status(500).json({
+      erro: "Não foi possível entrar agora."
+    });
   }
 });
 
-router.get("/api/auth/me", autenticar, (req,res) => {
-  res.json({ usuario:req.usuario });
+router.get("/api/auth/me", autenticar, async (req, res) => {
+  return res.json({
+    usuario: req.usuario
+  });
 });
 
 module.exports = router;

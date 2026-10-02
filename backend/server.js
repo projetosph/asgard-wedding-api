@@ -3,6 +3,7 @@ const cors = require("cors");
 const webhookRoutes = require("./webhookRoutes");
 const authRoutes = require("./authRoutes");
 const adminRoutes = require("./adminRoutes");
+const secureMercadoPagoRoutes = require("./secureMercadoPagoRoutes");
 
 const {
   pool,
@@ -29,6 +30,7 @@ app.use(oauthRoutes);
 app.use(webhookRoutes);
 app.use(authRoutes);
 app.use(adminRoutes);
+app.use(secureMercadoPagoRoutes);
 
 const PORT = process.env.PORT || 3000;
 
