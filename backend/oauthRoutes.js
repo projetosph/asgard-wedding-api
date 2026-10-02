@@ -336,5 +336,61 @@ router.get(
     }
   }
 );
+router.post("/api/auth/reset-admin-password", async (req, res) => {
+  try {
+    const secretRecebido = String(req.body.secret || "");
+    const secretEsperado = String(process.env.ADMIN_RESET_SECRET || "");
 
+    if (!secretEsperado || secretRecebido !== secretEsperado) {
+      return res.status(403).json({
+        erro: "Redefinição não autorizada."
+      });
+    }
+
+    const email = String(req.body.email || "")
+      .trim()
+      .toLowerCase();
+
+    const novaSenha = String(req.body.novaSenha || "");
+
+    const politica = validarSenha(novaSenha);
+
+    if (!politica.valida) {
+      return res.status(400).json({
+        erro: politica.erros[0]
+      });
+    }
+
+    const { rows } = await pool.query(
+      `UPDATE usuarios
+       SET senha_hash = $1,
+           atualizado_em = NOW()
+       WHERE email = $2
+         AND perfil = 'admin'
+       RETURNING id, nome, email`,
+      [
+        hashSenha(novaSenha),
+        email
+      ]
+    );
+
+    if (!rows[0]) {
+      return res.status(404).json({
+        erro: "Administrador não encontrado."
+      });
+    }
+
+    return res.json({
+      sucesso: true,
+      usuario: rows[0]
+    });
+
+  } catch (erro) {
+    console.error("Erro ao redefinir senha ADM:", erro);
+
+    return res.status(500).json({
+      erro: "Não foi possível redefinir a senha."
+    });
+  }
+});
 module.exports = router;
