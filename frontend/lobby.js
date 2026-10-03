@@ -8,7 +8,7 @@ if (casamentoSlug) {
 }
 
 // Coloque aqui o WhatsApp da empresa com 55 + DDD + número, somente dígitos.
-const WHATSAPP_EMPRESA = "";
+const WHATSAPP_EMPRESA = "5575999207455";
 
 const MENSAGEM_ORCAMENTO =
   "Olá! Conheci a Asgard Wedding e gostaria de fazer um orçamento para um site de casamento.";
