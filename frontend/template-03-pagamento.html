@@ -1,0 +1,21 @@
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Pagamento | Asgard Wedding</title><link rel="stylesheet" href="template-03.css"></head><body>
+<header class="t3-top"><a id="voltarCasamento" class="t3-brand" href="#"><span class="t3-logo">AW</span> ASGARD WEDDING</a><nav class="t3-nav"><span>🔒 Ambiente seguro</span></nav></header>
+<main class="page">
+ <section class="card payment-state">
+  <div class="symbol">✓</div><span class="eyebrow">PAGAMENTO</span>
+  <h1 id="tituloPagamento">Acompanhando seu presente</h1>
+  <p id="resumoPagamento">As informações do pagamento aparecerão aqui.</p>
+  <div id="areaPagamento"></div>
+  <a id="voltarLista" class="btn primary" href="#">VOLTAR À LISTA DE PRESENTES</a>
+ </section>
+</main>
+<footer><strong>ASGARD WEDDING</strong><span>por Asgard Tech</span></footer>
+<script src="template-03-common.js"></script><script>
+document.addEventListener("DOMContentLoaded",()=>{
+ t3TopoVoltar();document.getElementById("voltarLista").href=t3Query("template-03-presentes.html");
+ const c=JSON.parse(localStorage.getItem("compraAtual")||"null");
+ if(c){
+   document.getElementById("resumoPagamento").textContent=`${c.produtoNome||"Presente"} • ${Number(c.valor||0).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}`;
+ }
+});
+</script></body></html>
