@@ -1,139 +1,48 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Checkout</title>
-  <link rel="stylesheet" href="template-03.css">
-  <script src="https://sdk.mercadopago.com/js/v2"></script>
-</head>
-<body>
-<header class="t3-header">
-  <a class="couple-mark" href="#" data-home-link>
-    <span class="couple-monogram" data-couple-monogram>—</span>
-    <small>Nosso casamento</small>
-  </a>
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Checkout | Asgard Wedding</title><link rel="stylesheet" href="template-03.css"><script src="https://sdk.mercadopago.com/js/v2"></script></head><body>
+<header class="t3-top"><a id="voltarCasamento" class="t3-brand" href="#"><span class="t3-logo">AW</span> ASGARD WEDDING</a><nav class="t3-nav"><a id="voltarPresentes" href="#">← Presentes</a><span class="hide-mobile">🔒 Ambiente seguro</span></nav></header>
+<main class="internal-wrap">
+ <div class="page-title"><div><span class="eyebrow">CHECKOUT</span><h1>Seu presente</h1></div><p>Escolha quanto deseja contribuir e a forma de pagamento.</p></div>
+ <div class="checkout-layout">
+  <aside class="card checkout-product">
+   <img id="fotoProduto" alt="">
+   <span class="eyebrow">VOCÊ ESTÁ PRESENTEANDO</span>
+   <h2 id="nomeProdutoCheckout">—</h2>
+   <p id="valorOriginal"></p>
+   <strong id="valorRestante">—</strong>
+  </aside>
+  <section class="card checkout-main">
+   <div class="field"><label>Seu nome</label><input id="nome" placeholder="Nome completo"></div>
+   <div class="field" style="margin-top:10px"><label>Seu e-mail</label><input id="email" type="email" placeholder="voce@email.com"></div>
+   <h3>Como deseja presentear?</h3>
 
-  <nav class="t3-nav">
-    <a id="voltarPresentes" href="#">← Presentes</a>
-    <span class="desktop-only" style="font-size:9px;color:#7c7d76;">🔒 Ambiente seguro</span>
-  </nav>
-</header>
-
-<main class="inner-page">
-  <div class="page-heading">
-    <div>
-      <span class="eyebrow">CHECKOUT</span>
-      <h1>Seu presente</h1>
+   <div class="checkoutCard">
+    <div class="checkoutTitulo" onclick="abrirOpcao('parcial')"><strong>PARTE DO VALOR</strong><small>Contribua com qualquer quantia até o valor restante.</small></div>
+    <div id="parcial" class="checkoutConteudo">
+      <input id="valorContribuicao" type="number" min="1" step="0.01" placeholder="Valor da contribuição">
+      <h4>Forma de pagamento</h4>
+      <div class="opcao" onclick="selecionar(this,'pix')"><span>PIX</span><span>◆</span></div>
+      <div class="opcao" onclick="selecionar(this,'cartao')"><span>Cartão de crédito</span><span>▭</span></div>
+      <button class="btnFinalizar" type="button" onclick="continuarPagamento('parcial')">CONTINUAR</button>
     </div>
-    <p>Escolha quanto deseja contribuir e a forma de pagamento.</p>
-  </div>
+   </div>
 
-  <div class="checkout-layout">
-    <aside class="paper-card checkout-product">
-      <img id="fotoProduto" alt="">
-      <span class="eyebrow" style="display:block;margin-top:16px;">VOCÊ ESTÁ PRESENTEANDO</span>
-      <h2 id="nomeProdutoCheckout">—</h2>
-      <p id="valorOriginal"></p>
-      <strong id="valorRestante">—</strong>
-    </aside>
+   <div class="checkoutCard">
+    <div class="checkoutTitulo" onclick="abrirOpcao('total')"><strong>VALOR COMPLETO</strong><small>Presenteie todo o valor restante.</small></div>
+    <div id="total" class="checkoutConteudo">
+      <p>Valor restante: <strong id="valorCompletoTexto">—</strong></p>
+      <h4>Forma de pagamento</h4>
+      <div class="opcao" onclick="selecionar(this,'pix')"><span>PIX</span><span>◆</span></div>
+      <div class="opcao" onclick="selecionar(this,'cartao')"><span>Cartão de crédito</span><span>▭</span></div>
+      <button class="btnFinalizar" type="button" onclick="continuarPagamento('total')">CONTINUAR</button>
+    </div>
+   </div>
 
-    <section class="paper-card checkout-main">
-      <div class="field">
-        <label>Seu nome</label>
-        <input id="nome" placeholder="Nome completo">
-      </div>
-
-      <div class="field" style="margin-top:10px;">
-        <label>Seu e-mail</label>
-        <input id="email" type="email" placeholder="voce@email.com">
-      </div>
-
-      <h3>Como deseja presentear?</h3>
-
-      <div class="checkoutCard">
-        <div class="checkoutTitulo" onclick="abrirOpcao('parcial')">
-          <strong>PARTE DO VALOR</strong>
-          <small>Contribua com qualquer quantia até o valor restante.</small>
-        </div>
-
-        <div id="parcial" class="checkoutConteudo">
-          <input
-            id="valorContribuicao"
-            type="number"
-            min="1"
-            step="0.01"
-            placeholder="Valor da contribuição"
-          >
-
-          <h4>Forma de pagamento</h4>
-
-          <div class="opcao" onclick="selecionar(this,'pix')">
-            <span>PIX</span>
-            <span>◆</span>
-          </div>
-
-          <div class="opcao" onclick="selecionar(this,'cartao')">
-            <span>Cartão de crédito</span>
-            <span>▭</span>
-          </div>
-
-          <button class="btnFinalizar" type="button" onclick="continuarPagamento('parcial')">
-            CONTINUAR
-          </button>
-        </div>
-      </div>
-
-      <div class="checkoutCard">
-        <div class="checkoutTitulo" onclick="abrirOpcao('total')">
-          <strong>VALOR COMPLETO</strong>
-          <small>Presenteie todo o valor restante.</small>
-        </div>
-
-        <div id="total" class="checkoutConteudo">
-          <p>Valor restante: <strong id="valorCompletoTexto">—</strong></p>
-
-          <h4>Forma de pagamento</h4>
-
-          <div class="opcao" onclick="selecionar(this,'pix')">
-            <span>PIX</span>
-            <span>◆</span>
-          </div>
-
-          <div class="opcao" onclick="selecionar(this,'cartao')">
-            <span>Cartão de crédito</span>
-            <span>▭</span>
-          </div>
-
-          <button class="btnFinalizar" type="button" onclick="continuarPagamento('total')">
-            CONTINUAR
-          </button>
-        </div>
-      </div>
-
-      <div id="areaPagamento"></div>
-    </section>
-  </div>
+   <div class="pagamento-area" id="areaPagamento"></div>
+  </section>
+ </div>
 </main>
-
-<footer class="t3-footer">
-  <span>Pagamento protegido.</span>
-  <span><strong>ASGARD WEDDING</strong> · por Asgard Tech</span>
-</footer>
-
+<footer><strong>ASGARD WEDDING</strong><span>Pagamento protegido pela integração do casamento</span></footer>
 <script src="template-03-common.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  t3ConfigurarVolta();
-  document.getElementById("voltarPresentes").href =
-    t3Link("template-03-presentes.html");
-
-  const casamento = await t3CarregarCasamento();
-  if (casamento) t3AtualizarMonograma(casamento);
-});
-</script>
-<script src="utils.js"></script>
-<script src="casamento-context.js"></script>
-<script src="checkout.js"></script>
-</body>
-</html>
+<script>document.addEventListener("DOMContentLoaded",()=>{t3TopoVoltar();document.getElementById("voltarPresentes").href=t3Query("template-03-presentes.html")})</script>
+<script src="utils.js"></script><script src="casamento-context.js"></script><script src="checkout.js"></script>
+</body></html>
