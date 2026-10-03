@@ -242,7 +242,11 @@ function renderPresencas() {
   container.innerHTML = presencas.map((p) => `
     <div class="list-row">
       <div>
-        <strong>${escapeHtml(p.nome || "Convidado")}</strong>
+        <strong>${escapeHtml(
+          Array.isArray(p.nomes)
+            ? p.nomes.join(", ")
+            : p.nomes || "Convidado"
+        )}</strong>
         ${p.mensagem ? `<div class="muted">${escapeHtml(p.mensagem)}</div>` : ""}
       </div>
       <strong>${Number(p.quantidade || 0)} pessoa(s)</strong>

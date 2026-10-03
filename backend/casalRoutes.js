@@ -94,11 +94,11 @@ router.get("/api/casal/painel", async (req, res) => {
 
       pool.query(
         `SELECT
-           id,
-           nome,
-           quantidade,
-           mensagem
-         FROM casamento_presencas
+          id,
+          nomes,
+          quantidade,
+          mensagem
+        FROM casamento_presencas
          WHERE casamento_id = $1
          ORDER BY id DESC
          LIMIT 500`,
