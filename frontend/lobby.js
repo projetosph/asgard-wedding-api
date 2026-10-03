@@ -36,6 +36,4 @@ menuToggle?.addEventListener("click", () => {
   menu.classList.toggle("open");
 });
 
-document.getElementById("coupleLogin")?.addEventListener("click", () => {
-  alert("O Painel do Casal será liberado na próxima etapa.");
-});
+

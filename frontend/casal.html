@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel do Casal | Asgard Wedding</title>
+  <link rel="stylesheet" href="casal.css">
+</head>
+<body class="dashboard-page">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand side-brand" href="index.html">
+      <span class="brand-mark">AW</span>
+      <span><strong>ASGARD WEDDING</strong><small>Área do casal</small></span>
+    </a>
+    <nav class="side-nav">
+      <button class="nav-item active" data-view="inicio">Visão geral</button>
+      <button class="nav-item" data-view="presentes">Presentes</button>
+      <button class="nav-item" data-view="pagamentos">Pagamentos</button>
+      <button class="nav-item" data-view="presencas">Presenças</button>
+      <button class="nav-item" data-view="recados">Recados</button>
+      <button class="nav-item" data-view="mercadopago">Mercado Pago</button>
+    </nav>
+    <button id="btnSair" class="logout-btn">Sair</button>
+  </aside>
+
+  <main class="dashboard-main">
+    <header class="dashboard-header">
+      <div>
+        <span class="eyebrow">PAINEL DO CASAL</span>
+        <h1 id="tituloCasal">Carregando...</h1>
+        <p id="dataCasamento" class="muted"></p>
+      </div>
+      <div class="header-actions">
+        <a id="abrirSite" class="ghost-btn" target="_blank" rel="noopener noreferrer">Abrir meu site ↗</a>
+        <button class="mobile-menu" id="mobileMenu" type="button">☰</button>
+      </div>
+    </header>
+
+    <section id="view-inicio" class="view active">
+      <div class="metrics">
+        <article class="metric"><span>Presentes</span><strong id="metricPresentes">—</strong><small>cadastrados</small></article>
+        <article class="metric"><span>Arrecadado</span><strong id="metricArrecadado">—</strong><small>confirmado</small></article>
+        <article class="metric"><span>Confirmados</span><strong id="metricConfirmados">—</strong><small>convidados</small></article>
+        <article class="metric"><span>Recados</span><strong id="metricRecados">—</strong><small>recebidos</small></article>
+      </div>
+
+      <div class="overview-grid">
+        <article class="panel-card large">
+          <span class="eyebrow">MEU SITE</span>
+          <h2 id="siteCasalTitulo">Seu casamento</h2>
+          <p>Este é o endereço que você compartilha com seus convidados.</p>
+          <div class="site-link-row">
+            <input id="linkSite" readonly>
+            <button id="copiarLink" class="secondary-btn">COPIAR LINK</button>
+          </div>
+        </article>
+
+        <article class="panel-card">
+          <span class="eyebrow">MERCADO PAGO</span>
+          <h2 id="mpResumoTitulo">Verificando...</h2>
+          <p id="mpResumoTexto" class="muted">Consultando sua conexão.</p>
+          <button id="mpResumoBotao" class="primary-btn">GERENCIAR</button>
+        </article>
+      </div>
+
+      <article class="panel-card">
+        <div class="card-heading">
+          <div><span class="eyebrow">PRESENTES</span><h2>Progresso da lista</h2></div>
+          <strong id="progressoTexto">—</strong>
+        </div>
+        <div class="progress-track"><div class="progress-bar" id="progressoBarra"></div></div>
+      </article>
+    </section>
+
+    <section id="view-presentes" class="view">
+      <div class="section-title">
+        <div><span class="eyebrow">LISTA DE PRESENTES</span><h2>Seus presentes</h2></div>
+        <button id="btnNovoPresente" class="primary-btn">+ NOVO PRESENTE</button>
+      </div>
+      <div id="listaPresentesPainel" class="gift-grid"></div>
+    </section>
+
+    <section id="view-pagamentos" class="view">
+      <div class="section-title">
+        <div><span class="eyebrow">FINANCEIRO</span><h2>Pagamentos</h2><p class="muted">Somente pagamentos deste casamento.</p></div>
+      </div>
+      <div id="listaPagamentos" class="table-card"></div>
+    </section>
+
+    <section id="view-presencas" class="view">
+      <div class="section-title"><div><span class="eyebrow">CONVIDADOS</span><h2>Lista de presença</h2></div></div>
+      <div id="listaPresencas" class="list-card"></div>
+    </section>
+
+    <section id="view-recados" class="view">
+      <div class="section-title"><div><span class="eyebrow">MENSAGENS</span><h2>Recados recebidos</h2></div></div>
+      <div id="listaRecados" class="messages-grid"></div>
+    </section>
+
+    <section id="view-mercadopago" class="view">
+      <div class="mp-card">
+        <div class="mp-symbol">MP</div>
+        <span class="eyebrow">PAGAMENTOS</span>
+        <h2 id="mpTitulo">Mercado Pago</h2>
+        <p id="mpDescricao">Conecte sua própria conta Mercado Pago para receber os presentes diretamente.</p>
+        <div id="mpStatus" class="status-pill">VERIFICANDO</div>
+        <button id="btnConectarMp" class="primary-btn">CONECTAR MERCADO PAGO</button>
+        <p class="security-note">A Asgard Wedding não exibe sua senha ou token do Mercado Pago.</p>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="modalPresente">
+    <div class="modal-card">
+      <button class="modal-close" id="fecharModal" type="button">×</button>
+      <span class="eyebrow">LISTA DE PRESENTES</span>
+      <h2 id="modalPresenteTitulo">Novo presente</h2>
+      <form id="formPresente" class="gift-form">
+        <input id="presenteId" type="hidden">
+        <label>Nome</label><input id="presenteNome" required maxlength="160">
+        <label>Descrição</label><textarea id="presenteDescricao" rows="3"></textarea>
+        <div class="two-cols">
+          <div><label>Valor (R$)</label><input id="presenteValor" type="number" min="1" step="0.01" required></div>
+          <div><label>Imagem (URL)</label><input id="presenteImagem" type="url"></div>
+        </div>
+        <label>Link da loja (opcional)</label><input id="presenteLink" type="url">
+        <button type="submit" class="primary-btn">SALVAR PRESENTE</button>
+        <p id="presenteMensagem"></p>
+      </form>
+    </div>
+  </div>
+
+  <script src="casal.js"></script>
+</body>
+</html>

@@ -4,6 +4,7 @@ const webhookRoutes = require("./webhookRoutes");
 const authRoutes = require("./authRoutes");
 const adminRoutes = require("./adminRoutes");
 const secureMercadoPagoRoutes = require("./secureMercadoPagoRoutes");
+const casalRoutes = require("./casalRoutes");
 
 const {
   pool,
@@ -31,6 +32,8 @@ app.use(webhookRoutes);
 app.use(authRoutes);
 app.use(adminRoutes);
 app.use(secureMercadoPagoRoutes);
+app.use(casalRoutes);
+
 
 const PORT = process.env.PORT || 3000;
 
