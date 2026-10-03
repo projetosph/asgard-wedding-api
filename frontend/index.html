@@ -1,87 +1,187 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asgard Wedding</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <meta name="description" content="Asgard Wedding — sites personalizados para casamentos com lista de presença, presentes, recados, fotos, música e muito mais.">
+  <title>Asgard Wedding | Seu casamento em um só lugar</title>
+  <link rel="stylesheet" href="lobby.css">
 </head>
 <body>
-
-<header class="header">
-  <div class="logo" data-casal-iniciais>P & A</div>
-  <div style="display:flex; gap:10px;">
-    <a href="presentes.html" data-preservar-casamento class="btnHeader">Lista de Presentes</a>
-    <a href="login.html" class="btnHeader adminBtn">
-      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077063.png" alt="Administrador">
+  <header class="header">
+    <a class="brand" href="./">
+      <span class="brand-mark">AW</span>
+      <span class="brand-copy">
+        <strong>ASGARD WEDDING</strong>
+        <small>por Asgard Tech</small>
+      </span>
     </a>
-  </div>
-</header>
 
-<section class="versiculos">
-  <div class="versiculos-track">
-    <span>Colossenses 3:14: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."</span>
-    <span>Mateus 19:6: "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."</span>
-    <span>Colossenses 3:14: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."</span>
-    <span>Mateus 19:6: "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."</span>
-  </div>
-</section>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu">☰</button>
 
-<section class="hero">
-  <h1 data-casal-nomes>Paulo & Alana</h1>
-  <img src="assets/bg/separador.png" class="separador" alt="">
-  <p class="subHero" data-casamento-data>07 de Setembro de 2026</p>
-  <p class="subHero" data-casamento-horario>Pontualmente às 15h30</p>
-  <p data-erro-casamento></p>
-</section>
+    <nav class="nav" id="menu">
+      <a href="#recursos">Recursos</a>
+      <a href="#como-funciona">Como funciona</a>
+      <a href="#demonstracao">Demonstração</a>
+      <a href="#video">Vídeo</a>
+      <button class="nav-budget" type="button" data-whatsapp>Fazer orçamento</button>
+    </nav>
+  </header>
 
-<section class="grid">
-  <div class="box">
-    <h3>LISTA DE PRESENTES</h3>
-    <a href="presentes.html" data-preservar-casamento class="btn">ACESSAR</a>
-  </div>
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="eyebrow">SEU CASAMENTO. SEU ESPAÇO. SUA HISTÓRIA.</span>
+        <h1>Tudo o que seus convidados precisam, <em>em um só lugar.</em></h1>
+        <p class="hero-text">
+          Informações do evento, confirmação de presença, lista de presentes,
+          recados, fotos, música e muito mais em um site personalizado.
+        </p>
 
-  <div class="box">
-    <h3>LISTA DE PRESENÇA</h3>
-    <a href="presenca.html" data-preservar-casamento class="btn">CONFIRMAR</a>
-  </div>
+        <div class="hero-actions">
+          <button class="btn btn-primary" type="button" data-whatsapp>FAZER ORÇAMENTO</button>
+          <a class="btn btn-secondary" href="#demonstracao">VER DEMONSTRAÇÃO</a>
+        </div>
 
-  <div class="box boxLocal">
-    <h3>LOCAL</h3>
-    <div class="localInfo">
-      <strong class="localNome" data-local-nome>Local do casamento</strong>
-      <p class="localEndereco" data-local-endereco>Endereço</p>
-    </div>
+        <div class="hero-trust">
+          <span>✓ Site personalizado</span>
+          <span>✓ Responsivo para celular</span>
+          <span>✓ Pagamentos integrados</span>
+        </div>
+      </div>
 
-    <iframe data-mapa-iframe loading="lazy" referrerpolicy="no-referrer-when-downgrade" title="Mapa do casamento"></iframe>
+      <div class="hero-preview" aria-hidden="true">
+        <div class="browser">
+          <div class="browser-top"><span></span><span></span><span></span></div>
+          <div class="browser-body">
+            <p class="preview-label">NOSSO CASAMENTO</p>
+            <h2>Paulo <span>&</span> Alana</h2>
+            <div class="preview-line"></div>
+            <p>07 de Setembro de 2026</p>
+            <div class="preview-grid">
+              <div>Presentes</div>
+              <div>Presença</div>
+              <div>Local</div>
+              <div>Recados</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
 
-    <a data-mapa-link class="linkMapa" href="#" target="_blank" rel="noopener noreferrer">
-      ABRIR NO MAPS
-    </a>
-  </div>
+    <section class="intro">
+      <span class="section-kicker">ASGARD WEDDING</span>
+      <h2>Mais que um convite digital</h2>
+      <p>
+        O site do casamento se torna o ponto central entre o casal e os convidados.
+        Tudo organizado, acessível e personalizado para o grande dia.
+      </p>
+    </section>
 
-  <div class="box">
-    <h3>RECADO</h3>
-    <input id="nomeRecado" placeholder="Seu nome" class="inputNome">
-    <textarea id="mensagemRecado" placeholder="Deixe sua mensagem. Enter envia; Shift + Enter quebra a linha."></textarea>
-    <button type="button" id="btnEnviarRecado" class="btn">ENVIAR</button>
-  </div>
-</section>
+    <section class="section" id="recursos">
+      <div class="section-heading">
+        <span class="section-kicker">O QUE OFERECEMOS</span>
+        <h2>Um site completo para o seu casamento</h2>
+        <p>Recursos pensados para facilitar a organização e melhorar a experiência dos convidados.</p>
+      </div>
 
-<section class="hero">
-  <p class="subHero">O grande dia acontecerá em...</p>
-  <p id="contador" class="contadorPremium"></p>
-</section>
+      <div class="features-grid">
+        <article class="feature"><div class="icon">✓</div><h3>Lista de Presença</h3><p>Confirmação pelo próprio site e acompanhamento pelo painel.</p></article>
+        <article class="feature"><div class="icon">◇</div><h3>Lista de Presentes</h3><p>Presentes, experiências e cotas com pagamentos integrados.</p></article>
+        <article class="feature"><div class="icon">♡</div><h3>Recados</h3><p>Espaço para mensagens de familiares e amigos.</p></article>
+        <article class="feature"><div class="icon">▣</div><h3>Galeria de Fotos</h3><p>Fotos do casal reunidas dentro do site.</p></article>
+        <article class="feature"><div class="icon">♪</div><h3>Música no Site</h3><p>Uma trilha escolhida pelo casal para personalizar a experiência.</p></article>
+        <article class="feature"><div class="icon">⌖</div><h3>Localização</h3><p>Endereço, mapa e acesso rápido à localização do evento.</p></article>
+        <article class="feature"><div class="icon">◷</div><h3>Contagem Regressiva</h3><p>Um contador personalizado até o grande dia.</p></article>
+        <article class="feature"><div class="icon">▤</div><h3>Painel do Casal</h3><p>Presentes, pagamentos, presenças e informações em uma área exclusiva.</p></article>
+        <article class="feature"><div class="icon">▱</div><h3>Personalização</h3><p>Informações, identidade visual e modelo preparados para cada casamento.</p></article>
+      </div>
+    </section>
 
-<footer class="footer">
-  <h3 class="logoFooter">ASGARD TECH</h3>
-  <p class="frase">Feito com ❤ para todos os casais</p>
-  <small>© 2026 Asgard TECH</small>
-</footer>
+    <section class="section process-section" id="como-funciona">
+      <div class="section-heading light">
+        <span class="section-kicker">SIMPLES PARA O CASAL</span>
+        <h2>Como funciona?</h2>
+      </div>
 
-<script src="utils.js"></script>
-<script src="casamento-context.js"></script>
-<script src="home.js"></script>
+      <div class="steps">
+        <article><span class="step-number">01</span><h3>Escolha o estilo</h3><p>Conheça nossos modelos e escolha a identidade do site.</p></article>
+        <article><span class="step-number">02</span><h3>Personalizamos</h3><p>Incluímos dados, conteúdo e recursos do casamento.</p></article>
+        <article><span class="step-number">03</span><h3>Conecte os pagamentos</h3><p>O casal conecta sua própria conta Mercado Pago.</p></article>
+        <article><span class="step-number">04</span><h3>Compartilhe</h3><p>Envie o link aos convidados e acompanhe tudo pelo painel.</p></article>
+      </div>
+    </section>
+
+    <section class="section" id="demonstracao">
+      <div class="section-heading">
+        <span class="section-kicker">MODELOS</span>
+        <h2>Veja como pode ficar</h2>
+        <p>O Template 01 é o primeiro modelo disponível. Novos estilos poderão ser adicionados depois.</p>
+      </div>
+
+      <article class="template-card">
+        <div class="template-preview">
+          <div class="template-card-top"><span>Template 01</span><span class="available">DISPONÍVEL</span></div>
+          <div class="template-scene">
+            <small>Save the date</small>
+            <h3>Paulo & Alana</h3>
+            <p>07 • 09 • 2026</p>
+          </div>
+        </div>
+
+        <div class="template-info">
+          <span class="section-kicker">ELEGANTE & ROMÂNTICO</span>
+          <h3>Template 01</h3>
+          <p>Um modelo leve e sofisticado, com foco nas informações essenciais e na experiência dos convidados.</p>
+          <a class="btn btn-primary" href="casamento.html?casamento=paulo-e-alana" target="_blank" rel="noopener noreferrer">ABRIR DEMONSTRAÇÃO</a>
+        </div>
+      </article>
+    </section>
+
+    <section class="section video-section" id="video">
+      <div class="video-copy">
+        <span class="section-kicker">VEJA NA PRÁTICA</span>
+        <h2>Entenda a Asgard Wedding em poucos minutos</h2>
+        <p>Aqui ficará o vídeo mostrando como o site funciona para convidados e para o casal.</p>
+        <p class="video-note">Quando você fizer o vídeo, substituímos este espaço pelo player real.</p>
+      </div>
+
+      <div class="video-placeholder">
+        <div class="play-placeholder">▶</div>
+        <strong>VÍDEO DEMONSTRATIVO</strong>
+        <span>Em breve</span>
+      </div>
+    </section>
+
+    <section class="cta">
+      <span class="section-kicker light-kicker">VAMOS CRIAR O SEU?</span>
+      <h2>Seu casamento merece um espaço só dele.</h2>
+      <p>Fale com a Asgard Tech e solicite um orçamento.</p>
+      <button class="btn btn-light" type="button" data-whatsapp>FALAR NO WHATSAPP</button>
+    </section>
+
+    <section class="client-area">
+      <div>
+        <span class="section-kicker">JÁ É CLIENTE?</span>
+        <h2>Acesse sua área</h2>
+        <p>Gerencie seu casamento ou acesse a administração da plataforma.</p>
+      </div>
+
+      <div class="client-actions">
+        <button class="btn btn-secondary disabled" type="button" id="coupleLogin">
+          PAINEL DO CASAL <small>EM BREVE</small>
+        </button>
+        <a class="admin-access" href="admin-login.html">Acesso administrativo</a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div><strong>ASGARD WEDDING</strong><span>por Asgard Tech</span></div>
+    <p>Sites de casamento personalizados para transformar organização em experiência.</p>
+    <small>© 2026 Asgard Tech. Todos os direitos reservados.</small>
+  </footer>
+
+  <script src="lobby.js"></script>
 </body>
 </html>
