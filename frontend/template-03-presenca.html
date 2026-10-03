@@ -1,14 +1,63 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Confirmar Presença | Asgard Wedding</title><link rel="stylesheet" href="template-03.css"></head><body>
-<header class="t3-top"><a id="voltarCasamento" class="t3-brand" href="#"><span class="t3-logo">AW</span> ASGARD WEDDING</a><nav class="t3-nav"><a id="voltarCasamento2" href="#">Início</a></nav></header>
-<main class="page">
-  <div class="page-title"><div><span class="eyebrow">LISTA DE PRESENÇA</span><h1>Confirme sua presença</h1></div><p>Sua confirmação é muito importante para a organização do grande dia.</p></div>
-  <section class="form-card"><form class="form-grid" id="formPresenca">
-    <div class="field"><label>Nome e sobrenome</label><input id="nomePresenca" required></div>
-    <div class="field"><label>Quantidade de pessoas</label><input id="quantidadePresenca" type="number" min="1" max="20" required></div>
-    <div id="listaNomesConvidados" class="form-grid"></div>
-    <div class="field"><label>Mensagem (opcional)</label><textarea id="mensagemPresenca" rows="3"></textarea></div>
-    <button class="btn primary" id="btnConfirmarPresenca" type="submit">CONFIRMAR PRESENÇA</button>
-    <p id="statusPresenca"></p>
-  </form></section>
-</main><footer><strong>ASGARD WEDDING</strong><span>por Asgard Tech</span></footer>
-<script src="template-03-common.js"></script><script src="template-03-presenca.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Confirmar Presença</title>
+  <link rel="stylesheet" href="template-03.css">
+</head>
+<body>
+<header class="t3-header">
+  <a class="couple-mark" href="#" data-home-link>
+    <span class="couple-monogram" data-couple-monogram>—</span>
+    <small>Nosso casamento</small>
+  </a>
+  <nav class="t3-nav"><a data-home-link href="#">Início</a></nav>
+</header>
+
+<main class="inner-page">
+  <div class="page-heading">
+    <div>
+      <span class="eyebrow">LISTA DE PRESENÇA</span>
+      <h1>Esperamos por você</h1>
+    </div>
+    <p>Confirme os nomes de quem estará presente para ajudar na organização do grande dia.</p>
+  </div>
+
+  <section class="paper-card form-card">
+    <form class="form-grid" id="formPresenca">
+      <div class="field">
+        <label>Nome e sobrenome</label>
+        <input id="nomePresenca" required>
+      </div>
+
+      <div class="field">
+        <label>Quantidade de pessoas</label>
+        <input id="quantidadePresenca" type="number" min="1" max="20" required>
+      </div>
+
+      <div id="listaNomesConvidados" class="form-grid"></div>
+
+      <div class="field">
+        <label>Mensagem para o casal (opcional)</label>
+        <textarea id="mensagemPresenca" rows="3"></textarea>
+      </div>
+
+      <button id="btnConfirmarPresenca" class="btn btn-primary" type="submit">
+        CONFIRMAR PRESENÇA
+      </button>
+
+      <p id="statusPresenca" class="placeholder-value"></p>
+    </form>
+  </section>
+</main>
+
+<footer class="t3-footer">
+  <span>Feito para celebrar histórias.</span>
+  <span><strong>ASGARD WEDDING</strong> · por Asgard Tech</span>
+</footer>
+
+<script src="template-03-common.js"></script>
+<script src="template-03-presenca.js"></script>
+</body>
+</html>

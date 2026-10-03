@@ -1,18 +1,132 @@
-<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Nosso Casamento | Asgard Wedding</title><link rel="stylesheet" href="template-03.css"></head>
-<body class="home03">
-<header class="t3-top"><a class="t3-brand" href="index.html"><span class="t3-logo">AW</span> ASGARD WEDDING</a><nav class="t3-nav"><a class="hide-mobile" id="linkPresentesTop" href="#">Presentes</a><a class="hide-mobile" id="linkPresencaTop" href="#">Presença</a><a class="hide-mobile" id="linkGaleriaTop" href="#">Galeria</a><button id="musicBtn">♪ Música</button></nav></header>
-<main class="shell">
-<section class="hero03">
-  <div><span class="eyebrow">NOSSO CASAMENTO</span><h1><span id="noivo">—</span><em>&</em><span id="noiva">—</span></h1><p class="date" id="data">—</p></div>
-  <div><span class="eyebrow">O GRANDE DIA EM</span><div class="count"><div><strong id="dias">—</strong><span> DIAS</span></div><div><strong id="horas">—</strong><span> HORAS</span></div><div><strong id="minutos">—</strong><span> MIN</span></div></div></div>
-</section>
-<section class="home-grid">
-  <article class="card home-card"><div><span class="eyebrow">PRESENTES</span><h2>Lista de presentes</h2><p>Escolha uma lembrança para celebrar esse novo capítulo com a gente.</p></div><a id="linkPresentes" class="btn primary" href="#">VER LISTA</a></article>
-  <article class="card home-card dark"><div><span class="eyebrow">PRESENÇA</span><h2>Você vem?</h2><p>Confirme sua presença e nos ajude a preparar tudo com carinho.</p></div><a id="linkPresenca" class="btn secondary" href="#">CONFIRMAR</a></article>
-  <article class="card home-card"><div><span class="eyebrow">LOCAL</span><h2 id="localNome">—</h2><p id="localEndereco">—</p></div><a id="mapa" class="local-link" href="#" target="_blank">ABRIR NO MAPA ↗</a></article>
-  <article class="card home-card"><div><span class="eyebrow">RECADO</span><h2>Deixe seu carinho</h2></div><form class="mini-form" id="recadoForm"><input id="nomeRecado" placeholder="Seu nome" required><textarea id="mensagemRecado" placeholder="Sua mensagem" required></textarea><button class="btn primary" type="submit">ENVIAR</button><small id="recadoStatus"></small></form></article>
-</section>
-</main>
-<audio id="audio" loop></audio>
-<script src="template-03-common.js"></script><script src="template-03-home.js"></script>
-</body></html>
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>Nosso Casamento</title>
+  <link rel="stylesheet" href="template-03.css">
+</head>
+<body class="template03-home">
+  <header class="t3-header">
+    <a class="couple-mark" href="#" data-home-link>
+      <span class="couple-monogram" data-couple-monogram>—</span>
+      <small>Nosso casamento</small>
+    </a>
+
+    <nav class="t3-nav">
+      <a id="navPresentes" class="desktop-only" href="#">Presentes</a>
+      <a id="navPresenca" class="desktop-only" href="#">Presença</a>
+      <a id="navGaleria" class="desktop-only" href="#">Galeria</a>
+      <button id="musicBtn" type="button">♪ Música</button>
+    </nav>
+  </header>
+
+  <main class="home-shell">
+    <section class="wedding-hero">
+      <div>
+        <span class="eyebrow">ESTAMOS NOS CASANDO</span>
+        <div class="hero-ornament"></div>
+
+        <h1 class="couple-names">
+          <span id="noivo">—</span>
+          <em>&</em>
+          <span id="noiva">—</span>
+        </h1>
+
+        <p class="hero-date" id="dataHorario">—</p>
+      </div>
+
+      <div class="countdown-wrap">
+        <span class="eyebrow">FALTA POUCO</span>
+
+        <div class="countdown">
+          <div class="countdown-item">
+            <strong id="dias">—</strong>
+            <span>DIAS</span>
+          </div>
+
+          <div class="countdown-item">
+            <strong id="horas">—</strong>
+            <span>HORAS</span>
+          </div>
+
+          <div class="countdown-item">
+            <strong id="minutos">—</strong>
+            <span>MINUTOS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-content">
+      <div class="top-cards">
+        <article class="wedding-card">
+          <div>
+            <span class="eyebrow">PRESENTES</span>
+            <h2>Lista de presentes</h2>
+            <p>Escolha uma lembrança para celebrar esse novo capítulo com a gente.</p>
+          </div>
+
+          <div class="card-actions">
+            <a id="linkPresentes" class="btn btn-primary" href="#">VER LISTA</a>
+          </div>
+        </article>
+
+        <article class="wedding-card featured">
+          <div>
+            <span class="eyebrow">PRESENÇA</span>
+            <h2>Você vem?</h2>
+            <p>Confirme sua presença para que possamos preparar tudo com carinho.</p>
+          </div>
+
+          <div class="card-actions">
+            <a id="linkPresenca" class="btn btn-ghost" href="#">CONFIRMAR</a>
+          </div>
+        </article>
+      </div>
+
+      <div class="bottom-cards">
+        <article class="wedding-card">
+          <div>
+            <span class="eyebrow">CERIMÔNIA & FESTA</span>
+            <h2 class="location-name" id="localNome">—</h2>
+            <p class="location-address" id="localEndereco">—</p>
+          </div>
+
+          <div class="card-actions">
+            <a id="mapaLink" class="btn btn-ghost" href="#" target="_blank" rel="noopener noreferrer">
+              ABRIR NO MAPA
+            </a>
+            <a id="linkGaleria" class="btn btn-ghost" href="#">GALERIA</a>
+          </div>
+        </article>
+
+        <article class="wedding-card">
+          <div>
+            <span class="eyebrow">UM RECADO PARA NÓS</span>
+            <h2>Deixe seu carinho</h2>
+          </div>
+
+          <form class="message-mini" id="recadoForm">
+            <input id="nomeRecado" placeholder="Seu nome" required>
+            <textarea id="mensagemRecado" placeholder="Sua mensagem" required></textarea>
+            <button class="btn btn-primary" type="submit">ENVIAR</button>
+          </form>
+
+          <div class="message-status" id="recadoStatus"></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="t3-footer">
+    <span>Feito para celebrar histórias.</span>
+    <span><strong>ASGARD WEDDING</strong> · por Asgard Tech</span>
+  </footer>
+
+  <audio id="audioCasamento" loop preload="none"></audio>
+
+  <script src="template-03-common.js"></script>
+  <script src="template-03-home.js"></script>
+</body>
+</html>
