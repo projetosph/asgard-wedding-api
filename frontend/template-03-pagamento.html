@@ -1,65 +1,8 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Pagamento</title>
-  <link rel="stylesheet" href="template-03.css">
-</head>
+
+<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Pagamento</title><link rel="stylesheet" href="template-03.css"></head>
 <body>
-<header class="t3-header">
-  <a class="couple-mark" href="#" data-home-link>
-    <span class="couple-monogram" data-couple-monogram>—</span>
-    <small>Nosso casamento</small>
-  </a>
-  <nav class="t3-nav">
-    <span style="font-size:9px;color:#7c7d76;">🔒 Ambiente seguro</span>
-  </nav>
-</header>
-
-<main class="inner-page">
-  <section class="paper-card payment-state">
-    <div class="payment-symbol">♡</div>
-    <span class="eyebrow">SEU PRESENTE</span>
-    <h1 id="tituloPagamento">Acompanhando o pagamento</h1>
-    <p id="resumoPagamento">As informações do pagamento aparecerão aqui.</p>
-
-    <div id="areaPagamento"></div>
-
-    <a id="voltarLista" class="btn btn-primary" href="#">
-      VOLTAR À LISTA DE PRESENTES
-    </a>
-  </section>
-</main>
-
-<footer class="t3-footer">
-  <span>Obrigado por fazer parte deste momento.</span>
-  <span><strong>ASGARD WEDDING</strong> · por Asgard Tech</span>
-</footer>
-
-<script src="template-03-common.js"></script>
-<script>
-document.addEventListener("DOMContentLoaded", async () => {
-  t3ConfigurarVolta();
-
-  document.getElementById("voltarLista").href =
-    t3Link("template-03-presentes.html");
-
-  const casamento = await t3CarregarCasamento();
-  if (casamento) t3AtualizarMonograma(casamento);
-
-  const compra = JSON.parse(localStorage.getItem("compraAtual") || "null");
-
-  if (compra) {
-    const valor = Number(compra.valor || 0).toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL"
-    });
-
-    document.getElementById("resumoPagamento").textContent =
-      `${compra.produtoNome || "Presente"} · ${valor}`;
-  }
-});
-</script>
-</body>
-</html>
+<header class="t3-header"><a class="couple-mark" href="#" data-home-link><span class="couple-monogram" data-couple-monogram>—</span><small>Nosso casamento</small></a><nav class="t3-nav"><span style="font-size:9px;color:#7c7d76;">🔒 Ambiente seguro</span></nav></header>
+<main class="inner-page"><section class="paper-card payment-state"><div class="payment-symbol">♡</div><span class="eyebrow">SEU PRESENTE</span><h1 id="tituloPagamento">Acompanhando o pagamento</h1><p id="resumoPagamento">As informações do pagamento aparecerão aqui.</p><div id="areaPagamento"></div><a id="voltarLista" class="btn btn-primary" href="#">VOLTAR À LISTA DE PRESENTES</a></section></main>
+<div id="footerMount"></div>
+<script src="template-03-common.js"></script><script>document.addEventListener('DOMContentLoaded', async ()=>{t3ConfigurarVolta();document.getElementById('footerMount').innerHTML=t3Footer();document.getElementById('voltarLista').href=t3Link('template-03-presentes.html');const casamento=await t3CarregarCasamento();if(casamento)t3AtualizarMonograma(casamento);const compra=JSON.parse(localStorage.getItem('compraAtual')||'null');if(compra){const valor=Number(compra.valor||0).toLocaleString('pt-BR',{style:'currency',currency:'BRL'});document.getElementById('resumoPagamento').textContent=`${compra.produtoNome || 'Presente'} · ${valor}`;}});</script>
+</body></html>

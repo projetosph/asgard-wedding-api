@@ -1,75 +1,67 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Nosso Casamento</title>
-  <link rel="stylesheet" href="template-03.css">
-</head>
+
+<!DOCTYPE html><html lang="pt-BR"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nosso Casamento</title><link rel="stylesheet" href="template-03.css"></head>
 <body class="template03-home">
-  <header class="t3-header">
-    <a class="couple-mark" href="#" data-home-link>
-      <span class="couple-monogram" data-couple-monogram>—</span>
-      <small>Nosso casamento</small>
-    </a>
+<header class="t3-header">
+  <a class="couple-mark" href="#" data-home-link>
+    <span class="couple-monogram" data-couple-monogram>—</span>
+    <small>Nosso casamento</small>
+  </a>
+  <nav class="t3-nav">
+    <a id="navPresentes" class="desktop-only" href="#">Presentes</a>
+    <a id="navPresenca" class="desktop-only" href="#">Presença</a>
+    <a id="navGaleria" class="desktop-only" href="#">Galeria</a>
+    <button id="musicBtn" type="button">♪ Música</button>
+  </nav>
+</header>
 
-    <nav class="t3-nav">
-      <a id="navPresentes" class="desktop-only" href="#">Presentes</a>
-      <a id="navPresenca" class="desktop-only" href="#">Presença</a>
-      <a id="navGaleria" class="desktop-only" href="#">Galeria</a>
-      <button id="musicBtn" type="button">♪ Música</button>
-    </nav>
-  </header>
+<main class="page-wrap">
+  <section class="home-shell">
+    <article class="hero-card">
+      <div class="hero-left">
+        <div>
+          <span class="eyebrow">ESTAMOS NOS CASANDO</span>
+          <div class="hero-line"></div>
+          <h1 class="couple-names">
+            <span id="noivo">—</span>
+            <em>&</em>
+            <span id="noiva">—</span>
+          </h1>
+          <p class="hero-date" id="dataHorario">—</p>
+        </div>
 
-  <main class="home-shell">
-    <section class="wedding-hero">
-      <div>
-        <span class="eyebrow">ESTAMOS NOS CASANDO</span>
-        <div class="hero-ornament"></div>
-
-        <h1 class="couple-names">
-          <span id="noivo">—</span>
-          <em>&</em>
-          <span id="noiva">—</span>
-        </h1>
-
-        <p class="hero-date" id="dataHorario">—</p>
+        <div class="hero-bottom">
+          <div class="countdown-wrap">
+            <span class="eyebrow">FALTA POUCO</span>
+            <div class="countdown">
+              <div class="countdown-item"><strong id="dias">—</strong><span>DIAS</span></div>
+              <div class="countdown-item"><strong id="horas">—</strong><span>HORAS</span></div>
+              <div class="countdown-item"><strong id="minutos">—</strong><span>MINUTOS</span></div>
+            </div>
+          </div>
+          <a id="linkGaleria" class="btn btn-ghost hero-gallery" href="#">GALERIA</a>
+        </div>
       </div>
 
-      <div class="countdown-wrap">
-        <span class="eyebrow">FALTA POUCO</span>
-
-        <div class="countdown">
-          <div class="countdown-item">
-            <strong id="dias">—</strong>
-            <span>DIAS</span>
-          </div>
-
-          <div class="countdown-item">
-            <strong id="horas">—</strong>
-            <span>HORAS</span>
-          </div>
-
-          <div class="countdown-item">
-            <strong id="minutos">—</strong>
-            <span>MINUTOS</span>
+      <div class="hero-right">
+        <div class="hero-photo-wrap">
+          <div class="hero-photo">
+            <img id="heroPhoto" src="https://storage.alboom.ninja/sites/4564/albuns/713676/pre-wedding-campo-alegre-ck.419.jpg?t=1600800043" alt="Pré-wedding do casal">
           </div>
         </div>
       </div>
-    </section>
+    </article>
 
-    <section class="home-content">
-      <div class="top-cards">
+    <section class="side-grid">
+      <div class="cards-two">
         <article class="wedding-card">
           <div>
             <span class="eyebrow">PRESENTES</span>
             <h2>Lista de presentes</h2>
             <p>Escolha uma lembrança para celebrar esse novo capítulo com a gente.</p>
           </div>
-
-          <div class="card-actions">
-            <a id="linkPresentes" class="btn btn-primary" href="#">VER LISTA</a>
-          </div>
+          <div class="card-actions"><a id="linkPresentes" class="btn btn-primary" href="#">VER LISTA</a></div>
         </article>
 
         <article class="wedding-card featured">
@@ -78,27 +70,18 @@
             <h2>Você vem?</h2>
             <p>Confirme sua presença para que possamos preparar tudo com carinho.</p>
           </div>
-
-          <div class="card-actions">
-            <a id="linkPresenca" class="btn btn-ghost" href="#">CONFIRMAR</a>
-          </div>
+          <div class="card-actions"><a id="linkPresenca" class="btn btn-ghost" href="#">CONFIRMAR</a></div>
         </article>
       </div>
 
-      <div class="bottom-cards">
+      <div class="cards-two">
         <article class="wedding-card">
           <div>
             <span class="eyebrow">CERIMÔNIA & FESTA</span>
             <h2 class="location-name" id="localNome">—</h2>
             <p class="location-address" id="localEndereco">—</p>
           </div>
-
-          <div class="card-actions">
-            <a id="mapaLink" class="btn btn-ghost" href="#" target="_blank" rel="noopener noreferrer">
-              ABRIR NO MAPA
-            </a>
-            <a id="linkGaleria" class="btn btn-ghost" href="#">GALERIA</a>
-          </div>
+          <div class="card-actions"><a id="mapaLink" class="btn btn-ghost" href="#" target="_blank" rel="noopener noreferrer">ABRIR NO MAPA</a></div>
         </article>
 
         <article class="wedding-card">
@@ -106,27 +89,22 @@
             <span class="eyebrow">UM RECADO PARA NÓS</span>
             <h2>Deixe seu carinho</h2>
           </div>
-
-          <form class="message-mini" id="recadoForm">
-            <input id="nomeRecado" placeholder="Seu nome" required>
+          <form class="recado-form" id="recadoForm">
+            <div class="recado-top">
+              <input id="nomeRecado" placeholder="Seu nome" required>
+              <button class="btn btn-primary" type="submit">ENVIAR</button>
+            </div>
             <textarea id="mensagemRecado" placeholder="Sua mensagem" required></textarea>
-            <button class="btn btn-primary" type="submit">ENVIAR</button>
           </form>
-
           <div class="message-status" id="recadoStatus"></div>
         </article>
       </div>
     </section>
-  </main>
+  </section>
+</main>
 
-  <footer class="t3-footer">
-    <span>Feito para celebrar histórias.</span>
-    <span><strong>ASGARD WEDDING</strong> · por Asgard Tech</span>
-  </footer>
-
-  <audio id="audioCasamento" loop preload="none"></audio>
-
-  <script src="template-03-common.js"></script>
-  <script src="template-03-home.js"></script>
-</body>
-</html>
+<div id="footerMount"></div>
+<audio id="audioCasamento" loop preload="none"></audio>
+<script src="template-03-common.js"></script>
+<script src="template-03-home.js"></script>
+</body></html>
