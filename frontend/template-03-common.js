@@ -46,7 +46,7 @@ function t3AtualizarMonograma(casamento){
   const noiva = casamento?.noiva || casamento?.nome_noiva || '';
   const letra1 = noivo ? noivo.trim().charAt(0).toUpperCase() : '—';
   const letra2 = noiva ? noiva.trim().charAt(0).toUpperCase() : '—';
-  const valor = `${letra1}\n${letra2}`;
+  const valor = `${letra1} & ${letra2}`;
   document.querySelectorAll('[data-couple-monogram]').forEach(el => el.textContent = valor);
 }
 function t3ConfigurarVolta(){
