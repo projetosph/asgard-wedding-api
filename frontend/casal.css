@@ -66,3 +66,46 @@ html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);
     min-width:880px;
   }
 }
+
+/* ===== PESQUISA E DRAG DOS PRESENTES ===== */
+.gift-toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:-5px 0 18px}
+.gift-toolbar input{width:min(420px,100%);padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.gift-card[draggable="true"]{cursor:grab}
+.gift-card.dragging{opacity:.45;transform:scale(.985)}
+.gift-card.drag-over{outline:2px dashed var(--sage);outline-offset:3px}
+
+/* ===== PRESENÇAS ===== */
+.presence-actions{display:flex;align-items:center;gap:12px;white-space:nowrap}
+.icon-danger-btn{width:34px;height:34px;border:1px solid rgba(154,58,58,.18);border-radius:9px;background:#fff;color:var(--danger);font-size:20px;line-height:1}
+.icon-danger-btn:hover{background:#fff1f1}
+
+/* ===== GALERIA ===== */
+.gallery-form-card{max-width:760px;margin-bottom:18px}
+.gallery-form,.music-form{display:grid;gap:10px}
+.gallery-form label,.music-form label{font-size:12px;font-weight:750}
+.gallery-form input,.music-form input{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink)}
+.gallery-form .primary-btn,.music-form .primary-btn{justify-self:start;margin-top:4px}
+.gallery-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.gallery-admin-card{overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:18px}
+.gallery-admin-card img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#ece9e0}
+.gallery-admin-info{padding:14px}
+.gallery-admin-info p{margin:0 0 12px;color:var(--muted);font-size:13px}
+.gallery-admin-actions{display:flex;gap:7px;align-items:center}
+.gallery-admin-actions button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:8px 10px;font-weight:750}
+.gallery-admin-actions button:disabled{opacity:.3;cursor:not-allowed}
+.danger-text-btn{margin-left:auto;color:var(--danger)}
+
+/* ===== MÚSICA ===== */
+.music-card{max-width:760px}
+.music-actions{display:flex;gap:10px;margin-top:5px}
+
+@media(max-width:1050px){.gallery-admin-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+  .gift-toolbar{align-items:flex-start;flex-direction:column}
+  .gift-toolbar input{width:100%}
+  .presence-row{align-items:flex-start;flex-direction:column}
+  .presence-actions{width:100%;justify-content:space-between}
+  .gallery-admin-grid{grid-template-columns:1fr}
+  .music-actions{flex-direction:column}
+  .music-actions .primary-btn,.music-actions .ghost-btn{width:100%}
+}

@@ -18,6 +18,8 @@
       <button class="nav-item" data-view="pagamentos">Pagamentos</button>
       <button class="nav-item" data-view="presencas">Presenças</button>
       <button class="nav-item" data-view="recados">Recados</button>
+      <button class="nav-item" data-view="galeria">Galeria</button>
+      <button class="nav-item" data-view="musica">Música</button>
       <button class="nav-item" data-view="mercadopago">Mercado Pago</button>
     </nav>
     <button id="btnSair" class="logout-btn">Sair</button>
@@ -81,6 +83,10 @@
         </div>
         <button id="btnNovoPresente" class="primary-btn">+ NOVO PRESENTE</button>
       </div>
+      <div class="gift-toolbar">
+        <input id="pesquisaPresente" type="search" placeholder="Pesquisar presente..." autocomplete="off">
+        <span class="muted">Arraste os cards ou use ↑ ↓ para reorganizar.</span>
+      </div>
       <div id="listaPresentesPainel" class="gift-grid"></div>
     </section>
 
@@ -92,13 +98,68 @@
     </section>
 
     <section id="view-presencas" class="view">
-      <div class="section-title"><div><span class="eyebrow">CONVIDADOS</span><h2>Lista de presença</h2></div></div>
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">CONVIDADOS</span>
+          <h2>Lista de presença</h2>
+          <p class="muted"><strong id="totalConfirmadosView">0</strong> pessoa(s) confirmada(s).</p>
+        </div>
+        <button id="btnBaixarPdfPresencas" class="primary-btn" type="button">BAIXAR LISTA EM PDF</button>
+      </div>
       <div id="listaPresencas" class="list-card"></div>
     </section>
 
     <section id="view-recados" class="view">
       <div class="section-title"><div><span class="eyebrow">MENSAGENS</span><h2>Recados recebidos</h2></div></div>
       <div id="listaRecados" class="messages-grid"></div>
+    </section>
+
+
+    <section id="view-galeria" class="view">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">FOTOS</span>
+          <h2>Galeria</h2>
+          <p class="muted">Adicione as fotos que aparecerão no site do casamento.</p>
+        </div>
+      </div>
+
+      <article class="panel-card gallery-form-card">
+        <form id="formGaleria" class="gallery-form">
+          <label>URL da foto</label>
+          <input id="galeriaImagemUrl" type="url" required placeholder="https://...">
+          <label>Legenda (opcional)</label>
+          <input id="galeriaLegenda" maxlength="240" placeholder="Nosso pré-wedding, por exemplo">
+          <button type="submit" class="primary-btn">+ ADICIONAR FOTO</button>
+          <p id="galeriaMensagem"></p>
+        </form>
+      </article>
+
+      <div id="listaGaleriaPainel" class="gallery-admin-grid"></div>
+    </section>
+
+    <section id="view-musica" class="view">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">NOSSA MÚSICA</span>
+          <h2>Música do site</h2>
+          <p class="muted">Cadastre uma música para o casamento. Links diretos de áudio podem tocar no site; YouTube/Spotify serão abertos em uma nova aba.</p>
+        </div>
+      </div>
+
+      <article class="panel-card music-card">
+        <form id="formMusica" class="music-form">
+          <label>Título da música</label>
+          <input id="musicaTitulo" maxlength="180" placeholder="Ex.: Perfect — Ed Sheeran">
+          <label>URL da música</label>
+          <input id="musicaUrl" type="url" placeholder="https://...">
+          <div class="music-actions">
+            <button type="submit" class="primary-btn">SALVAR MÚSICA</button>
+            <button type="button" id="btnRemoverMusica" class="ghost-btn">REMOVER</button>
+          </div>
+          <p id="musicaMensagem"></p>
+        </form>
+      </article>
     </section>
 
     <section id="view-mercadopago" class="view">
@@ -134,6 +195,7 @@
     </div>
   </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
   <script src="casal.js"></script>
 </body>
 </html>

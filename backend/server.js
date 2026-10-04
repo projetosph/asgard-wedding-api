@@ -84,29 +84,29 @@ app.get("/api/casamentos/:slug/presentes", async (req, res) => {
       });
     }
 
-        const { rows } = await pool.query(
+    const { rows } = await pool.query(
       `SELECT
-        id,
-        nome,
-        descricao,
-        valor,
-        arrecadado,
-        imagem,
-        link,
-        comprado,
-        ordem
-      FROM casamento_presentes
-      WHERE casamento_id = $1
-        AND ativo = TRUE
-      ORDER BY
-        CASE
-          WHEN comprado = TRUE
-            OR COALESCE(arrecadado, 0) >= valor
-          THEN 1
-          ELSE 0
-        END ASC,
-        COALESCE(ordem, 2147483647) ASC,
-        id ASC`,
+         id,
+         nome,
+         descricao,
+         valor,
+         arrecadado,
+         imagem,
+         link,
+         comprado,
+         ordem
+       FROM casamento_presentes
+       WHERE casamento_id = $1
+         AND ativo = TRUE
+       ORDER BY
+         CASE
+           WHEN comprado = TRUE
+             OR COALESCE(arrecadado, 0) >= valor
+           THEN 1
+           ELSE 0
+         END ASC,
+         COALESCE(ordem, 2147483647) ASC,
+         id ASC`,
       [casamento.id]
     );
 
@@ -116,6 +116,62 @@ app.get("/api/casamentos/:slug/presentes", async (req, res) => {
     res.status(500).json({
       erro: "Erro ao carregar presentes."
     });
+  }
+});
+
+
+// =====================================================
+// GALERIA PÚBLICA
+// =====================================================
+
+app.get("/api/casamentos/:slug/galeria", async (req, res) => {
+  try {
+    const casamento = await buscarCasamentoPorSlug(req.params.slug);
+
+    if (!casamento || casamento.status === "inativo") {
+      return res.status(404).json({ erro: "Casamento não encontrado." });
+    }
+
+    const { rows } = await pool.query(
+      `SELECT id, imagem_url, legenda, ordem
+       FROM casamento_galeria
+       WHERE casamento_id = $1
+         AND ativo = TRUE
+       ORDER BY COALESCE(ordem, 2147483647), id`,
+      [casamento.id]
+    );
+
+    return res.json(rows);
+  } catch (erro) {
+    console.error("Erro galeria pública:", erro);
+    return res.status(500).json({ erro: "Erro ao carregar galeria." });
+  }
+});
+
+// =====================================================
+// MÚSICA PÚBLICA
+// =====================================================
+
+app.get("/api/casamentos/:slug/musica", async (req, res) => {
+  try {
+    const casamento = await buscarCasamentoPorSlug(req.params.slug);
+
+    if (!casamento || casamento.status === "inativo") {
+      return res.status(404).json({ erro: "Casamento não encontrado." });
+    }
+
+    const { rows } = await pool.query(
+      `SELECT titulo, url
+       FROM casamento_musica
+       WHERE casamento_id = $1
+       LIMIT 1`,
+      [casamento.id]
+    );
+
+    return res.json(rows[0] || null);
+  } catch (erro) {
+    console.error("Erro música pública:", erro);
+    return res.status(500).json({ erro: "Erro ao carregar música." });
   }
 });
 

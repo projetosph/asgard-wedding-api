@@ -34,7 +34,9 @@ router.get("/api/casal/painel", async (req, res) => {
       presentesResult,
       pagamentosResult,
       presencasResult,
-      recadosResult
+      recadosResult,
+      galeriaResult,
+      musicaResult
     ] = await Promise.all([
       pool.query(
         `SELECT
@@ -125,6 +127,31 @@ router.get("/api/casal/painel", async (req, res) => {
          ORDER BY id DESC
          LIMIT 500`,
         [casamentoId]
+      ),
+
+      pool.query(
+        `SELECT
+           id,
+           imagem_url,
+           legenda,
+           ordem,
+           criado_em
+         FROM casamento_galeria
+         WHERE casamento_id = $1
+           AND ativo = TRUE
+         ORDER BY COALESCE(ordem, 2147483647), id`,
+        [casamentoId]
+      ),
+
+      pool.query(
+        `SELECT
+           titulo,
+           url,
+           atualizado_em
+         FROM casamento_musica
+         WHERE casamento_id = $1
+         LIMIT 1`,
+        [casamentoId]
       )
     ]);
 
@@ -140,6 +167,8 @@ router.get("/api/casal/painel", async (req, res) => {
     const pagamentos = pagamentosResult.rows;
     const presencas = presencasResult.rows;
     const recados = recadosResult.rows;
+    const galeria = galeriaResult.rows;
+    const musica = musicaResult.rows[0] || null;
 
     const valorTotalPresentes = presentes.reduce(
       (soma, p) => soma + Number(p.valor || 0),
@@ -174,7 +203,9 @@ router.get("/api/casal/painel", async (req, res) => {
       presentes,
       pagamentos,
       presencas,
-      recados
+      recados,
+      galeria,
+      musica
     });
 
   } catch (erro) {
@@ -183,6 +214,39 @@ router.get("/api/casal/painel", async (req, res) => {
     return res.status(500).json({
       erro: "Não foi possível carregar o painel do casal."
     });
+  }
+});
+
+
+// =====================================================
+// PRESENÇAS - EXCLUSÃO PELO CASAL
+// =====================================================
+
+router.delete("/api/casal/presencas/:id", async (req, res) => {
+  try {
+    const casamentoId = casamentoIdDoUsuario(req);
+    const presencaId = Number(req.params.id);
+
+    if (!Number.isInteger(presencaId) || presencaId <= 0) {
+      return res.status(400).json({ erro: "Confirmação inválida." });
+    }
+
+    const { rows } = await pool.query(
+      `DELETE FROM casamento_presencas
+       WHERE id = $1
+         AND casamento_id = $2
+       RETURNING id`,
+      [presencaId, casamentoId]
+    );
+
+    if (!rows[0]) {
+      return res.status(404).json({ erro: "Confirmação não encontrada." });
+    }
+
+    return res.json({ removido: true, id: rows[0].id });
+  } catch (erro) {
+    console.error("Erro remover presença casal:", erro);
+    return res.status(500).json({ erro: "Não foi possível excluir a confirmação." });
   }
 });
 
@@ -472,6 +536,160 @@ router.delete("/api/casal/presentes/:id", async (req, res) => {
     return res.status(500).json({
       erro: "Não foi possível remover o presente."
     });
+  }
+});
+
+
+// =====================================================
+// GALERIA
+// =====================================================
+
+router.post("/api/casal/galeria", async (req, res) => {
+  try {
+    const casamentoId = casamentoIdDoUsuario(req);
+    const imagemUrl = String(req.body.imagemUrl || "").trim();
+    const legenda = String(req.body.legenda || "").trim();
+
+    if (!imagemUrl) {
+      return res.status(400).json({ erro: "Informe a URL da foto." });
+    }
+
+    const { rows } = await pool.query(
+      `INSERT INTO casamento_galeria (
+         casamento_id,
+         imagem_url,
+         legenda,
+         ordem,
+         ativo
+       )
+       VALUES (
+         $1,$2,$3,
+         COALESCE((SELECT MAX(ordem) + 1 FROM casamento_galeria WHERE casamento_id = $1 AND ativo = TRUE),1),
+         TRUE
+       )
+       RETURNING *`,
+      [casamentoId, imagemUrl, legenda || null]
+    );
+
+    return res.status(201).json(rows[0]);
+  } catch (erro) {
+    console.error("Erro criar foto galeria:", erro);
+    return res.status(500).json({ erro: "Não foi possível adicionar a foto." });
+  }
+});
+
+router.put("/api/casal/galeria/ordem", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    const casamentoId = casamentoIdDoUsuario(req);
+    const ids = Array.isArray(req.body.ids) ? req.body.ids.map(Number) : [];
+
+    if (!ids.length || ids.some((id) => !Number.isInteger(id) || id <= 0) || new Set(ids).size !== ids.length) {
+      return res.status(400).json({ erro: "Ordem da galeria inválida." });
+    }
+
+    await client.query("BEGIN");
+
+    const { rows } = await client.query(
+      `SELECT id
+       FROM casamento_galeria
+       WHERE casamento_id = $1
+         AND ativo = TRUE
+       ORDER BY COALESCE(ordem, 2147483647), id`,
+      [casamentoId]
+    );
+
+    const atuais = rows.map((r) => Number(r.id));
+    if (atuais.length !== ids.length || atuais.some((id) => !ids.includes(id))) {
+      await client.query("ROLLBACK");
+      return res.status(409).json({ erro: "A galeria mudou. Atualize a página e tente novamente." });
+    }
+
+    for (let i = 0; i < ids.length; i++) {
+      await client.query(
+        `UPDATE casamento_galeria
+         SET ordem = $1
+         WHERE id = $2
+           AND casamento_id = $3`,
+        [i + 1, ids[i], casamentoId]
+      );
+    }
+
+    await client.query("COMMIT");
+    return res.json({ atualizado: true });
+  } catch (erro) {
+    await client.query("ROLLBACK");
+    console.error("Erro ordenar galeria:", erro);
+    return res.status(500).json({ erro: "Não foi possível alterar a ordem da galeria." });
+  } finally {
+    client.release();
+  }
+});
+
+router.delete("/api/casal/galeria/:id", async (req, res) => {
+  try {
+    const casamentoId = casamentoIdDoUsuario(req);
+    const fotoId = Number(req.params.id);
+
+    if (!Number.isInteger(fotoId) || fotoId <= 0) {
+      return res.status(400).json({ erro: "Foto inválida." });
+    }
+
+    const { rows } = await pool.query(
+      `UPDATE casamento_galeria
+       SET ativo = FALSE
+       WHERE id = $1
+         AND casamento_id = $2
+       RETURNING id`,
+      [fotoId, casamentoId]
+    );
+
+    if (!rows[0]) {
+      return res.status(404).json({ erro: "Foto não encontrada." });
+    }
+
+    return res.json({ removido: true, id: rows[0].id });
+  } catch (erro) {
+    console.error("Erro remover foto galeria:", erro);
+    return res.status(500).json({ erro: "Não foi possível remover a foto." });
+  }
+});
+
+// =====================================================
+// MÚSICA
+// =====================================================
+
+router.put("/api/casal/musica", async (req, res) => {
+  try {
+    const casamentoId = casamentoIdDoUsuario(req);
+    const titulo = String(req.body.titulo || "").trim();
+    const url = String(req.body.url || "").trim();
+
+    if (!url) {
+      await pool.query(
+        `DELETE FROM casamento_musica WHERE casamento_id = $1`,
+        [casamentoId]
+      );
+      return res.json({ removido: true });
+    }
+
+    const { rows } = await pool.query(
+      `INSERT INTO casamento_musica (casamento_id, titulo, url, atualizado_em)
+       VALUES ($1,$2,$3,NOW())
+       ON CONFLICT (casamento_id)
+       DO UPDATE SET
+         titulo = EXCLUDED.titulo,
+         url = EXCLUDED.url,
+         atualizado_em = NOW()
+       RETURNING titulo, url, atualizado_em`,
+      [casamentoId, titulo || null, url]
+    );
+
+    return res.json(rows[0]);
+  } catch (erro) {
+    console.error("Erro salvar música casal:", erro);
+    return res.status(500).json({ erro: "Não foi possível salvar a música." });
   }
 });
 

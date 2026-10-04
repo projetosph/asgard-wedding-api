@@ -13,6 +13,10 @@ let presentes = [];
 let pagamentos = [];
 let presencas = [];
 let recados = [];
+let galeria = [];
+let musica = null;
+let filtroPresentes = "";
+let presenteArrastadoId = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btnSair").addEventListener("click", sair);
@@ -30,6 +34,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("formPresente").addEventListener("submit", salvarPresente);
   document.getElementById("mpResumoBotao").addEventListener("click", () => abrirView("mercadopago"));
   document.getElementById("btnConectarMp").addEventListener("click", conectarMercadoPago);
+
+  document.getElementById("pesquisaPresente").addEventListener("input", (evento) => {
+    filtroPresentes = evento.target.value.trim().toLocaleLowerCase("pt-BR");
+    renderPresentes();
+  });
+
+  document.getElementById("btnBaixarPdfPresencas").addEventListener("click", baixarPdfPresencas);
+  document.getElementById("formGaleria").addEventListener("submit", adicionarFotoGaleria);
+  document.getElementById("formMusica").addEventListener("submit", salvarMusica);
+  document.getElementById("btnRemoverMusica").addEventListener("click", removerMusica);
 
   await carregarTudo();
 });
@@ -99,6 +113,8 @@ async function carregarTudo() {
     pagamentos = dados.pagamentos || [];
     presencas = dados.presencas || [];
     recados = dados.recados || [];
+    galeria = dados.galeria || [];
+    musica = dados.musica || null;
 
     renderCabecalho();
     renderResumo(dados.resumo || {});
@@ -106,6 +122,8 @@ async function carregarTudo() {
     renderPagamentos();
     renderPresencas();
     renderRecados();
+    renderGaleria();
+    renderMusica();
 
     await carregarMercadoPago();
   } catch (e) {
@@ -171,14 +189,28 @@ function renderPresentes() {
     ativos.map((p, index) => [String(p.id), index])
   );
 
-  container.innerHTML = presentes.map((p) => {
+  const listaVisivel = presentes.filter((p) => {
+    if (!filtroPresentes) return true;
+    const texto = `${p.nome || ""} ${p.descricao || ""}`.toLocaleLowerCase("pt-BR");
+    return texto.includes(filtroPresentes);
+  });
+
+  if (!listaVisivel.length) {
+    container.innerHTML = `<p class="muted">Nenhum presente encontrado para essa pesquisa.</p>`;
+    return;
+  }
+
+  container.innerHTML = listaVisivel.map((p) => {
     const quitado = presenteQuitado(p);
     const posicao = posicaoAtiva.get(String(p.id));
     const podeSubir = !quitado && posicao > 0;
     const podeDescer = !quitado && posicao < ativos.length - 1;
 
     return `
-      <article class="gift-card ${quitado ? "gift-card-complete" : ""}">
+      <article
+        class="gift-card ${quitado ? "gift-card-complete" : ""}"
+        data-gift-card="${p.id}"
+        draggable="${!quitado}">
         <div class="gift-image">
           ${p.imagem
             ? `<img src="${escapeAttr(p.imagem)}" alt="${escapeHtml(p.nome)}">`
@@ -194,20 +226,8 @@ function renderPresentes() {
 
             ${!quitado ? `
               <div class="gift-order-actions" aria-label="Alterar posição">
-                <button
-                  type="button"
-                  data-move-up="${p.id}"
-                  title="Mover para cima"
-                  ${podeSubir ? "" : "disabled"}>
-                  ↑
-                </button>
-                <button
-                  type="button"
-                  data-move-down="${p.id}"
-                  title="Mover para baixo"
-                  ${podeDescer ? "" : "disabled"}>
-                  ↓
-                </button>
+                <button type="button" data-move-up="${p.id}" title="Mover para cima" ${podeSubir ? "" : "disabled"}>↑</button>
+                <button type="button" data-move-down="${p.id}" title="Mover para baixo" ${podeDescer ? "" : "disabled"}>↓</button>
               </div>
             ` : ""}
           </div>
@@ -246,6 +266,56 @@ function renderPresentes() {
   container.querySelectorAll("[data-move-down]").forEach((b) => {
     b.addEventListener("click", () => moverPresente(b.dataset.moveDown, 1));
   });
+
+  container.querySelectorAll("[data-gift-card][draggable='true']").forEach((card) => {
+    card.addEventListener("dragstart", () => {
+      presenteArrastadoId = card.dataset.giftCard;
+      card.classList.add("dragging");
+    });
+
+    card.addEventListener("dragend", () => {
+      presenteArrastadoId = null;
+      card.classList.remove("dragging");
+      container.querySelectorAll(".drag-over").forEach((el) => el.classList.remove("drag-over"));
+    });
+
+    card.addEventListener("dragover", (evento) => {
+      if (!presenteArrastadoId || presenteArrastadoId === card.dataset.giftCard) return;
+      evento.preventDefault();
+      card.classList.add("drag-over");
+    });
+
+    card.addEventListener("dragleave", () => card.classList.remove("drag-over"));
+
+    card.addEventListener("drop", async (evento) => {
+      evento.preventDefault();
+      card.classList.remove("drag-over");
+      await moverPresentePara(presenteArrastadoId, card.dataset.giftCard);
+    });
+  });
+}
+
+async function moverPresentePara(origemId, destinoId) {
+  if (!origemId || !destinoId || String(origemId) === String(destinoId)) return;
+
+  const ativos = presentes.filter((p) => !presenteQuitado(p));
+  const origem = ativos.findIndex((p) => String(p.id) === String(origemId));
+  const destino = ativos.findIndex((p) => String(p.id) === String(destinoId));
+
+  if (origem < 0 || destino < 0) return;
+
+  const [movido] = ativos.splice(origem, 1);
+  ativos.splice(destino, 0, movido);
+
+  try {
+    await api("/api/casal/presentes/ordem", {
+      method: "PUT",
+      body: JSON.stringify({ ids: ativos.map((p) => Number(p.id)) })
+    });
+    await carregarTudo();
+  } catch (e) {
+    alert(e.message);
+  }
 }
 
 async function moverPresente(id, direcao) {
@@ -313,6 +383,8 @@ function renderPagamentos() {
 
 function renderPresencas() {
   const container = document.getElementById("listaPresencas");
+  const total = presencas.reduce((soma, p) => soma + Number(p.quantidade || 0), 0);
+  document.getElementById("totalConfirmadosView").textContent = total;
 
   if (!presencas.length) {
     container.innerHTML = `<p class="muted">Nenhuma presença confirmada ainda.</p>`;
@@ -320,7 +392,7 @@ function renderPresencas() {
   }
 
   container.innerHTML = presencas.map((p) => `
-    <div class="list-row">
+    <div class="list-row presence-row">
       <div>
         <strong>${escapeHtml(
           Array.isArray(p.nomes)
@@ -329,9 +401,115 @@ function renderPresencas() {
         )}</strong>
         ${p.mensagem ? `<div class="muted">${escapeHtml(p.mensagem)}</div>` : ""}
       </div>
-      <strong>${Number(p.quantidade || 0)} pessoa(s)</strong>
+      <div class="presence-actions">
+        <strong>${Number(p.quantidade || 0)} pessoa(s)</strong>
+        <button type="button" class="icon-danger-btn" data-delete-presenca="${p.id}" title="Excluir confirmação" aria-label="Excluir confirmação">×</button>
+      </div>
     </div>
   `).join("");
+
+  container.querySelectorAll("[data-delete-presenca]").forEach((botao) => {
+    botao.addEventListener("click", () => excluirPresenca(botao.dataset.deletePresenca));
+  });
+}
+
+async function excluirPresenca(id) {
+  if (!confirm("Excluir esta confirmação de presença?")) return;
+
+  try {
+    await api(`/api/casal/presencas/${id}`, { method: "DELETE" });
+    await carregarTudo();
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+function nomesConfirmadosOrdenados() {
+  const nomes = [];
+
+  presencas.forEach((p) => {
+    const lista = Array.isArray(p.nomes)
+      ? p.nomes
+      : (p.nomes ? [p.nomes] : []);
+
+    lista.forEach((nome) => {
+      const limpo = String(nome || "").trim();
+      if (limpo) nomes.push(limpo);
+    });
+  });
+
+  return nomes.sort((a, b) => a.localeCompare(b, "pt-BR", { sensitivity: "base" }));
+}
+
+function baixarPdfPresencas() {
+  const nomes = nomesConfirmadosOrdenados();
+
+  if (!nomes.length) {
+    alert("Ainda não há convidados confirmados para gerar o PDF.");
+    return;
+  }
+
+  if (!window.jspdf?.jsPDF) {
+    alert("Não foi possível carregar o gerador de PDF. Verifique sua conexão e tente novamente.");
+    return;
+  }
+
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "mm", format: "a4" });
+  const largura = doc.internal.pageSize.getWidth();
+  const altura = doc.internal.pageSize.getHeight();
+  const margemX = 20;
+  const inicioY = 30;
+  const limiteY = altura - 24;
+
+  const nomesCasal = `${casamento?.noivo || ""} & ${casamento?.noiva || ""}`.trim();
+
+  function cabecalho() {
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(18);
+    doc.text(nomesCasal || "Lista de convidados", largura / 2, 18, { align: "center" });
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(11);
+    doc.text("Lista de convidados confirmados", largura / 2, 24, { align: "center" });
+    doc.setDrawColor(210);
+    doc.line(margemX, 27, largura - margemX, 27);
+  }
+
+  cabecalho();
+  let y = inicioY + 5;
+  doc.setFontSize(11);
+
+  nomes.forEach((nome, index) => {
+    if (y > limiteY) {
+      doc.addPage();
+      cabecalho();
+      y = inicioY + 5;
+    }
+
+    doc.text(`${index + 1}. ${nome}`, margemX, y);
+    y += 7;
+  });
+
+  const totalPaginas = doc.getNumberOfPages();
+  for (let pagina = 1; pagina <= totalPaginas; pagina++) {
+    doc.setPage(pagina);
+    doc.setDrawColor(220);
+    doc.line(margemX, altura - 17, largura - margemX, altura - 17);
+    doc.setFontSize(8.5);
+    doc.setTextColor(95);
+    doc.text("Asgard Wedding · por Asgard Tech", margemX, altura - 11);
+    doc.text(`Página ${pagina} de ${totalPaginas}`, largura - margemX, altura - 11, { align: "right" });
+    doc.setTextColor(0);
+  }
+
+  const arquivo = (nomesCasal || "convidados")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-zA-Z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase();
+
+  doc.save(`lista-confirmados-${arquivo || "casamento"}.pdf`);
 }
 
 function renderRecados() {
@@ -348,6 +526,138 @@ function renderRecados() {
       <p>${escapeHtml(r.mensagem || "")}</p>
     </article>
   `).join("");
+}
+
+function renderGaleria() {
+  const container = document.getElementById("listaGaleriaPainel");
+
+  if (!galeria.length) {
+    container.innerHTML = `<p class="muted">Nenhuma foto cadastrada ainda.</p>`;
+    return;
+  }
+
+  container.innerHTML = galeria.map((foto, index) => `
+    <article class="gallery-admin-card">
+      <img src="${escapeAttr(foto.imagem_url)}" alt="${escapeAttr(foto.legenda || "Foto da galeria")}">
+      <div class="gallery-admin-info">
+        <p>${escapeHtml(foto.legenda || "Sem legenda")}</p>
+        <div class="gallery-admin-actions">
+          <button type="button" data-gallery-up="${foto.id}" ${index === 0 ? "disabled" : ""}>↑</button>
+          <button type="button" data-gallery-down="${foto.id}" ${index === galeria.length - 1 ? "disabled" : ""}>↓</button>
+          <button type="button" class="danger-text-btn" data-gallery-delete="${foto.id}">REMOVER</button>
+        </div>
+      </div>
+    </article>
+  `).join("");
+
+  container.querySelectorAll("[data-gallery-up]").forEach((b) => {
+    b.addEventListener("click", () => moverFotoGaleria(b.dataset.galleryUp, -1));
+  });
+  container.querySelectorAll("[data-gallery-down]").forEach((b) => {
+    b.addEventListener("click", () => moverFotoGaleria(b.dataset.galleryDown, 1));
+  });
+  container.querySelectorAll("[data-gallery-delete]").forEach((b) => {
+    b.addEventListener("click", () => excluirFotoGaleria(b.dataset.galleryDelete));
+  });
+}
+
+async function adicionarFotoGaleria(evento) {
+  evento.preventDefault();
+  const mensagem = document.getElementById("galeriaMensagem");
+  const imagemUrl = document.getElementById("galeriaImagemUrl").value.trim();
+  const legenda = document.getElementById("galeriaLegenda").value.trim();
+
+  try {
+    mensagem.textContent = "Salvando...";
+    await api("/api/casal/galeria", {
+      method: "POST",
+      body: JSON.stringify({ imagemUrl, legenda })
+    });
+    document.getElementById("formGaleria").reset();
+    mensagem.textContent = "Foto adicionada.";
+    await carregarTudo();
+  } catch (e) {
+    mensagem.textContent = e.message;
+    mensagem.className = "error-text";
+  }
+}
+
+async function moverFotoGaleria(id, direcao) {
+  const lista = [...galeria];
+  const indice = lista.findIndex((f) => String(f.id) === String(id));
+  const destino = indice + direcao;
+  if (indice < 0 || destino < 0 || destino >= lista.length) return;
+
+  [lista[indice], lista[destino]] = [lista[destino], lista[indice]];
+
+  try {
+    await api("/api/casal/galeria/ordem", {
+      method: "PUT",
+      body: JSON.stringify({ ids: lista.map((f) => Number(f.id)) })
+    });
+    await carregarTudo();
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+async function excluirFotoGaleria(id) {
+  if (!confirm("Remover esta foto da galeria?")) return;
+  try {
+    await api(`/api/casal/galeria/${id}`, { method: "DELETE" });
+    await carregarTudo();
+  } catch (e) {
+    alert(e.message);
+  }
+}
+
+function renderMusica() {
+  document.getElementById("musicaTitulo").value = musica?.titulo || "";
+  document.getElementById("musicaUrl").value = musica?.url || "";
+}
+
+async function salvarMusica(evento) {
+  evento.preventDefault();
+  const mensagem = document.getElementById("musicaMensagem");
+  const titulo = document.getElementById("musicaTitulo").value.trim();
+  const url = document.getElementById("musicaUrl").value.trim();
+
+  if (!url) {
+    mensagem.textContent = "Informe a URL da música ou use Remover.";
+    mensagem.className = "error-text";
+    return;
+  }
+
+  try {
+    mensagem.textContent = "Salvando...";
+    const dados = await api("/api/casal/musica", {
+      method: "PUT",
+      body: JSON.stringify({ titulo, url })
+    });
+    musica = dados;
+    mensagem.textContent = "Música salva.";
+    mensagem.className = "";
+  } catch (e) {
+    mensagem.textContent = e.message;
+    mensagem.className = "error-text";
+  }
+}
+
+async function removerMusica() {
+  if (!musica?.url && !document.getElementById("musicaUrl").value.trim()) return;
+  if (!confirm("Remover a música cadastrada?")) return;
+
+  try {
+    await api("/api/casal/musica", {
+      method: "PUT",
+      body: JSON.stringify({ titulo: "", url: "" })
+    });
+    musica = null;
+    renderMusica();
+    document.getElementById("musicaMensagem").textContent = "Música removida.";
+  } catch (e) {
+    alert(e.message);
+  }
 }
 
 async function carregarMercadoPago() {
