@@ -84,20 +84,29 @@ app.get("/api/casamentos/:slug/presentes", async (req, res) => {
       });
     }
 
-    const { rows } = await pool.query(
+        const { rows } = await pool.query(
       `SELECT
-         id,
-         nome,
-         descricao,
-         valor,
-         arrecadado,
-         imagem,
-         link,
-         comprado
-       FROM casamento_presentes
-       WHERE casamento_id = $1
-         AND ativo = TRUE
-       ORDER BY id`,
+        id,
+        nome,
+        descricao,
+        valor,
+        arrecadado,
+        imagem,
+        link,
+        comprado,
+        ordem
+      FROM casamento_presentes
+      WHERE casamento_id = $1
+        AND ativo = TRUE
+      ORDER BY
+        CASE
+          WHEN comprado = TRUE
+            OR COALESCE(arrecadado, 0) >= valor
+          THEN 1
+          ELSE 0
+        END ASC,
+        COALESCE(ordem, 2147483647) ASC,
+        id ASC`,
       [casamento.id]
     );
 

@@ -152,6 +152,12 @@ function renderResumo(r) {
   document.getElementById("progressoBarra").style.width = `${percentual}%`;
 }
 
+function presenteQuitado(p) {
+  const valor = Number(p.valor || 0);
+  const arrecadado = Number(p.arrecadado || 0);
+  return Boolean(p.comprado) || (valor > 0 && arrecadado >= valor);
+}
+
 function renderPresentes() {
   const container = document.getElementById("listaPresentesPainel");
 
@@ -160,30 +166,67 @@ function renderPresentes() {
     return;
   }
 
-  container.innerHTML = presentes.map((p) => `
-    <article class="gift-card">
-      <div class="gift-image">
-        ${p.imagem
-          ? `<img src="${escapeAttr(p.imagem)}" alt="${escapeHtml(p.nome)}">`
-          : `SEM IMAGEM`}
-      </div>
+  const ativos = presentes.filter((p) => !presenteQuitado(p));
+  const posicaoAtiva = new Map(
+    ativos.map((p, index) => [String(p.id), index])
+  );
 
-      <div class="gift-content">
-        <h3>${escapeHtml(p.nome)}</h3>
-        <p>${escapeHtml(p.descricao || "")}</p>
+  container.innerHTML = presentes.map((p) => {
+    const quitado = presenteQuitado(p);
+    const posicao = posicaoAtiva.get(String(p.id));
+    const podeSubir = !quitado && posicao > 0;
+    const podeDescer = !quitado && posicao < ativos.length - 1;
 
-        <div class="gift-value">
-          <span>${moeda(p.valor)}</span>
-          <strong>${moeda(p.arrecadado || 0)} recebido</strong>
+    return `
+      <article class="gift-card ${quitado ? "gift-card-complete" : ""}">
+        <div class="gift-image">
+          ${p.imagem
+            ? `<img src="${escapeAttr(p.imagem)}" alt="${escapeHtml(p.nome)}">`
+            : `SEM IMAGEM`}
         </div>
 
-        <div class="gift-actions">
-          <button data-edit="${p.id}">EDITAR</button>
-          <button data-disable="${p.id}">REMOVER</button>
+        <div class="gift-content">
+          <div class="gift-title-row">
+            <div>
+              <h3>${escapeHtml(p.nome)}</h3>
+              ${quitado ? `<span class="gift-complete-pill">PRESENTEADO</span>` : ""}
+            </div>
+
+            ${!quitado ? `
+              <div class="gift-order-actions" aria-label="Alterar posição">
+                <button
+                  type="button"
+                  data-move-up="${p.id}"
+                  title="Mover para cima"
+                  ${podeSubir ? "" : "disabled"}>
+                  ↑
+                </button>
+                <button
+                  type="button"
+                  data-move-down="${p.id}"
+                  title="Mover para baixo"
+                  ${podeDescer ? "" : "disabled"}>
+                  ↓
+                </button>
+              </div>
+            ` : ""}
+          </div>
+
+          <p>${escapeHtml(p.descricao || "")}</p>
+
+          <div class="gift-value">
+            <span>${moeda(p.valor)}</span>
+            <strong>${moeda(p.arrecadado || 0)} recebido</strong>
+          </div>
+
+          <div class="gift-actions">
+            <button data-edit="${p.id}">EDITAR</button>
+            <button data-disable="${p.id}">REMOVER</button>
+          </div>
         </div>
-      </div>
-    </article>
-  `).join("");
+      </article>
+    `;
+  }).join("");
 
   container.querySelectorAll("[data-edit]").forEach((b) => {
     b.addEventListener("click", () => {
@@ -195,6 +238,37 @@ function renderPresentes() {
   container.querySelectorAll("[data-disable]").forEach((b) => {
     b.addEventListener("click", () => desativarPresente(b.dataset.disable));
   });
+
+  container.querySelectorAll("[data-move-up]").forEach((b) => {
+    b.addEventListener("click", () => moverPresente(b.dataset.moveUp, -1));
+  });
+
+  container.querySelectorAll("[data-move-down]").forEach((b) => {
+    b.addEventListener("click", () => moverPresente(b.dataset.moveDown, 1));
+  });
+}
+
+async function moverPresente(id, direcao) {
+  const ativos = presentes.filter((p) => !presenteQuitado(p));
+  const indice = ativos.findIndex((p) => String(p.id) === String(id));
+  const destino = indice + direcao;
+
+  if (indice < 0 || destino < 0 || destino >= ativos.length) return;
+
+  [ativos[indice], ativos[destino]] = [ativos[destino], ativos[indice]];
+
+  try {
+    await api("/api/casal/presentes/ordem", {
+      method: "PUT",
+      body: JSON.stringify({
+        ids: ativos.map((p) => Number(p.id))
+      })
+    });
+
+    await carregarTudo();
+  } catch (e) {
+    alert(e.message);
+  }
 }
 
 function renderPagamentos() {
@@ -210,7 +284,10 @@ function renderPagamentos() {
       <thead>
         <tr>
           <th>Data</th>
+          <th>Quem presenteou</th>
+          <th>E-mail</th>
           <th>Presente</th>
+          <th>Forma</th>
           <th>Valor</th>
           <th>Status</th>
         </tr>
@@ -219,7 +296,10 @@ function renderPagamentos() {
         ${pagamentos.map((p) => `
           <tr>
             <td>${dataHora(p.criado_em)}</td>
+            <td>${escapeHtml(p.pagador_nome || "—")}</td>
+            <td>${escapeHtml(p.pagador_email || "—")}</td>
             <td>${escapeHtml(p.presente_nome || "Presente")}</td>
+            <td>${escapeHtml(metodoPagamento(p.metodo_pagamento))}</td>
             <td>${moeda(p.valor)}</td>
             <td class="${p.status === "processed" ? "status-ok" : ""}">
               ${escapeHtml(statusPagamento(p))}
@@ -387,6 +467,17 @@ async function copiarLink() {
   const antigo = botao.textContent;
   botao.textContent = "COPIADO ✓";
   setTimeout(() => botao.textContent = antigo, 1600);
+}
+
+function metodoPagamento(valor) {
+  const metodo = String(valor || "").toLowerCase();
+
+  if (metodo === "pix") return "PIX";
+  if (metodo === "cartao" || metodo === "card" || metodo === "credit_card") {
+    return "Cartão";
+  }
+
+  return valor || "—";
 }
 
 function statusPagamento(p) {

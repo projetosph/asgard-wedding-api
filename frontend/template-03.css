@@ -208,3 +208,32 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
   letter-spacing: 1.6px;
   text-transform: uppercase;
 }
+
+.footer-social{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.footer-social a{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:50%;
+  color:#fff;
+  background:rgba(255,255,255,.04);
+  transition:.2s;
+}
+
+.footer-social a:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.11);
+}
+
+.footer-social svg{
+  width:17px;
+  height:17px;
+  fill:currentColor;
+}

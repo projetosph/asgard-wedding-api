@@ -64,11 +64,18 @@ router.get("/api/casal/painel", async (req, res) => {
            imagem,
            link,
            comprado,
-           ativo
+           ativo,
+           ordem
          FROM casamento_presentes
          WHERE casamento_id = $1
            AND ativo = TRUE
-         ORDER BY id DESC`,
+         ORDER BY
+           CASE
+             WHEN comprado = TRUE OR COALESCE(arrecadado,0) >= valor THEN 1
+             ELSE 0
+           END ASC,
+           COALESCE(ordem, 2147483647) ASC,
+           id ASC`,
         [casamentoId]
       ),
 
@@ -81,6 +88,9 @@ router.get("/api/casal/painel", async (req, res) => {
            pg.order_id,
            pg.aplicado_em,
            pg.criado_em,
+           pg.nome AS pagador_nome,
+           pg.email AS pagador_email,
+           pg.metodo_pagamento,
            cp.nome AS presente_nome
          FROM casamento_pagamentos pg
          LEFT JOIN casamento_presentes cp
@@ -232,9 +242,21 @@ router.post("/api/casal/presentes", async (req, res) => {
          imagem,
          link,
          comprado,
-         ativo
+         ativo,
+         ordem
        )
-       VALUES ($1,$2,$3,$4,0,$5,$6,FALSE,TRUE)
+       VALUES (
+         $1,$2,$3,$4,0,$5,$6,FALSE,TRUE,
+         COALESCE(
+           (
+             SELECT MAX(ordem) + 1
+             FROM casamento_presentes
+             WHERE casamento_id = $1
+               AND ativo = TRUE
+           ),
+           1
+         )
+       )
        RETURNING *`,
       [
         casamentoId,
@@ -254,6 +276,81 @@ router.post("/api/casal/presentes", async (req, res) => {
     return res.status(500).json({
       erro: "Não foi possível criar o presente."
     });
+  }
+});
+
+
+router.put("/api/casal/presentes/ordem", async (req, res) => {
+  const client = await pool.connect();
+
+  try {
+    const casamentoId = casamentoIdDoUsuario(req);
+    const ids = Array.isArray(req.body.ids)
+      ? req.body.ids.map(Number)
+      : [];
+
+    if (
+      !casamentoId ||
+      !ids.length ||
+      ids.some((id) => !Number.isInteger(id) || id <= 0) ||
+      new Set(ids).size !== ids.length
+    ) {
+      return res.status(400).json({
+        erro: "Ordem dos presentes inválida."
+      });
+    }
+
+    await client.query("BEGIN");
+
+    const { rows: presentesAtivos } = await client.query(
+      `SELECT id
+       FROM casamento_presentes
+       WHERE casamento_id = $1
+         AND ativo = TRUE
+         AND comprado = FALSE
+         AND COALESCE(arrecadado,0) < valor
+       ORDER BY COALESCE(ordem, 2147483647), id`,
+      [casamentoId]
+    );
+
+    const idsAtivos = presentesAtivos.map((p) => Number(p.id));
+
+    if (
+      idsAtivos.length !== ids.length ||
+      idsAtivos.some((id) => !ids.includes(id))
+    ) {
+      await client.query("ROLLBACK");
+      return res.status(409).json({
+        erro: "A lista de presentes mudou. Atualize a página e tente novamente."
+      });
+    }
+
+    for (let i = 0; i < ids.length; i++) {
+      await client.query(
+        `UPDATE casamento_presentes
+         SET ordem = $1
+         WHERE id = $2
+           AND casamento_id = $3
+           AND ativo = TRUE`,
+        [i + 1, ids[i], casamentoId]
+      );
+    }
+
+    await client.query("COMMIT");
+
+    return res.json({
+      atualizado: true,
+      ids
+    });
+  } catch (erro) {
+    await client.query("ROLLBACK");
+    console.error("Erro ordenar presentes casal:", erro);
+
+    return res.status(500).json({
+      erro: "Não foi possível alterar a ordem dos presentes."
+    });
+  } finally {
+    client.release();
   }
 });
 
