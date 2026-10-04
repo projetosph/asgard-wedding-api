@@ -109,3 +109,54 @@ html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);
   .music-actions{flex-direction:column}
   .music-actions .primary-btn,.music-actions .ghost-btn{width:100%}
 }
+
+
+/* HOTFIX VISUAL V3 */
+.gift-toolbar{
+  padding:12px 14px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:14px;
+  margin:0 0 18px;
+}
+.gift-toolbar input{
+  min-height:44px;
+  border-radius:10px;
+  outline:none;
+}
+.gift-toolbar input:focus{
+  border-color:rgba(53,79,70,.5);
+  box-shadow:0 0 0 3px rgba(53,79,70,.08);
+}
+.gift-card[draggable="true"]{cursor:grab}
+.gift-card.dragging{opacity:.55;transform:scale(.985)}
+.gift-card.drag-over{outline:2px dashed var(--sage);outline-offset:3px}
+.presence-row{align-items:center}
+.presence-actions strong{font-size:13px}
+.icon-danger-btn{
+  display:inline-grid;
+  place-items:center;
+  flex:0 0 auto;
+}
+#view-presencas .section-title > div > p{
+  margin:6px 0 0;
+}
+#totalConfirmadosView{
+  color:var(--forest);
+  font-size:16px;
+}
+.gallery-form,.music-form{display:grid;gap:10px}
+.gallery-form input,.music-form input{
+  width:100%;
+  min-height:44px;
+  padding:12px 14px;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:#fff;
+}
+.gallery-form-card{margin-bottom:18px}
+.music-actions{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:760px){
+  .gift-toolbar{padding:10px}
+  #btnBaixarPdfPresencas{width:100%}
+}

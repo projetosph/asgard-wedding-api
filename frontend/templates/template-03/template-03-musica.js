@@ -1,5 +1,8 @@
 document.addEventListener("DOMContentLoaded", async () => {
   const slug = t3Slug();
+  const botao = document.getElementById("musicBtn");
+  const audio = document.getElementById("audioCasamento");
+
   if (!slug) return;
 
   try {
@@ -7,45 +10,31 @@ document.addEventListener("DOMContentLoaded", async () => {
       `${T3_API}/api/casamentos/${encodeURIComponent(slug)}/musica`,
       { cache: "no-store" }
     );
+
     if (!resposta.ok) return;
 
     const musica = await resposta.json();
     if (!musica?.url) return;
 
     const url = String(musica.url).trim();
-    const titulo = musica.titulo || "Nossa música";
+    const titulo = String(musica.titulo || "Nossa música").trim();
     const direta = /\.(mp3|ogg|wav|m4a)(\?|#|$)/i.test(url);
 
-    const box = document.createElement("div");
-    box.className = "t3-music-control";
-
-    if (direta) {
-      const audio = new Audio(url);
+    if (direta && audio && botao) {
+      audio.src = url;
       audio.preload = "none";
-      const botao = document.createElement("button");
-      botao.type = "button";
-      botao.textContent = `♫ ${titulo}`;
-      botao.addEventListener("click", async () => {
-        if (audio.paused) {
-          try { await audio.play(); botao.classList.add("playing"); }
-          catch (e) { console.error(e); }
-        } else {
-          audio.pause();
-          botao.classList.remove("playing");
-        }
-      });
-      audio.addEventListener("ended", () => botao.classList.remove("playing"));
-      box.appendChild(botao);
-    } else {
-      const link = document.createElement("a");
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = `♫ ${titulo}`;
-      box.appendChild(link);
+      botao.title = titulo;
+      return;
     }
 
-    document.body.appendChild(box);
+    if (botao) {
+      const novo = botao.cloneNode(true);
+      botao.replaceWith(novo);
+      novo.title = titulo;
+      novo.addEventListener("click", () => {
+        window.open(url, "_blank", "noopener,noreferrer");
+      });
+    }
   } catch (erro) {
     console.error("Erro ao carregar música:", erro);
   }

@@ -157,7 +157,11 @@ function renderCabecalho() {
 function renderResumo(r) {
   document.getElementById("metricPresentes").textContent = Number(r.totalPresentes || 0);
   document.getElementById("metricArrecadado").textContent = moeda(r.arrecadado || 0);
-  document.getElementById("metricConfirmados").textContent = Number(r.totalConfirmados || 0);
+  const totalConfirmadosLocal = presencas.reduce(
+    (soma, p) => soma + Number(p.quantidade || 0),
+    0
+  );
+  document.getElementById("metricConfirmados").textContent = totalConfirmadosLocal;
   document.getElementById("metricRecados").textContent = Number(r.totalRecados || 0);
 
   const meta = Number(r.valorTotalPresentes || 0);
