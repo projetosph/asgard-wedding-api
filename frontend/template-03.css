@@ -163,6 +163,35 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
   .hero-card.hero-card--overlay,.hero-card--overlay .hero-photo-full,.hero-card--overlay .hero-overlay-content{min-height:520px}
   .hero-overlay-bottom{display:grid;grid-template-columns:1fr;gap:12px}
   .hero-card--overlay .hero-gallery-inside{margin-left:0}
+  .hero-card--overlay .hero-photo-full img{
+  object-position: 30% center;
+}
+
+.produtos{
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.cardPresente h3{
+  font-size: 17px;
+}
+
+.descricaoPresente{
+  font-size: 10px;
+  min-height: auto;
+}
+
+.cardPresente h3,
+.cardPresente p,
+.cardPresente a,
+.cardPresente button{
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.cardPresente button{
+  width: calc(100% - 20px);
+}
 }
 .hero-card--overlay .hero-gallery-inside{
   position: absolute;
@@ -170,4 +199,12 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
   bottom: 16px;
   z-index: 10;
   margin: 0;
+}
+.hero-time{
+  margin: 5px 0 0;
+  color: #edf2ef;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
 }

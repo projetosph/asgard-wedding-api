@@ -19,7 +19,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     t3Texto('noiva', noiva);
     const dataFormatada = t3FormatarData(casamento.data_casamento);
     const horario = t3FormatarHorario(casamento.horario);
-    t3Texto('dataHorario', dataFormatada !== '—' ? `${dataFormatada}${horario !== '—' ? ` · ${horario}` : ''}` : '—');
+    t3Texto('dataCasamento', dataFormatada);
+
+    t3Texto(
+      'horarioCasamento',
+      horario !== '—'
+        ? `PONTUALMENTE ÀS ${horario.toUpperCase()}`
+        : '—'
+    );
     t3Texto('localNome', casamento.local_nome || casamento.local || '');
     t3Texto('localEndereco', casamento.local_endereco || casamento.endereco || '');
     const endereco = casamento.local_endereco || casamento.endereco || casamento.local_nome || '';
