@@ -173,7 +173,22 @@ router.post("/api/admin/casamentos/:id/usuario-casal", async (req,res) => {
     const nome = String(req.body.nome || "").trim();
     const email = String(req.body.email || "").trim().toLowerCase();
     const senha = String(req.body.senha || "");
+    const { rows: usuarioExistente } = await pool.query(
+  `SELECT id, perfil
+   FROM usuarios
+   WHERE email = $1
+   LIMIT 1`,
+  [email]
+  );
 
+  if (
+    usuarioExistente[0] &&
+    usuarioExistente[0].perfil === "admin"
+  ) {
+    return res.status(409).json({
+      erro: "Este e-mail pertence ao administrador e não pode ser usado como acesso de casal."
+    });
+  }
     if (!Number.isInteger(casamentoId) || !nome || !email || senha.length < 8) {
       return res.status(400).json({
         erro:"Informe casamento, nome, e-mail e senha com pelo menos 8 caracteres."
