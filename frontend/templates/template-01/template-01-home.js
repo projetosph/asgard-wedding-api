@@ -52,7 +52,7 @@ async function carregarGaleriaHome() {
     const fotos = await r.json();
 
     if (!Array.isArray(fotos) || !fotos.length) {
-      box.innerHTML = `<div class="t1-box">As fotos serão adicionadas em breve.</div>`;
+      box.innerHTML = `<div class="t1-gallery-empty">As fotos serão adicionadas em breve.</div>`;
       return;
     }
 
@@ -62,7 +62,7 @@ async function carregarGaleriaHome() {
       </figure>
     `).join("");
   } catch {
-    box.innerHTML = `<div class="t1-box">Não foi possível carregar a galeria agora.</div>`;
+    box.innerHTML = `<div class="t1-gallery-empty">Não foi possível carregar a galeria agora.</div>`;
   }
 }
 

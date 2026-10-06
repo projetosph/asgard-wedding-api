@@ -23,51 +23,37 @@
 
   <section class="t1-hero">
     <div class="t1-hero-inner">
-
+      <span class="t1-eyebrow">Nosso casamento</span>
       <h1 data-t1-couple>—</h1>
-
-      <img
-        class="t1-separator-image"
-        src="../../assets/bg/separador.png"
-        alt=""
-        onerror="this.style.display='none';document.getElementById('sepFallback').style.display='block'"
-      >
-
-      <div
-        id="sepFallback"
-        class="t1-separator-fallback"
-        style="display:none"
-      >
-        <span>♡</span>
-      </div>
-
+      <div class="t1-separator" aria-hidden="true"><span>❦</span></div>
       <p class="t1-hero-date" data-t1-date>—</p>
       <p class="t1-hero-time" data-t1-time>—</p>
-
       <div class="t1-countdown">
         <div><strong id="cdDias">—</strong><span>dias</span></div>
         <div><strong id="cdHoras">—</strong><span>horas</span></div>
         <div><strong id="cdMinutos">—</strong><span>min</span></div>
       </div>
-
     </div>
   </section>
 
   <section class="t1-home-grid">
 
     <article class="t1-box">
+      <div class="t1-home-icon">✦</div>
       <h3>Lista de Presentes</h3>
       <p>Escolha uma lembrança ou contribua com parte do valor.</p>
       <a id="homeGiftLink" class="t1-btn">Acessar</a>
     </article>
 
     <article class="t1-box">
+      <div class="t1-home-icon">✓</div>
       <h3>Lista de Presença</h3>
       <p>Confirme sua presença para celebrarmos juntos o nosso grande dia.</p>
       <a id="homeRsvpLink" class="t1-btn">Confirmar</a>
     </article>
 
     <article class="t1-box">
+      <div class="t1-home-icon">⌖</div>
       <h3>Local</h3>
       <strong id="homeLocalNome" style="font-size:13px;text-align:center">—</strong>
       <p id="homeLocalEndereco" style="margin-top:5px"></p>
@@ -90,6 +76,7 @@
     </article>
 
     <article class="t1-box" id="recados">
+      <div class="t1-home-icon">✉</div>
       <h3>Recado</h3>
 
       <form id="homeRecadoForm" class="t1-form">
@@ -119,7 +106,7 @@
     </div>
 
     <div id="homeGallery" class="t1-gallery">
-      <div class="t1-box">Carregando galeria...</div>
+      <div class="t1-gallery-empty">Carregando galeria...</div>
     </div>
   </section>
 

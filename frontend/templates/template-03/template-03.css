@@ -288,3 +288,23 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
   color:#fff !important;
   box-shadow:0 8px 20px rgba(53,79,70,.18);
 }
+
+.products, .gift-grid, .t1-products {
+  align-items: start;
+}
+
+.product-card, .gift-card, .t1-product {
+  align-self: start;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card-body, .gift-card-body, .t1-product-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-card-actions, .gift-card-actions, .t1-actions {
+  margin-top: auto;
+}
