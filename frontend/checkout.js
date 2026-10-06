@@ -163,14 +163,32 @@ function abrirOpcao(id) {
   limparAreaPagamento();
 }
 
-function selecionar(elemento, metodo) {
+function selecionar(
+  elemento,
+  metodo
+) {
+  const conteudo =
+    elemento.closest(
+      ".checkoutConteudo"
+    );
+
+  if (!conteudo) return;
+
+  conteudo
+    .querySelectorAll(".opcao")
+    .forEach((opcao) =>
+      opcao.classList.remove(
+        "ativa"
+      )
+    );
+
+  elemento.classList.add("ativa");
+  metodoSelecionado = metodo;
   document.querySelectorAll(".opcao").forEach((opcao) => {
-    opcao.classList.remove("selecionado");
+  opcao.classList.remove("selecionado");
   });
 
   elemento.classList.add("selecionado");
-
-  formaPagamento = metodo;
 }
 
 function montarCompra(tipo) {
