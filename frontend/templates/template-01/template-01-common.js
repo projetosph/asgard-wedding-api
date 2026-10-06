@@ -6,9 +6,6 @@ const T1_SOCIAL = {
   facebook: "https://www.facebook.com/share/19WMXVyN5B/?mibextid=wwXIfr"
 };
 
-const T1_DEFAULT_COVER =
-  "https://storage.alboom.ninja/sites/4564/albuns/713676/pre-wedding-campo-alegre-ck.419.jpg?t=1600800043";
-
 function t1Slug() {
   return new URLSearchParams(location.search).get("casamento") || "";
 }
@@ -59,25 +56,50 @@ function t1Header(active = "") {
     ["music","Músicas","template-01-musica.html"]
   ];
 
+  const navLink = (page) => {
+    if (page.includes("#")) {
+      const [base, hash] = page.split("#");
+      return `${t1Link(base)}#${hash}`;
+    }
+    return t1Link(page);
+  };
+
   return `
     <header class="t1-header">
-      <a class="t1-logo" href="${t1Link("template-01.html")}">
+      <a class="t1-logo" href="${t1Link("template-01.html")}" aria-label="Início">
         <strong data-t1-monogram>— & —</strong>
       </a>
 
-      <button class="t1-menu-btn" id="t1MenuBtn" type="button" aria-label="Abrir menu">☰</button>
+      <div class="t1-header-actions">
+        <a class="t1-header-gift" href="${t1Link("template-01-presentes.html")}">
+          Lista de Presentes
+        </a>
 
-      <nav class="t1-nav" id="t1Nav">
+        <button
+          class="t1-menu-btn"
+          id="t1MenuBtn"
+          type="button"
+          aria-label="Abrir menu"
+          aria-expanded="false"
+        >
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+
+      <nav class="t1-nav" id="t1Nav" aria-hidden="true">
+        <div class="t1-nav-head">
+          <span>Menu</span>
+          <button id="t1MenuClose" type="button" aria-label="Fechar menu">×</button>
+        </div>
+
         ${items.map(([key,label,page]) => `
-          <a class="${active===key?"active":""}" href="${page.includes("#") ? `${page}${t1Slug()?`?casamento=${encodeURIComponent(t1Slug())}`:""}` : t1Link(page)}">
-            ${label}
-          </a>
+          <a class="${active===key?"active":""}" href="${navLink(page)}">${label}</a>
         `).join("")}
       </nav>
 
-      <a class="t1-header-gift" href="${t1Link("template-01-presentes.html")}">
-        Lista de Presentes
-      </a>
+      <div class="t1-nav-backdrop" id="t1NavBackdrop"></div>
     </header>
   `;
 }
@@ -86,8 +108,8 @@ function t1Footer() {
   return `
     <footer class="t1-footer">
       <div class="t1-footer-brand">
-        <strong>Asgard Wedding</strong>
-        <span>· por Asgard Tech</span>
+        <strong>ASGARD TECH</strong>
+        <span>Feito com ❤ para todos os casais</span>
       </div>
 
       <div class="t1-social">
@@ -95,6 +117,8 @@ function t1Footer() {
         <a href="${T1_SOCIAL.instagram}" target="_blank" rel="noopener noreferrer">Instagram</a>
         <a href="${T1_SOCIAL.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a>
       </div>
+
+      <small>© 2026 Asgard TECH</small>
     </footer>
   `;
 }
@@ -129,21 +153,48 @@ function t1Apply(w) {
   document.querySelectorAll("[data-t1-monogram]").forEach(el => el.textContent = mono);
   document.querySelectorAll("[data-t1-couple]").forEach(el => el.textContent = a && b ? `${a} & ${b}` : "—");
   document.querySelectorAll("[data-t1-date]").forEach(el => el.textContent = t1Date(w?.data_casamento));
-  document.querySelectorAll("[data-t1-time]").forEach(el => el.textContent = w?.horario ? `Pontualmente às ${t1Hour(w.horario)}` : "—");
+  document.querySelectorAll("[data-t1-time]").forEach(el => {
+    el.textContent = w?.horario ? `Pontualmente às ${t1Hour(w.horario)}` : "—";
+  });
+}
 
-  const cover = w?.foto_capa || w?.foto_home || w?.foto_principal || T1_DEFAULT_COVER;
-  document.documentElement.style.setProperty("--t1-cover", `url("${String(cover).replaceAll('"','\\"')}")`);
+function t1MenuSetup() {
+  const btn = document.getElementById("t1MenuBtn");
+  const close = document.getElementById("t1MenuClose");
+  const nav = document.getElementById("t1Nav");
+  const backdrop = document.getElementById("t1NavBackdrop");
+
+  const open = () => {
+    nav?.classList.add("open");
+    backdrop?.classList.add("open");
+    document.body.classList.add("menu-open");
+    btn?.setAttribute("aria-expanded","true");
+    nav?.setAttribute("aria-hidden","false");
+  };
+
+  const shut = () => {
+    nav?.classList.remove("open");
+    backdrop?.classList.remove("open");
+    document.body.classList.remove("menu-open");
+    btn?.setAttribute("aria-expanded","false");
+    nav?.setAttribute("aria-hidden","true");
+  };
+
+  btn?.addEventListener("click", open);
+  close?.addEventListener("click", shut);
+  backdrop?.addEventListener("click", shut);
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape") shut();
+  });
 }
 
 async function t1Init(active = "") {
   const h = document.getElementById("t1Header");
   const f = document.getElementById("t1Footer");
+
   if (h) h.innerHTML = t1Header(active);
   if (f) f.innerHTML = t1Footer();
 
-  document.getElementById("t1MenuBtn")?.addEventListener("click", () => {
-    document.getElementById("t1Nav")?.classList.toggle("open");
-  });
-
+  t1MenuSetup();
   return t1Wedding();
 }

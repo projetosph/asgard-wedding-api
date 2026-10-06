@@ -6,25 +6,39 @@
   <title>Local</title>
   <link rel="stylesheet" href="template-01.css">
 </head>
+
 <body>
 <div class="t1-shell">
   <div id="t1Header"></div>
 
   <section class="t1-page-hero">
     <div>
-      <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase">Cerimônia & festa</span>
+      <span style="text-transform:uppercase">Cerimônia & festa</span>
       <h1>Local</h1>
       <p>Confira onde será o nosso grande dia.</p>
     </div>
   </section>
 
   <main class="t1-page-main">
-    <section class="t1-card">
+    <section class="t1-location-panel">
       <h2 id="localName">—</h2>
-      <p id="localAddress" style="color:var(--t1-muted)">—</p>
-      <iframe id="localMap" class="t1-map" style="height:430px" loading="lazy"></iframe>
-      <a id="localMapLink" class="t1-btn" style="margin-top:14px" target="_blank" rel="noopener noreferrer">
-        Abrir no mapa
+      <p id="localAddress">—</p>
+
+      <iframe
+        id="localMap"
+        class="t1-map"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+
+      <a
+        id="localMapLink"
+        class="t1-btn"
+        style="margin-top:14px"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Abrir no Maps
       </a>
     </section>
   </main>

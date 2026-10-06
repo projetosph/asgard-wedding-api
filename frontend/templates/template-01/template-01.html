@@ -6,35 +6,55 @@
   <title>Nosso Casamento</title>
   <link rel="stylesheet" href="template-01.css">
 </head>
+
 <body>
 <div class="t1-shell">
+
   <div id="t1Header"></div>
 
   <section class="t1-verses">
     <div class="t1-verses-track">
-      <span>Colossenses 3:14: “Acima de tudo, porém, revistam-se do amor, que é o elo perfeito.”</span>
-      <span>Mateus 19:6: “Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe.”</span>
-      <span>Colossenses 3:14: “Acima de tudo, porém, revistam-se do amor, que é o elo perfeito.”</span>
-      <span>Mateus 19:6: “Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe.”</span>
+      <span>Colossenses 3:14: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."</span>
+      <span>Mateus 19:6: "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."</span>
+      <span>Colossenses 3:14: "Acima de tudo, porém, revistam-se do amor, que é o elo perfeito."</span>
+      <span>Mateus 19:6: "Assim, eles já não são dois, mas sim uma só carne. Portanto, o que Deus uniu, ninguém separe."</span>
     </div>
   </section>
 
   <section class="t1-hero">
-    <div class="t1-hero-card">
+    <div class="t1-hero-inner">
+
       <h1 data-t1-couple>—</h1>
-      <div class="t1-separator"></div>
+
+      <img
+        class="t1-separator-image"
+        src="../../assets/bg/separador.png"
+        alt=""
+        onerror="this.style.display='none';document.getElementById('sepFallback').style.display='block'"
+      >
+
+      <div
+        id="sepFallback"
+        class="t1-separator-fallback"
+        style="display:none"
+      >
+        <span>♡</span>
+      </div>
+
       <p class="t1-hero-date" data-t1-date>—</p>
       <p class="t1-hero-time" data-t1-time>—</p>
 
       <div class="t1-countdown">
-        <div><strong id="cdDias">—</strong><span>Dias</span></div>
-        <div><strong id="cdHoras">—</strong><span>Horas</span></div>
-        <div><strong id="cdMinutos">—</strong><span>Minutos</span></div>
+        <div><strong id="cdDias">—</strong><span>dias</span></div>
+        <div><strong id="cdHoras">—</strong><span>horas</span></div>
+        <div><strong id="cdMinutos">—</strong><span>min</span></div>
       </div>
+
     </div>
   </section>
 
   <section class="t1-home-grid">
+
     <article class="t1-box">
       <h3>Lista de Presentes</h3>
       <p>Escolha uma lembrança ou contribua com parte do valor.</p>
@@ -43,16 +63,29 @@
 
     <article class="t1-box">
       <h3>Lista de Presença</h3>
-      <p>Confirme sua presença e informe quem estará com você.</p>
+      <p>Confirme sua presença para celebrarmos juntos o nosso grande dia.</p>
       <a id="homeRsvpLink" class="t1-btn">Confirmar</a>
     </article>
 
     <article class="t1-box">
       <h3>Local</h3>
-      <p id="homeLocalNome">—</p>
-      <iframe id="homeMap" class="t1-map" loading="lazy"></iframe>
-      <a id="homeMapLink" class="t1-btn t1-btn-light" style="margin-top:12px" target="_blank" rel="noopener noreferrer">
-        Abrir no mapa
+      <strong id="homeLocalNome" style="font-size:13px;text-align:center">—</strong>
+      <p id="homeLocalEndereco" style="margin-top:5px"></p>
+
+      <iframe
+        id="homeMap"
+        class="t1-map"
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+      ></iframe>
+
+      <a
+        id="homeMapLink"
+        class="t1-btn"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Abrir no Maps
       </a>
     </article>
 
@@ -61,17 +94,27 @@
 
       <form id="homeRecadoForm" class="t1-form">
         <input id="homeRecadoNome" placeholder="Seu nome" required>
-        <textarea id="homeRecadoMensagem" placeholder="Deixe sua mensagem" required></textarea>
-        <button class="t1-btn" type="submit">Enviar</button>
+
+        <textarea
+          id="homeRecadoMensagem"
+          placeholder="Deixe sua mensagem. Enter envia; Shift + Enter quebra a linha."
+          required
+        ></textarea>
+
+        <button class="t1-btn" type="submit">
+          Enviar
+        </button>
+
         <small id="homeRecadoStatus"></small>
       </form>
     </article>
+
   </section>
 
   <section class="t1-section" id="galeria">
     <div class="t1-section-head">
       <span class="eyebrow">Nossa história</span>
-      <h2>Nossos momentos</h2>
+      <h2>Nossos Momentos</h2>
       <p>Algumas das memórias que nos trouxeram até aqui.</p>
     </div>
 
@@ -81,6 +124,7 @@
   </section>
 
   <div id="t1Footer"></div>
+
 </div>
 
 <script src="template-01-common.js"></script>

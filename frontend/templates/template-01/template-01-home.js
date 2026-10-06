@@ -8,6 +8,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const nome = w.local_nome || "—";
     const endereco = w.local_endereco || w.endereco || nome;
     document.getElementById("homeLocalNome").textContent = nome;
+    const addrEl = document.getElementById("homeLocalEndereco");
+    if (addrEl) addrEl.textContent = w.local_endereco || w.endereco || "";
     document.getElementById("homeMap").src =
       `https://www.google.com/maps?q=${encodeURIComponent(endereco)}&output=embed`;
     document.getElementById("homeMapLink").href =

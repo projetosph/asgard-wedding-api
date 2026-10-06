@@ -6,26 +6,28 @@
   <title>Confirme sua presença</title>
   <link rel="stylesheet" href="template-01.css">
 </head>
+
 <body>
 <div class="t1-shell">
   <div id="t1Header"></div>
 
   <section class="t1-page-hero">
     <div>
-      <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase">Presença</span>
-      <h1>Confirme sua presença</h1>
-      <p>Será uma alegria compartilhar esse momento com você.</p>
+      <h1 data-t1-couple>—</h1>
+      <p style="letter-spacing:3px;text-transform:uppercase">Confirmação de presença</p>
     </div>
   </section>
 
   <main class="t1-page-main">
     <section class="t1-two-col">
+
       <article class="t1-card">
         <h2>Sua confirmação</h2>
 
         <form id="rsvpForm">
+
           <div class="t1-field">
-            <label>Seu nome</label>
+            <label>Seu nome e sobrenome</label>
             <input id="rsvpName" required>
           </div>
 
@@ -41,7 +43,11 @@
             <textarea id="rsvpMsg"></textarea>
           </div>
 
-          <button class="t1-btn" style="margin-top:14px" type="submit">
+          <button
+            class="t1-btn"
+            style="width:100%;margin-top:16px"
+            type="submit"
+          >
             Confirmar presença
           </button>
 
@@ -53,11 +59,23 @@
         <h2>Nosso grande dia</h2>
 
         <div class="t1-detail">
-          <div><small>Data</small><strong data-t1-date>—</strong></div>
-          <div><small>Horário</small><strong id="rsvpHour">—</strong></div>
-          <div><small>Local</small><strong id="rsvpPlace">—</strong></div>
+          <div>
+            <small>Data</small>
+            <strong data-t1-date>—</strong>
+          </div>
+
+          <div>
+            <small>Horário</small>
+            <strong id="rsvpHour">—</strong>
+          </div>
+
+          <div>
+            <small>Local</small>
+            <strong id="rsvpPlace">—</strong>
+          </div>
         </div>
       </aside>
+
     </section>
   </main>
 

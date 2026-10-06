@@ -10,13 +10,14 @@
 
   <script src="https://sdk.mercadopago.com/js/v2"></script>
 </head>
+
 <body>
 <div class="t1-shell">
   <div id="t1Header"></div>
 
   <section class="t1-page-hero">
     <div>
-      <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase">Seu presente</span>
+      <span style="text-transform:uppercase">Seu presente</span>
       <h1>Presentear</h1>
       <p>Escolha quanto deseja contribuir e a forma de pagamento.</p>
     </div>
@@ -24,17 +25,21 @@
 
   <main class="t1-page-main">
     <section class="t1-checkout-layout">
+
       <aside class="t1-checkout-card checkoutSummaryCard">
         <img id="fotoProduto" alt="">
-        <span style="display:block;margin-top:16px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--t1-lilac-deep)">
+
+        <span style="display:block;margin-top:16px;font-size:9px;letter-spacing:2px;text-transform:uppercase">
           Você está presenteando
         </span>
+
         <h2 id="nomeProdutoCheckout">—</h2>
         <p id="valorOriginal"></p>
         <strong id="valorRestante">—</strong>
       </aside>
 
       <section class="t1-checkout-card checkoutStandardMain">
+
         <div class="checkoutFormGrid">
           <div class="checkoutField">
             <label for="nome">Seu nome</label>
@@ -56,7 +61,14 @@
           </div>
 
           <div id="parcial" class="checkoutConteudo">
-            <input id="valorContribuicao" type="number" min="1" step="0.01" inputmode="decimal" placeholder="Valor da contribuição">
+            <input
+              id="valorContribuicao"
+              type="number"
+              min="1"
+              step="0.01"
+              inputmode="decimal"
+              placeholder="Valor da contribuição"
+            >
 
             <h4>Forma de pagamento</h4>
 
@@ -100,6 +112,7 @@
         </div>
 
         <div id="areaPagamento"></div>
+
       </section>
     </section>
   </main>
@@ -108,6 +121,7 @@
 </div>
 
 <script src="template-01-common.js"></script>
+
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
   await t1Init("");
