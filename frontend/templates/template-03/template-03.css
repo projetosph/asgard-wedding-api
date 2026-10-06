@@ -244,3 +244,47 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
 .t3-music-control{position:fixed;right:18px;bottom:18px;z-index:60}
 .t3-music-control button,.t3-music-control a{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;border:1px solid rgba(255,255,255,.25);border-radius:999px;background:rgba(38,59,52,.92);color:#fff;text-decoration:none;font:700 11px/1.2 Arial,sans-serif;letter-spacing:.4px;box-shadow:0 10px 30px rgba(0,0,0,.16)}
 .t3-music-control button.playing{background:#486b50}
+/* Acrescente ao CSS de cada template */
+.contribuicaoLivreCard,
+.contribuicao-livre-card,
+.free-gift{
+  position:relative;
+}
+
+.contribuicaoLivreCard::before,
+.contribuicao-livre-card::before,
+.free-gift::before{
+  content:"CONTRIBUIÇÃO LIVRE";
+  position:absolute;
+  z-index:2;
+  top:10px;
+  left:10px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,.90);
+  color:#536057;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.opcao{
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.opcao:hover{
+  transform:translateY(-1px);
+}
+
+.opcao.selecionado,
+.opcao.ativa{
+  border-color:#354f46 !important;
+  background:#354f46 !important;
+  color:#fff !important;
+  box-shadow:0 8px 20px rgba(53,79,70,.18);
+}

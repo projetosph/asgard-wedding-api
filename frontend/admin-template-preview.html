@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Prévia do template</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;font-family:Inter,Arial,sans-serif}.wrap{min-height:100vh;display:grid;place-items:center;padding:34px;background-size:cover;background-position:center}.paper{width:min(760px,94%);padding:44px;text-align:center;box-shadow:0 18px 55px rgba(0,0,0,.15)}h1{font:400 clamp(42px,8vw,74px)/1 Georgia,serif;margin:16px 0}.date{font:400 20px Georgia,serif}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:30px}.card{padding:18px 9px;border:1px solid rgba(70,70,70,.12);font-size:10px;letter-spacing:1.3px;text-transform:uppercase}.t1 .wrap{background:#f2e9e0}.t1 .paper{background:white;border:1px solid #e3d4c7}.t1 h1{color:#6a5147}.t1 .card{background:#f8f3ef}.t2 .wrap{background:linear-gradient(rgba(244,239,229,.6),rgba(244,239,229,.7)),url("https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=1600&q=70") center/cover}.t2 .paper{background:rgba(255,253,247,.9);border-radius:28px}.t2 h1{color:#39453d}.t2 .card{border-radius:15px;background:rgba(255,255,255,.55)}.t3 .wrap{background:#e9e1d9}.t3 .paper{background:#fffaf4;text-align:left}.t3 h1{font-size:62px}.t3 .grid{grid-template-columns:repeat(2,1fr)}.t3 .card{min-height:70px;background:#f1ece5}.t4 .wrap{background:linear-gradient(rgba(40,31,27,.25),rgba(40,31,27,.35)),url("https://images.unsplash.com/photo-1511285560929-80b456fea0bc?auto=format&fit=crop&w=1600&q=70") center/cover}.t4 .paper{background:rgba(255,250,245,.9)}.t4 .card{background:white}.eyebrow{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#806f65}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const q=new URLSearchParams(location.search);
+const template=q.get("template")||"template-01";
+const noivo=q.get("noivo")||"João";
+const noiva=q.get("noiva")||"Maria";
+const cls="t"+(template.split("-").pop().replace(/^0/,"")||"1");
+document.body.className=cls;
+document.getElementById("app").innerHTML=`
+<div class="wrap"><section class="paper">
+  <div class="eyebrow">${template==="template-04"?"SAVE THE DATE":"NOSSO CASAMENTO"}</div>
+  <h1>${noivo} & ${noiva}</h1>
+  <div class="date">12 de Junho de 2027 · 16h00</div>
+  <div class="grid">
+    <div class="card">Presentes</div><div class="card">Presença</div><div class="card">Local</div>
+    <div class="card">Recados</div><div class="card">Galeria</div><div class="card">Músicas</div>
+  </div>
+</section></div>`;
+</script>
+</body>
+</html>

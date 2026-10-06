@@ -45,6 +45,40 @@ app.get("/", (req, res) => {
   });
 });
 
+app.get("/api/casamentos/:slug/status-publico", async (req, res) => {
+  try {
+    const { rows } = await pool.query(
+      `SELECT slug,noivo,noiva,status,template
+       FROM casamentos
+       WHERE slug=$1
+       LIMIT 1`,
+      [req.params.slug]
+    );
+
+    const casamento = rows[0];
+
+    if (!casamento) {
+      return res.status(404).json({
+        existe:false
+      });
+    }
+
+    return res.json({
+      existe:true,
+      slug:casamento.slug,
+      noivo:casamento.noivo,
+      noiva:casamento.noiva,
+      status:casamento.status,
+      template:casamento.template
+    });
+  } catch (erro) {
+    console.error("Erro status público:", erro);
+    return res.status(500).json({
+      erro:"Não foi possível consultar o status do site."
+    });
+  }
+});
+
 // =====================================================
 // CASAMENTOS
 // =====================================================
@@ -110,7 +144,31 @@ app.get("/api/casamentos/:slug/presentes", async (req, res) => {
       [casamento.id]
     );
 
-    res.json(rows);
+    const lista = [...rows];
+
+    if (casamento.contribuicao_livre_ativa) {
+      lista.unshift({
+        id: "contribuicao-livre",
+        tipo: "contribuicao_livre",
+        nome:
+          casamento.contribuicao_livre_titulo ||
+          "Ajude-nos a realizar nossos sonhos",
+        descricao:
+          casamento.contribuicao_livre_descricao ||
+          "Contribua com o valor que desejar.",
+        valor: null,
+        arrecadado: 0,
+        imagem:
+          casamento.contribuicao_livre_imagem ||
+          casamento.foto_capa ||
+          null,
+        link: null,
+        comprado: false,
+        ordem: -1
+      });
+    }
+
+    res.json(lista);
   } catch (erro) {
     console.error(erro);
     res.status(500).json({
@@ -375,6 +433,68 @@ async function prepararCompra(
     throw erro;
   }
 
+  const nome =
+    String(body.nome || "").trim();
+
+  const email =
+    String(body.email || "").trim();
+
+  if (!nome || !email) {
+    const erro = new Error(
+      "Nome e e-mail são obrigatórios."
+    );
+    erro.status = 400;
+    throw erro;
+  }
+
+  const valor = Number(body.valor);
+
+  if (
+    !Number.isFinite(valor) ||
+    valor <= 0
+  ) {
+    const erro =
+      new Error("Valor inválido.");
+    erro.status = 400;
+    throw erro;
+  }
+
+  const tipoContribuicao =
+    String(body.tipoContribuicao || "").trim();
+
+  const contribuicaoLivre =
+    tipoContribuicao === "livre" ||
+    tipoContribuicao === "contribuicao_livre" ||
+    String(body.produtoId || "") === "contribuicao-livre";
+
+  if (contribuicaoLivre) {
+    if (!casamento.contribuicao_livre_ativa) {
+      const erro = new Error(
+        "A contribuição livre não está disponível neste casamento."
+      );
+      erro.status = 409;
+      throw erro;
+    }
+
+    return {
+      casamento,
+      presente: {
+        id: null,
+        nome:
+          casamento.contribuicao_livre_titulo ||
+          "Contribuição livre",
+        imagem:
+          casamento.contribuicao_livre_imagem ||
+          casamento.foto_capa ||
+          null
+      },
+      valor,
+      nome,
+      email,
+      tipoContribuicao: "livre"
+    };
+  }
+
   const presenteId =
     Number(body.produtoId);
 
@@ -402,9 +522,6 @@ async function prepararCompra(
     throw erro;
   }
 
-  const valor =
-    Number(body.valor);
-
   const valorTotal =
     Number(presente.valor) || 0;
 
@@ -416,16 +533,6 @@ async function prepararCompra(
       valorTotal - arrecadado,
       0
     );
-
-  if (
-    !Number.isFinite(valor) ||
-    valor <= 0
-  ) {
-    const erro =
-      new Error("Valor inválido.");
-    erro.status = 400;
-    throw erro;
-  }
 
   if (restante <= 0) {
     const erro =
@@ -444,20 +551,6 @@ async function prepararCompra(
     throw erro;
   }
 
-  const nome =
-    String(body.nome || "").trim();
-
-  const email =
-    String(body.email || "").trim();
-
-  if (!nome || !email) {
-    const erro = new Error(
-      "Nome e e-mail são obrigatórios."
-    );
-    erro.status = 400;
-    throw erro;
-  }
-
   return {
     casamento,
     presente,
@@ -465,9 +558,7 @@ async function prepararCompra(
     nome,
     email,
     tipoContribuicao:
-      String(
-        body.tipoContribuicao || ""
-      )
+      tipoContribuicao || "presente"
   };
 }
 
@@ -600,37 +691,6 @@ async function aplicarOrderProcessada(
       return registro;
     }
 
-    const { rows: presenteRows } =
-      await client.query(
-        `SELECT
-           id,
-           valor,
-           arrecadado
-         FROM casamento_presentes
-         WHERE id = $1
-           AND casamento_id = $2
-         FOR UPDATE`,
-        [
-          registro.presente_id,
-          registro.casamento_id
-        ]
-      );
-
-    const presente =
-      presenteRows[0];
-
-    if (!presente) {
-      throw new Error(
-        "Presente do pagamento não encontrado."
-      );
-    }
-
-    const valorTotal =
-      Number(presente.valor) || 0;
-
-    const arrecadadoAtual =
-      Number(presente.arrecadado) || 0;
-
     const valorPago =
       Number(
         order?.total_paid_amount ??
@@ -638,23 +698,60 @@ async function aplicarOrderProcessada(
         registro.valor
       ) || 0;
 
-    const novoArrecadado =
-      Math.min(
-        arrecadadoAtual + valorPago,
-        valorTotal
-      );
+    const contribuicaoLivre =
+      registro.tipo_contribuicao === "livre" ||
+      !registro.presente_id;
 
-    await client.query(
-      `UPDATE casamento_presentes
-       SET
-         arrecadado = $1,
-         comprado = ($1 >= valor)
-       WHERE id = $2`,
-      [
-        novoArrecadado,
-        presente.id
-      ]
-    );
+    if (!contribuicaoLivre) {
+      const { rows: presenteRows } =
+        await client.query(
+          `SELECT
+             id,
+             valor,
+             arrecadado
+           FROM casamento_presentes
+           WHERE id = $1
+             AND casamento_id = $2
+           FOR UPDATE`,
+          [
+            registro.presente_id,
+            registro.casamento_id
+          ]
+        );
+
+      const presente =
+        presenteRows[0];
+
+      if (!presente) {
+        throw new Error(
+          "Presente do pagamento não encontrado."
+        );
+      }
+
+      const valorTotal =
+        Number(presente.valor) || 0;
+
+      const arrecadadoAtual =
+        Number(presente.arrecadado) || 0;
+
+      const novoArrecadado =
+        Math.min(
+          arrecadadoAtual + valorPago,
+          valorTotal
+        );
+
+      await client.query(
+        `UPDATE casamento_presentes
+         SET
+           arrecadado = $1,
+           comprado = ($1 >= valor)
+         WHERE id = $2`,
+        [
+          novoArrecadado,
+          presente.id
+        ]
+      );
+    }
 
     await client.query(
       `UPDATE casamento_pagamentos
@@ -675,7 +772,11 @@ async function aplicarOrderProcessada(
 
     return {
       aplicado: true,
-      valor: valorPago
+      valor: valorPago,
+      tipo:
+        contribuicaoLivre
+          ? "livre"
+          : "presente"
     };
 
   } catch (erro) {

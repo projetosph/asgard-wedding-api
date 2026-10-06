@@ -1018,3 +1018,47 @@ img { display: block; max-width: 100%; }
 .opcao.selecionado span:last-child {
   color: #fff;
 }
+/* Acrescente ao CSS de cada template */
+.contribuicaoLivreCard,
+.contribuicao-livre-card,
+.free-gift{
+  position:relative;
+}
+
+.contribuicaoLivreCard::before,
+.contribuicao-livre-card::before,
+.free-gift::before{
+  content:"CONTRIBUIÇÃO LIVRE";
+  position:absolute;
+  z-index:2;
+  top:10px;
+  left:10px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,.90);
+  color:#536057;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.opcao{
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.opcao:hover{
+  transform:translateY(-1px);
+}
+
+.opcao.selecionado,
+.opcao.ativa{
+  border-color:#354f46 !important;
+  background:#354f46 !important;
+  color:#fff !important;
+  box-shadow:0 8px 20px rgba(53,79,70,.18);
+}

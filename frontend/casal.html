@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Painel do Casal | Asgard Wedding</title>
-  <link rel="stylesheet" href="casal.css?v=20261004-5">
+  <link rel="stylesheet" href="casal.css">
 </head>
 <body class="dashboard-page">
   <aside class="sidebar" id="sidebar">
@@ -14,6 +14,7 @@
     </a>
     <nav class="side-nav">
       <button class="nav-item active" data-view="inicio">Visão geral</button>
+      <button class="nav-item" data-view="configuracoes">Configurações</button>
       <button class="nav-item" data-view="presentes">Presentes</button>
       <button class="nav-item" data-view="pagamentos">Pagamentos</button>
       <button class="nav-item" data-view="presencas">Presenças</button>
@@ -74,6 +75,94 @@
       </article>
     </section>
 
+
+    <section id="view-configuracoes" class="view">
+      <div class="section-title">
+        <div>
+          <span class="eyebrow">MEU CASAMENTO</span>
+          <h2>Configurações</h2>
+          <p class="muted">Altere data, horário, local e a contribuição livre. O slug e o template continuam sob controle do administrador.</p>
+        </div>
+      </div>
+
+      <form id="formConfiguracoes" class="settings-grid">
+        <article class="panel-card">
+          <span class="eyebrow">DATA E LOCAL</span>
+          <h2>Informações do evento</h2>
+
+          <div class="settings-form-grid">
+            <div>
+              <label>Data do casamento</label>
+              <input id="configDataCasamento" type="date" required>
+            </div>
+
+            <div>
+              <label>Horário</label>
+              <input id="configHorario" type="time" required>
+            </div>
+
+            <div class="full">
+              <label>Nome do local</label>
+              <input id="configLocalNome" maxlength="180" placeholder="Ex.: Fazenda Santo Antônio">
+            </div>
+
+            <div class="full">
+              <label>Endereço</label>
+              <input id="configLocalEndereco" maxlength="500" placeholder="Rua, número, cidade...">
+            </div>
+
+            <div class="full">
+              <label>Link do local / Google Maps</label>
+              <input id="configMapaUrl" type="url" placeholder="https://maps.google.com/...">
+            </div>
+          </div>
+        </article>
+
+        <article class="panel-card">
+          <div class="settings-toggle-row">
+            <div>
+              <span class="eyebrow">CONTRIBUIÇÃO LIVRE</span>
+              <h2>Ajuda com valor escolhido pelo convidado</h2>
+              <p class="muted">Quando ativo, este card aparece sempre em primeiro lugar na lista de presentes.</p>
+            </div>
+
+            <label class="switch">
+              <input id="contribuicaoLivreAtiva" type="checkbox">
+              <span class="switch-track"></span>
+            </label>
+          </div>
+
+          <div id="contribuicaoLivreCampos" class="settings-form-grid">
+            <div class="full">
+              <label>Título</label>
+              <input id="contribuicaoLivreTitulo" maxlength="180" placeholder="Ajude-nos a realizar nossos sonhos">
+            </div>
+
+            <div class="full">
+              <label>Descrição</label>
+              <textarea id="contribuicaoLivreDescricao" rows="4" placeholder="Contribua com o valor que desejar."></textarea>
+            </div>
+
+            <div class="full">
+              <label>Imagem (URL)</label>
+              <input id="contribuicaoLivreImagem" type="url" placeholder="https://...">
+            </div>
+
+            <div class="free-contribution-preview">
+              <span class="eyebrow">COMO APARECERÁ</span>
+              <strong id="previewLivreTitulo">Ajude-nos a realizar nossos sonhos</strong>
+              <small>O convidado escolherá o valor e pagará por PIX ou cartão.</small>
+            </div>
+          </div>
+        </article>
+
+        <div class="settings-save-row">
+          <button class="primary-btn" type="submit">SALVAR CONFIGURAÇÕES</button>
+          <p id="configMensagem"></p>
+        </div>
+      </form>
+    </section>
+
     <section id="view-presentes" class="view">
       <div class="section-title">
         <div>
@@ -120,7 +209,7 @@
         <div>
           <span class="eyebrow">FOTOS</span>
           <h2>Galeria</h2>
-          <p class="muted">Adicione as fotos que aparecerão no site do casamento.</p>
+          <p class="muted">Adicione as fotos e arraste os cards para escolher exatamente a ordem em que aparecerão no site.</p>
         </div>
       </div>
 
@@ -196,6 +285,6 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
-  <script src="casal.js?v=20261004-5"></script>
+  <script src="casal.js"></script>
 </body>
 </html>

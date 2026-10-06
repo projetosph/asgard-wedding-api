@@ -1,158 +1,128 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Asgard Wedding — Painel ADM</title>
+  <title>Asgard Wedding · ADM</title>
   <link rel="stylesheet" href="admin.css">
 </head>
-<body class="admin-body">
-
+<body>
+<div class="app">
   <aside class="sidebar">
-    <div class="sidebar-brand">
-      <div class="brand-mark">AW</div>
-      <div>
-        <strong>Asgard Wedding</strong>
-        <small>Administração</small>
-      </div>
+    <div class="brand">
+      <strong>Asgard Wedding</strong>
+      <small>ADMINISTRAÇÃO</small>
     </div>
 
     <nav>
-      <button class="nav-item active" data-view="dashboard">Dashboard</button>
-      <button class="nav-item" data-view="casamentos">Casamentos</button>
-      <button class="nav-item" data-view="novo">+ Novo casamento</button>
+      <button class="nav active" data-view="sites">Sites</button>
+      <button class="nav" data-view="historico">Histórico</button>
+      <button class="nav" data-view="novo">Novo site</button>
     </nav>
 
-    <button id="btnSair" class="btn-link">Sair</button>
+    <button id="btnSair" class="logout">Sair</button>
   </aside>
 
-  <main class="admin-main">
+  <main class="main">
     <header class="topbar">
       <div>
-        <h1 id="tituloPagina">Dashboard</h1>
-        <p class="muted">Gestão da plataforma Asgard Wedding</p>
+        <span class="eyebrow">ASGARD WEDDING</span>
+        <h1 id="tituloView">Sites</h1>
       </div>
-      <div id="usuarioNome" class="user-pill"></div>
+      <button class="primary" id="btnNovoRapido">+ Novo site</button>
     </header>
 
-    <section id="view-dashboard" class="view active">
-      <div class="cards-grid">
-        <article class="metric-card">
-          <span>Casamentos</span>
-          <strong id="mCasamentos">—</strong>
-        </article>
+    <section id="view-sites" class="view active">
+      <div class="metrics" id="metricas"></div>
 
-        <article class="metric-card">
-          <span>Publicados</span>
-          <strong id="mPublicados">—</strong>
-        </article>
-
-        <article class="metric-card">
-          <span>Mercado Pago conectado</span>
-          <strong id="mMp">—</strong>
-        </article>
-
-        <article class="metric-card">
-          <span>Convidados confirmados</span>
-          <strong id="mConfirmados">—</strong>
-        </article>
-
-        <article class="metric-card">
-          <span>Arrecadado</span>
-          <strong id="mArrecadado">—</strong>
-        </article>
+      <div class="toolbar">
+        <input id="busca" placeholder="Buscar casal, slug ou local...">
+        <select id="filtroStatus">
+          <option value="">Todos os status</option>
+          <option value="publicado">No ar</option>
+          <option value="rascunho">Rascunho</option>
+          <option value="pausado">Pausado</option>
+          <option value="concluido">Concluído</option>
+          <option value="cancelado">Cancelado</option>
+          <option value="arquivado">Arquivado</option>
+        </select>
       </div>
+
+      <div id="listaSites" class="sites-grid"></div>
     </section>
 
-    <section id="view-casamentos" class="view">
-      <div class="section-head">
-        <div>
-          <h2>Casamentos</h2>
-          <p class="muted">Todos os clientes cadastrados na plataforma.</p>
-        </div>
-
-        <button id="btnNovoCasamento">+ NOVO CASAMENTO</button>
+    <section id="view-historico" class="view">
+      <div class="panel">
+        <span class="eyebrow">HISTÓRICO</span>
+        <h2>Movimentações dos sites</h2>
+        <p class="muted">Selecione um site na tela principal e abra “Histórico” para ver as mudanças de status.</p>
+        <div id="historicoGlobal" class="history-empty">Nenhum site selecionado.</div>
       </div>
-
-      <div id="listaCasamentos" class="wedding-list"></div>
     </section>
 
     <section id="view-novo" class="view">
-      <div class="section-head">
-        <div>
-          <h2>Novo casamento</h2>
-          <p class="muted">Cadastre um novo cliente sem usar o DBeaver.</p>
-        </div>
-      </div>
+      <form id="formNovo" class="editor-layout">
+        <article class="panel form-panel">
+          <span class="eyebrow">NOVO SITE</span>
+          <h2>Dados do casal</h2>
 
-      <form id="formNovoCasamento" class="form-card">
-        <div class="form-grid">
-          <div>
-            <label>Noivo</label>
-            <input id="novoNoivo" required>
+          <div class="form-grid">
+            <label>Noivo<input id="novoNoivo" required></label>
+            <label>Noiva<input id="novoNoiva" required></label>
+            <label class="full">Slug<input id="novoSlug" required placeholder="joao-e-maria"></label>
+            <label>Data<input id="novoData" type="date" required></label>
+            <label>Horário<input id="novoHorario" type="time"></label>
+            <label class="full">Local<input id="novoLocal"></label>
+            <label class="full">Endereço<input id="novoEndereco"></label>
+            <label class="full">Link do mapa<input id="novoMapa" type="url"></label>
           </div>
 
-          <div>
-            <label>Noiva</label>
-            <input id="novoNoiva" required>
+          <div class="form-actions">
+            <button class="primary" type="submit">Criar site</button>
+            <span id="novoMsg"></span>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="preview-head">
+            <div>
+              <span class="eyebrow">TEMPLATE</span>
+              <h2>Veja antes de escolher</h2>
+            </div>
+            <strong id="templateSelecionadoTexto">Template 01</strong>
           </div>
 
-          <div>
-            <label>Slug</label>
-            <input id="novoSlug" placeholder="joao-e-maria" required>
+          <div class="template-tabs">
+            <button type="button" class="template-tab active" data-template="template-01">01</button>
+            <button type="button" class="template-tab" data-template="template-02">02</button>
+            <button type="button" class="template-tab" data-template="template-03">03</button>
+            <button type="button" class="template-tab" data-template="template-04">04</button>
           </div>
 
-          <div>
-            <label>Data</label>
-            <input id="novoData" type="date" required>
+          <div class="iframe-frame">
+            <iframe id="templatePreview" src="admin-template-preview.html?template=template-01" title="Prévia do template"></iframe>
           </div>
 
-          <div>
-            <label>Horário</label>
-            <input id="novoHorario" type="time">
-          </div>
-
-          <div>
-            <label>Template</label>
-            <select id="novoTemplate">
-              <option value="template-01">Template 01</option>
-            </select>
-          </div>
-
-          <div class="span-2">
-            <label>Local</label>
-            <input id="novoLocalNome">
-          </div>
-
-          <div class="span-2">
-            <label>Endereço</label>
-            <input id="novoLocalEndereco">
-          </div>
-
-          <div>
-            <label>Status</label>
-            <select id="novoStatus">
-              <option value="rascunho">Rascunho</option>
-              <option value="publicado">Publicado</option>
-            </select>
-          </div>
-        </div>
-
-        <button type="submit">CRIAR CASAMENTO</button>
-        <p id="novoMensagem"></p>
+          <p class="preview-note">A prévia é isolada e não altera nenhum casamento. O template só é aplicado ao salvar.</p>
+        </article>
       </form>
     </section>
   </main>
+</div>
 
-  <div id="modalCasamento" class="modal hidden">
-    <div class="modal-card">
-      <button id="modalFechar" class="modal-close">×</button>
-      <h2 id="modalTitulo">Casamento</h2>
-
-      <div id="modalConteudo"></div>
-    </div>
+<div class="modal hidden" id="modalSite">
+  <div class="modal-card large">
+    <button class="modal-close" data-close>×</button>
+    <div id="modalSiteConteudo"></div>
   </div>
+</div>
 
-  <script src="admin.js"></script>
+<div class="modal hidden" id="modalConfirmacao">
+  <div class="modal-card">
+    <div id="modalConfirmacaoConteudo"></div>
+  </div>
+</div>
+
+<script src="admin.js"></script>
 </body>
 </html>

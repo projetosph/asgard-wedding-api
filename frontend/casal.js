@@ -17,6 +17,7 @@ let galeria = [];
 let musica = null;
 let filtroPresentes = "";
 let presenteArrastadoId = null;
+let fotoGaleriaArrastadaId = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btnSair").addEventListener("click", sair);
@@ -44,6 +45,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("formGaleria").addEventListener("submit", adicionarFotoGaleria);
   document.getElementById("formMusica").addEventListener("submit", salvarMusica);
   document.getElementById("btnRemoverMusica").addEventListener("click", removerMusica);
+  document.getElementById("formConfiguracoes").addEventListener("submit", salvarConfiguracoes);
+  document.getElementById("contribuicaoLivreAtiva").addEventListener("change", atualizarEstadoContribuicaoLivre);
+  document.getElementById("contribuicaoLivreTitulo").addEventListener("input", atualizarPreviewContribuicaoLivre);
 
   await carregarTudo();
 });
@@ -118,6 +122,7 @@ async function carregarTudo() {
 
     renderCabecalho();
     renderResumo(dados.resumo || {});
+    renderConfiguracoes();
     renderPresentes();
     renderPagamentos();
     renderPresencas();
@@ -157,11 +162,7 @@ function renderCabecalho() {
 function renderResumo(r) {
   document.getElementById("metricPresentes").textContent = Number(r.totalPresentes || 0);
   document.getElementById("metricArrecadado").textContent = moeda(r.arrecadado || 0);
-  const totalConfirmadosLocal = presencas.reduce(
-    (soma, p) => soma + Number(p.quantidade || 0),
-    0
-  );
-  document.getElementById("metricConfirmados").textContent = totalConfirmadosLocal;
+  document.getElementById("metricConfirmados").textContent = Number(r.totalConfirmados || 0);
   document.getElementById("metricRecados").textContent = Number(r.totalRecados || 0);
 
   const meta = Number(r.valorTotalPresentes || 0);
@@ -372,7 +373,7 @@ function renderPagamentos() {
             <td>${dataHora(p.criado_em)}</td>
             <td>${escapeHtml(p.pagador_nome || "—")}</td>
             <td>${escapeHtml(p.pagador_email || "—")}</td>
-            <td>${escapeHtml(p.presente_nome || "Presente")}</td>
+            <td>${escapeHtml(p.tipo_contribuicao === "livre" ? "Contribuição livre" : (p.presente_nome || "Presente"))}</td>
             <td>${escapeHtml(metodoPagamento(p.metodo_pagamento))}</td>
             <td>${moeda(p.valor)}</td>
             <td class="${p.status === "processed" ? "status-ok" : ""}">
@@ -532,6 +533,118 @@ function renderRecados() {
   `).join("");
 }
 
+
+function renderConfiguracoes() {
+  if (!casamento) return;
+
+  document.getElementById("configDataCasamento").value =
+    casamento.data_casamento
+      ? String(casamento.data_casamento).slice(0, 10)
+      : "";
+
+  document.getElementById("configHorario").value =
+    casamento.horario
+      ? String(casamento.horario).slice(0, 5)
+      : "";
+
+  document.getElementById("configLocalNome").value =
+    casamento.local_nome || "";
+
+  document.getElementById("configLocalEndereco").value =
+    casamento.local_endereco || "";
+
+  document.getElementById("configMapaUrl").value =
+    casamento.mapa_url || "";
+
+  document.getElementById("contribuicaoLivreAtiva").checked =
+    Boolean(casamento.contribuicao_livre_ativa);
+
+  document.getElementById("contribuicaoLivreTitulo").value =
+    casamento.contribuicao_livre_titulo ||
+    "Ajude-nos a realizar nossos sonhos";
+
+  document.getElementById("contribuicaoLivreDescricao").value =
+    casamento.contribuicao_livre_descricao ||
+    "Contribua com o valor que desejar.";
+
+  document.getElementById("contribuicaoLivreImagem").value =
+    casamento.contribuicao_livre_imagem || "";
+
+  atualizarEstadoContribuicaoLivre();
+  atualizarPreviewContribuicaoLivre();
+}
+
+function atualizarEstadoContribuicaoLivre() {
+  const ativo =
+    document.getElementById("contribuicaoLivreAtiva").checked;
+
+  document
+    .getElementById("contribuicaoLivreCampos")
+    .classList.toggle("disabled", !ativo);
+}
+
+function atualizarPreviewContribuicaoLivre() {
+  const titulo =
+    document.getElementById("contribuicaoLivreTitulo").value.trim() ||
+    "Ajude-nos a realizar nossos sonhos";
+
+  document.getElementById("previewLivreTitulo").textContent = titulo;
+}
+
+async function salvarConfiguracoes(evento) {
+  evento.preventDefault();
+
+  const mensagem =
+    document.getElementById("configMensagem");
+
+  const corpo = {
+    dataCasamento:
+      document.getElementById("configDataCasamento").value,
+
+    horario:
+      document.getElementById("configHorario").value,
+
+    localNome:
+      document.getElementById("configLocalNome").value.trim(),
+
+    localEndereco:
+      document.getElementById("configLocalEndereco").value.trim(),
+
+    mapaUrl:
+      document.getElementById("configMapaUrl").value.trim(),
+
+    contribuicaoLivreAtiva:
+      document.getElementById("contribuicaoLivreAtiva").checked,
+
+    contribuicaoLivreTitulo:
+      document.getElementById("contribuicaoLivreTitulo").value.trim(),
+
+    contribuicaoLivreDescricao:
+      document.getElementById("contribuicaoLivreDescricao").value.trim(),
+
+    contribuicaoLivreImagem:
+      document.getElementById("contribuicaoLivreImagem").value.trim()
+  };
+
+  try {
+    mensagem.textContent = "Salvando...";
+
+    casamento = await api("/api/casal/configuracoes", {
+      method: "PUT",
+      body: JSON.stringify(corpo)
+    });
+
+    renderCabecalho();
+    renderConfiguracoes();
+
+    mensagem.textContent = "Configurações salvas ✓";
+    mensagem.className = "";
+  } catch (e) {
+    mensagem.textContent = e.message;
+    mensagem.className = "error-text";
+  }
+}
+
 function renderGaleria() {
   const container = document.getElementById("listaGaleriaPainel");
 
@@ -541,9 +654,13 @@ function renderGaleria() {
   }
 
   container.innerHTML = galeria.map((foto, index) => `
-    <article class="gallery-admin-card">
+    <article
+      class="gallery-admin-card"
+      data-gallery-card="${foto.id}"
+      draggable="true">
       <img src="${escapeAttr(foto.imagem_url)}" alt="${escapeAttr(foto.legenda || "Foto da galeria")}">
       <div class="gallery-admin-info">
+        <span class="gallery-drag-hint">↕ Arraste para mudar a posição</span>
         <p>${escapeHtml(foto.legenda || "Sem legenda")}</p>
         <div class="gallery-admin-actions">
           <button type="button" data-gallery-up="${foto.id}" ${index === 0 ? "disabled" : ""}>↑</button>
@@ -557,12 +674,95 @@ function renderGaleria() {
   container.querySelectorAll("[data-gallery-up]").forEach((b) => {
     b.addEventListener("click", () => moverFotoGaleria(b.dataset.galleryUp, -1));
   });
+
   container.querySelectorAll("[data-gallery-down]").forEach((b) => {
     b.addEventListener("click", () => moverFotoGaleria(b.dataset.galleryDown, 1));
   });
+
   container.querySelectorAll("[data-gallery-delete]").forEach((b) => {
     b.addEventListener("click", () => excluirFotoGaleria(b.dataset.galleryDelete));
   });
+
+  container.querySelectorAll("[data-gallery-card]").forEach((card) => {
+    card.addEventListener("dragstart", () => {
+      fotoGaleriaArrastadaId = card.dataset.galleryCard;
+      card.classList.add("dragging");
+    });
+
+    card.addEventListener("dragend", () => {
+      fotoGaleriaArrastadaId = null;
+      card.classList.remove("dragging");
+      container
+        .querySelectorAll(".drag-over")
+        .forEach((el) => el.classList.remove("drag-over"));
+    });
+
+    card.addEventListener("dragover", (evento) => {
+      if (
+        !fotoGaleriaArrastadaId ||
+        fotoGaleriaArrastadaId === card.dataset.galleryCard
+      ) {
+        return;
+      }
+
+      evento.preventDefault();
+      card.classList.add("drag-over");
+    });
+
+    card.addEventListener("dragleave", () => {
+      card.classList.remove("drag-over");
+    });
+
+    card.addEventListener("drop", async (evento) => {
+      evento.preventDefault();
+      card.classList.remove("drag-over");
+
+      await moverFotoGaleriaPara(
+        fotoGaleriaArrastadaId,
+        card.dataset.galleryCard
+      );
+    });
+  });
+}
+
+async function moverFotoGaleriaPara(origemId, destinoId) {
+  if (
+    !origemId ||
+    !destinoId ||
+    String(origemId) === String(destinoId)
+  ) {
+    return;
+  }
+
+  const lista = [...galeria];
+
+  const origem = lista.findIndex(
+    (f) => String(f.id) === String(origemId)
+  );
+
+  const destino = lista.findIndex(
+    (f) => String(f.id) === String(destinoId)
+  );
+
+  if (origem < 0 || destino < 0) return;
+
+  const [movida] = lista.splice(origem, 1);
+  lista.splice(destino, 0, movida);
+
+  try {
+    await api("/api/casal/galeria/ordem", {
+      method: "PUT",
+      body: JSON.stringify({
+        ids: lista.map((f) => Number(f.id))
+      })
+    });
+
+    galeria = lista;
+    renderGaleria();
+  } catch (e) {
+    alert(e.message);
+    await carregarTudo();
+  }
 }
 
 async function adicionarFotoGaleria(evento) {

@@ -1,77 +1,74 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Asgard Wedding</title>
   <style>
-    html,body{height:100%;margin:0}
-    body{display:grid;place-items:center;background:#f8f7f3;color:#263b34;font-family:Inter,"Segoe UI",Arial,sans-serif}
-    .loading{text-align:center;padding:24px}
-    .loading strong{display:block;margin-bottom:8px;font-family:Georgia,serif;font-size:28px;font-weight:400}
-    .loading p{margin:0;color:#6d7772;font-size:13px}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6f3ed;color:#26332e;font-family:Inter,Arial,sans-serif}.box{max-width:600px;padding:36px;text-align:center}.box h1{font:400 42px Georgia,serif;margin:8px 0}.box p{color:#6f7772;line-height:1.6}.tag{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase}.spinner{width:32px;height:32px;margin:18px auto;border:3px solid #ddd;border-top-color:#35584d;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
   </style>
 </head>
 <body>
-  <div class="loading">
-    <strong>Asgard Wedding</strong>
-    <p id="status">Carregando casamento...</p>
-  </div>
+<div class="box" id="estado">
+  <span class="tag">Asgard Wedding</span>
+  <h1>Carregando...</h1>
+  <div class="spinner"></div>
+</div>
 
-  <script>
-    const API = "https://asgard-wedding-api.onrender.com";
+<script>
+const API="https://asgard-wedding-api.onrender.com";
+const slug=new URLSearchParams(location.search).get("casamento")||"";
 
-    function normalizarTemplate(valor) {
-  const t = String(valor || "template-01").trim().toLowerCase();
-
-  if (["template-04", "template04", "04", "4"].includes(t)) {
-    return "template-04";
-  }
-
-  if (["template-03", "template03", "03", "3"].includes(t)) {
-    return "template-03";
-  }
-
-  if (["template-02", "template02", "02", "2"].includes(t)) {
-    return "template-02";
-  }
-
+function normalizarTemplate(valor){
+  const t=String(valor||"template-01").trim().toLowerCase();
+  if(["template-04","template04","04","4"].includes(t)) return "template-04";
+  if(["template-03","template03","03","3"].includes(t)) return "template-03";
+  if(["template-02","template02","02","2"].includes(t)) return "template-02";
   return "template-01";
+}
+
+function mensagemForaDoAr(c){
+  const nomes=c?.noivo&&c?.noiva?`${c.noivo} & ${c.noiva}`:"Este casamento";
+  const textos={
+    pausado:"Este site está temporariamente pausado.",
+    concluido:"Este site foi encerrado após a celebração.",
+    cancelado:"Este site não está mais disponível.",
+    arquivado:"Este site está arquivado.",
+    rascunho:"Este site ainda não foi publicado."
+  };
+  document.getElementById("estado").innerHTML=`
+    <span class="tag">Asgard Wedding</span>
+    <h1>${nomes}</h1>
+    <p>${textos[c.status]||"Este site não está disponível no momento."}</p>
+  `;
+}
+
+(async()=>{
+  if(!slug){
+    document.getElementById("estado").innerHTML="<h1>Link inválido</h1><p>Não foi informado um casamento.</p>";
+    return;
   }
 
-    async function iniciar() {
-      const params = new URLSearchParams(window.location.search);
-      const slug = params.get("casamento");
+  try{
+    const sr=await fetch(`${API}/api/casamentos/${encodeURIComponent(slug)}/status-publico`,{cache:"no-store"});
+    const status=await sr.json();
 
-      if (!slug) {
-        window.location.replace("index.html");
-        return;
-      }
-
-      try {
-        const resposta = await fetch(
-          `${API}/api/casamentos/${encodeURIComponent(slug)}`,
-          { cache: "no-store" }
-        );
-
-        if (!resposta.ok) throw new Error("Casamento não encontrado.");
-
-        const dados = await resposta.json();
-        const casamento = dados.casamento || dados;
-        const template = normalizarTemplate(casamento.template);
-
-        const destino =
-          `templates/${template}/${template}.html?casamento=${encodeURIComponent(slug)}&v=20261004-5`;
-
-        window.location.replace(destino);
-      } catch (erro) {
-        console.error(erro);
-        document.getElementById("status").textContent =
-          "Não foi possível carregar este casamento.";
-      }
+    if(!sr.ok||!status.existe){
+      document.getElementById("estado").innerHTML="<h1>Site não encontrado</h1><p>Confira o endereço recebido.</p>";
+      return;
     }
 
-    iniciar();
-  </script>
+    if(status.status!=="publicado"){
+      mensagemForaDoAr(status);
+      return;
+    }
+
+    const template=normalizarTemplate(status.template);
+    location.replace(`templates/${template}/${template}.html?casamento=${encodeURIComponent(slug)}`);
+  }catch(e){
+    document.getElementById("estado").innerHTML="<h1>Não foi possível abrir o site</h1><p>Tente novamente em alguns instantes.</p>";
+  }
+})();
+</script>
 </body>
 </html>

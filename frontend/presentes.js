@@ -1,131 +1,226 @@
-let produtosPresentes = [];
+const PRESENTES_API =
+  "https://asgard-wedding-api.onrender.com";
 
-document.addEventListener("asgard:casamento-carregado", carregarPresentes);
+document.addEventListener("DOMContentLoaded", () => {
+  carregarPresentes();
+});
+
+function slugPresentes01() {
+  return (
+    new URLSearchParams(window.location.search)
+      .get("casamento") || ""
+  );
+}
 
 async function carregarPresentes() {
-  const container = document.getElementById("listaPresentes");
-  if (!container) return;
+  const container =
+    document.getElementById("listaPresentes");
 
-  container.innerHTML = `<p class="listaPresentesVazia">Carregando presentes...</p>`;
+  if (!container) return;
 
   try {
     const resposta = await fetch(
-      `${ASGARD_API}/api/casamentos/${encodeURIComponent(CASAMENTO_SLUG)}/presentes`
+      `${PRESENTES_API}/api/casamentos/${encodeURIComponent(slugPresentes01())}/presentes`,
+      { cache: "no-store" }
     );
-    const dados = await resposta.json();
+
+    const produtos =
+      await resposta.json();
 
     if (!resposta.ok) {
-      throw new Error(dados.erro || "Não foi possível carregar os presentes.");
+      throw new Error(
+        produtos.erro ||
+        "Não foi possível carregar os presentes."
+      );
     }
 
-    produtosPresentes = Array.isArray(dados) ? dados : [];
+    window.__presentesPublicos =
+      Array.isArray(produtos)
+        ? produtos
+        : [];
 
-    if (!produtosPresentes.length) {
-      container.innerHTML = `<p class="listaPresentesVazia">Nenhum presente foi cadastrado ainda.</p>`;
+    if (!window.__presentesPublicos.length) {
+      container.innerHTML =
+        `<p class="listaPresentesVazia">Nenhum presente foi cadastrado ainda.</p>`;
       return;
     }
 
-    container.innerHTML = produtosPresentes
-      .map((produto, index) => criarCardPresente(produto, index))
-      .join("");
+    container.innerHTML =
+      window.__presentesPublicos
+        .map(
+          (produto, index) =>
+            criarCardPresente(
+              produto,
+              index
+            )
+        )
+        .join("");
   } catch (erro) {
-    console.error("Erro ao carregar presentes:", erro);
-    container.innerHTML = `<p class="listaPresentesVazia">Não foi possível carregar a lista de presentes agora.</p>`;
+    console.error(erro);
+
+    container.innerHTML =
+      `<p class="listaPresentesVazia">Não foi possível carregar a lista agora.</p>`;
   }
 }
 
-function criarCardPresente(produto, index) {
-  const valor = Number(produto.valor) || 0;
-  const arrecadado = Number(produto.arrecadado) || 0;
-  const restante = Math.max(valor - arrecadado, 0);
-  const quitado = Boolean(produto.comprado) || (valor > 0 && restante <= 0);
-  const imagem = converterUrlImagem(produto.imagem || "");
+function criarCardPresente(
+  produto,
+  index
+) {
+  const livre =
+    produto.tipo ===
+    "contribuicao_livre";
 
-  const imagemHtml = imagem
-    ? `<img src="${imagem}" alt="${escaparHtml(produto.nome || "Presente")}" onerror="this.style.display='none'">`
-    : `<div class="cardPresenteSemImagem">Sem imagem</div>`;
+  const valor =
+    Number(produto.valor) || 0;
 
-  let valorHtml = "";
-  if (arrecadado > 0) {
-    valorHtml = `
-      <p class="valorAntigo">${formatarMoeda(valor)}</p>
-      ${quitado
-        ? `<p class="presenteado">PRESENTEADO</p>`
-        : `<p class="valorAtual">${formatarMoeda(restante)}</p>`}
-    `;
-  } else {
-    valorHtml = `<p class="valorAtual">${formatarMoeda(valor)}</p>`;
-  }
+  const arrecadado =
+    Number(produto.arrecadado) || 0;
 
-  const linkLoja = produto.link
-    ? `<a href="${produto.link}" target="_blank" rel="noopener noreferrer" class="btnVerProduto">Ver produto</a>`
-    : "";
+  const restante =
+    Math.max(
+      valor - arrecadado,
+      0
+    );
+
+  const quitado =
+    !livre &&
+    (
+      Boolean(produto.comprado) ||
+      (
+        valor > 0 &&
+        restante <= 0
+      )
+    );
+
+  const imagem =
+    typeof converterUrlImagem === "function"
+      ? converterUrlImagem(
+          produto.imagem || ""
+        )
+      : (produto.imagem || "");
+
+  const imagemHtml =
+    imagem
+      ? `<img src="${escaparHtml(imagem)}" alt="${escaparHtml(produto.nome || "Presente")}">`
+      : `<div class="cardPresenteSemImagem">Sem imagem</div>`;
+
+  const valorHtml =
+    livre
+      ? `<p class="valorAtual">VOCÊ ESCOLHE O VALOR</p>`
+      : (
+          arrecadado > 0
+            ? `
+              <p class="valorAntigo">${formatarMoeda(valor)}</p>
+              ${
+                quitado
+                  ? `<p class="presenteado">PRESENTEADO</p>`
+                  : `<p class="valorAtual">${formatarMoeda(restante)}</p>`
+              }
+            `
+            : `<p class="valorAtual">${formatarMoeda(valor)}</p>`
+        );
 
   return `
-    <article class="cardPresente">
+    <article class="cardPresente ${livre ? "contribuicaoLivreCard" : ""}">
       ${imagemHtml}
+
       <h3>${escaparHtml(produto.nome || "Presente")}</h3>
-      ${produto.descricao ? `<p class="descricaoPresente">${escaparHtml(produto.descricao)}</p>` : ""}
+
+      ${
+        produto.descricao
+          ? `<p class="descricaoPresente">${escaparHtml(produto.descricao)}</p>`
+          : ""
+      }
+
       ${valorHtml}
-      ${linkLoja}
-      <button type="button" onclick="abrirCheckout(${index})" ${quitado ? "disabled" : ""}>
-        ${quitado ? "PRESENTEADO" : "PRESENTEAR"}
+
+      ${
+        !livre && produto.link
+          ? `<a href="${escaparHtml(produto.link)}" target="_blank" rel="noopener noreferrer" class="btnVerProduto">Ver produto</a>`
+          : ""
+      }
+
+      <button
+        type="button"
+        onclick="abrirCheckout(${index})"
+        ${quitado ? "disabled" : ""}>
+        ${
+          livre
+            ? "CONTRIBUIR"
+            : (
+                quitado
+                  ? "PRESENTEADO"
+                  : "PRESENTEAR"
+              )
+        }
       </button>
     </article>
   `;
 }
 
 function abrirCheckout(index) {
-  const produto = produtosPresentes[index];
+  const produtos =
+    window.__presentesPublicos || [];
+
+  const produto =
+    produtos[index];
+
   if (!produto) {
-    alert("Não foi possível localizar esse presente.");
+    alert(
+      "Não foi possível localizar esse presente."
+    );
     return;
   }
 
-  const valor = Number(produto.valor) || 0;
-  const arrecadado = Number(produto.arrecadado) || 0;
-  const restante = Math.max(valor - arrecadado, 0);
+  const livre =
+    produto.tipo ===
+    "contribuicao_livre";
 
-  if (restante <= 0) {
-    alert("Esse presente já foi completado.");
-    return;
+  if (!livre) {
+    const valor =
+      Number(produto.valor) || 0;
+
+    const arrecadado =
+      Number(produto.arrecadado) || 0;
+
+    if (
+      Math.max(
+        valor - arrecadado,
+        0
+      ) <= 0
+    ) {
+      alert(
+        "Esse presente já foi completado."
+      );
+      return;
+    }
   }
 
   localStorage.setItem(
     "produtoCheckout",
     JSON.stringify({
       ...produto,
-      valor,
-      arrecadado,
-      restante,
-      casamentoSlug: CASAMENTO_SLUG
+      index
     })
   );
 
-  window.location.href = `pagamento.html?casamento=${encodeURIComponent(CASAMENTO_SLUG)}`;
-}
+  localStorage.removeItem(
+    "valorPagamento"
+  );
 
-function converterUrlImagem(url) {
-  if (!url) return "";
+  localStorage.removeItem(
+    "tipoContribuicao"
+  );
 
-  const drive = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
-  if (drive?.[1]) {
-    return `https://drive.google.com/thumbnail?id=${drive[1]}&sz=w1200`;
-  }
+  localStorage.removeItem(
+    "metodoPagamento"
+  );
 
-  const driveOpen = url.match(/[?&]id=([^&]+)/);
-  if (url.includes("drive.google.com") && driveOpen?.[1]) {
-    return `https://drive.google.com/thumbnail?id=${driveOpen[1]}&sz=w1200`;
-  }
-
-  return url;
-}
-
-function escaparHtml(valor) {
-  return String(valor ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+  window.location.href =
+    `pagamento.html${
+      slugPresentes01()
+        ? `?casamento=${encodeURIComponent(slugPresentes01())}`
+        : ""
+    }`;
 }

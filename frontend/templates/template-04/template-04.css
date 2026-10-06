@@ -13,3 +13,48 @@ footer{min-height:76px;margin-top:auto;padding:18px max(22px,calc((100vw - 1160p
 @media(max-width:1050px){.header{grid-template-columns:150px 1fr}.rsvpTop{display:none}.header nav{justify-content:flex-end;gap:13px}.quick{grid-template-columns:repeat(3,1fr)}.gifts{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:820px){.header{display:flex;justify-content:space-between}.menu{display:block}.header nav{position:absolute;left:12px;right:12px;top:66px;display:none;flex-direction:column;padding:15px;background:var(--paper);border:1px solid var(--line)}.header nav.open{display:flex}.story,.twoCol,.checkoutGrid{grid-template-columns:1fr}.gifts{grid-template-columns:repeat(2,1fr)}.gallery{columns:2}footer{flex-direction:column;align-items:flex-start;gap:12px}}
 @media(max-width:560px){.quick{width:calc(100% - 20px);grid-template-columns:repeat(2,1fr)}.quick a{min-height:100px}.section,.content{width:calc(100% - 24px)}.infoGrid{grid-template-columns:1fr}.actions{grid-template-columns:1fr}.gallery{columns:1}.formCard,.sideCard,.musicCard,.mapCard,.checkoutCard{padding:20px}.social{flex-wrap:wrap}}
+
+/* Acrescente ao CSS de cada template */
+.contribuicaoLivreCard,
+.contribuicao-livre-card,
+.free-gift{
+  position:relative;
+}
+
+.contribuicaoLivreCard::before,
+.contribuicao-livre-card::before,
+.free-gift::before{
+  content:"CONTRIBUIÇÃO LIVRE";
+  position:absolute;
+  z-index:2;
+  top:10px;
+  left:10px;
+  padding:6px 9px;
+  border-radius:999px;
+  background:rgba(255,255,255,.90);
+  color:#536057;
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:1px;
+}
+
+.opcao{
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.opcao:hover{
+  transform:translateY(-1px);
+}
+
+.opcao.selecionado,
+.opcao.ativa{
+  border-color:#354f46 !important;
+  background:#354f46 !important;
+  color:#fff !important;
+  box-shadow:0 8px 20px rgba(53,79,70,.18);
+}

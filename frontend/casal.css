@@ -111,52 +111,41 @@ html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);
 }
 
 
-/* HOTFIX VISUAL V3 */
-.gift-toolbar{
-  padding:12px 14px;
-  background:#fff;
-  border:1px solid var(--line);
-  border-radius:14px;
-  margin:0 0 18px;
+/* ===== CONFIGURAÇÕES DO CASAMENTO ===== */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.settings-grid>.panel-card{margin:0}
+.settings-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:18px}
+.settings-form-grid .full{grid-column:1/-1}
+.settings-form-grid label{display:block;margin-bottom:6px;font-size:12px;font-weight:750}
+.settings-form-grid input,.settings-form-grid textarea{width:100%;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);font:inherit}
+.settings-form-grid textarea{resize:vertical}
+.settings-toggle-row{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+.settings-toggle-row h2{margin-bottom:6px}
+.switch{position:relative;display:inline-flex;flex:0 0 auto}
+.switch input{position:absolute;opacity:0;pointer-events:none}
+.switch-track{width:54px;height:30px;border-radius:999px;background:#d8ddda;position:relative;transition:.2s}
+.switch-track::after{content:"";position:absolute;top:4px;left:4px;width:22px;height:22px;border-radius:50%;background:white;box-shadow:0 2px 8px rgba(0,0,0,.14);transition:.2s}
+.switch input:checked+.switch-track{background:var(--forest2)}
+.switch input:checked+.switch-track::after{transform:translateX(24px)}
+#contribuicaoLivreCampos.disabled{opacity:.45;pointer-events:none}
+.free-contribution-preview{grid-column:1/-1;padding:16px;border-radius:12px;background:#f5f2eb;border:1px dashed var(--sage);display:grid;gap:4px}
+.free-contribution-preview strong{font-family:Georgia,serif;font-size:20px;font-weight:400}
+.free-contribution-preview small{color:var(--muted)}
+.settings-save-row{grid-column:1/-1;display:flex;align-items:center;gap:14px}
+#configMensagem{margin:0}
+
+/* ===== DRAG DA GALERIA ===== */
+.gallery-admin-card[draggable="true"]{cursor:grab}
+.gallery-admin-card.dragging{opacity:.42;transform:scale(.985)}
+.gallery-admin-card.drag-over{outline:2px dashed var(--sage);outline-offset:3px}
+.gallery-drag-hint{display:inline-block;margin-bottom:9px;color:var(--muted);font-size:11px}
+
+@media(max-width:900px){
+  .settings-grid{grid-template-columns:1fr}
+  .settings-save-row{grid-column:1}
 }
-.gift-toolbar input{
-  min-height:44px;
-  border-radius:10px;
-  outline:none;
-}
-.gift-toolbar input:focus{
-  border-color:rgba(53,79,70,.5);
-  box-shadow:0 0 0 3px rgba(53,79,70,.08);
-}
-.gift-card[draggable="true"]{cursor:grab}
-.gift-card.dragging{opacity:.55;transform:scale(.985)}
-.gift-card.drag-over{outline:2px dashed var(--sage);outline-offset:3px}
-.presence-row{align-items:center}
-.presence-actions strong{font-size:13px}
-.icon-danger-btn{
-  display:inline-grid;
-  place-items:center;
-  flex:0 0 auto;
-}
-#view-presencas .section-title > div > p{
-  margin:6px 0 0;
-}
-#totalConfirmadosView{
-  color:var(--forest);
-  font-size:16px;
-}
-.gallery-form,.music-form{display:grid;gap:10px}
-.gallery-form input,.music-form input{
-  width:100%;
-  min-height:44px;
-  padding:12px 14px;
-  border:1px solid var(--line);
-  border-radius:10px;
-  background:#fff;
-}
-.gallery-form-card{margin-bottom:18px}
-.music-actions{display:flex;gap:8px;flex-wrap:wrap}
-@media(max-width:760px){
-  .gift-toolbar{padding:10px}
-  #btnBaixarPdfPresencas{width:100%}
+@media(max-width:620px){
+  .settings-form-grid{grid-template-columns:1fr}
+  .settings-form-grid .full{grid-column:1}
+  .settings-save-row{align-items:flex-start;flex-direction:column}
 }
