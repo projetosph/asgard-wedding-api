@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Confirmar Presença</title>
+  <link rel="stylesheet" href="template-02.css">
+</head>
+<body>
+<div class="t2-shell">
+  <div id="t2Header"></div>
+
+  <main class="t2-main">
+    <div class="t2-page-heading">
+      <span class="t2-eyebrow">Nosso casamento</span>
+      <h1>Confirme sua presença</h1>
+      <div class="t2-leaf-divider"><span>❧</span></div>
+      <p>Será uma alegria imensa compartilhar esse momento com você. Confirme os nomes de quem estará presente.</p>
+    </div>
+
+    <section class="t2-form-layout">
+      <article class="t2-paper t2-form-card">
+        <h2>Sua confirmação</h2>
+        <span class="t2-eyebrow">Preencha os dados abaixo</span>
+
+        <form id="formPresenca" class="t2-form-grid">
+          <div class="t2-field">
+            <label for="nomePresenca">Seu nome e sobrenome</label>
+            <input id="nomePresenca" required placeholder="Digite seu nome completo">
+          </div>
+
+          <div class="t2-field">
+            <label for="quantidadePresenca">Quantidade de pessoas</label>
+            <input id="quantidadePresenca" type="number" min="1" max="20" required placeholder="1">
+          </div>
+
+          <div id="listaNomesConvidados" class="t2-form-grid"></div>
+
+          <div class="t2-field">
+            <label for="mensagemPresenca">Mensagem para o casal (opcional)</label>
+            <textarea id="mensagemPresenca" placeholder="Deixe uma mensagem para nós..."></textarea>
+          </div>
+
+          <button class="t2-btn t2-btn-primary" id="btnConfirmarPresenca" type="submit">
+            ♡ Confirmar presença
+          </button>
+
+          <p id="statusPresenca" class="t2-status"></p>
+        </form>
+      </article>
+
+      <aside class="t2-paper t2-details-card">
+        <h2>Nosso grande dia</h2>
+        <span class="t2-eyebrow">Anote essas informações</span>
+
+        <div class="t2-detail-list">
+          <div class="t2-detail-row">
+            <div class="t2-detail-icon" id="iconeData"></div>
+            <div>
+              <span>Data</span>
+              <strong data-t2-data>—</strong>
+            </div>
+          </div>
+
+          <div class="t2-detail-row">
+            <div class="t2-detail-icon" id="iconeHora"></div>
+            <div>
+              <span>Cerimônia</span>
+              <strong id="detalheHorario">—</strong>
+            </div>
+          </div>
+
+          <div class="t2-detail-row">
+            <div class="t2-detail-icon" id="iconeLocal"></div>
+            <div>
+              <span>Local</span>
+              <strong id="detalheLocal">—</strong>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="t2Footer"></div>
+</div>
+
+<script src="template-02-common.js"></script>
+<script src="template-02-presenca.js"></script>
+</body>
+</html>
