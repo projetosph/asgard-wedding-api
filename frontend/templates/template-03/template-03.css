@@ -142,7 +142,7 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
 /* Variante B: texto sobre a foto */
 .hero-card.hero-card--overlay{padding:0;display:block;min-height:640px;background:#d7ddd8}
 .hero-card--overlay .hero-photo-full{position:relative;height:100%;min-height:640px;border-radius:28px;overflow:hidden}
-.hero-card--overlay .hero-photo-full img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:20% center}
+.hero-card--overlay .hero-photo-full img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:30% center}
 .hero-card--overlay .hero-photo-full:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg, rgba(24,27,25,.52) 0%, rgba(24,27,25,.36) 28%, rgba(24,27,25,.10) 58%, rgba(24,27,25,.18) 100%);z-index:1}
 .hero-overlay-content{position:relative;z-index:2;height:100%;min-height:640px;padding:32px;display:flex;flex-direction:column;max-width:58%;color:#fff}
 .hero-card--overlay .eyebrow{color:#e0e8e3}
