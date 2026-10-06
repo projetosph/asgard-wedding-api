@@ -3,116 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Template 02 | Asgard Wedding</title>
+  <title>Nosso Casamento</title>
   <link rel="stylesheet" href="template-02.css">
 </head>
 <body>
-<header class="topbar">
-  <a class="brand" href="index.html"><span>AW</span> ASGARD WEDDING</a>
-  <nav>
-    <a href="#historia">Nossa história</a>
-    <a href="#informacoes">O grande dia</a>
-    <a href="#momentos">Momentos</a>
-    <button id="musicButton" type="button">♪ Música</button>
-  </nav>
-</header>
+<div class="t2-shell">
+  <div id="t2Header"></div>
 
-<main>
-  <section class="hero">
-    <div class="hero-copy">
-      <small>ESTAMOS NOS CASANDO</small>
-      <h1><span id="nome1">Paulo</span><em>&</em><span id="nome2">Alana</span></h1>
-      <p class="date" id="dataCasamento">07 de Setembro de 2026</p>
-      <p class="intro">Criamos este espaço para compartilhar com vocês cada detalhe de um dos dias mais importantes das nossas vidas.</p>
-      <div class="actions">
-        <a id="btnPresenca" class="btn primary" href="#">CONFIRMAR PRESENÇA</a>
-        <a id="btnPresentes" class="btn secondary" href="#">LISTA DE PRESENTES</a>
+  <main class="t2-main t2-home-main">
+    <section class="t2-hero-panel">
+      <span class="t2-eyebrow">Nosso casamento</span>
+
+      <h1 class="t2-couple">
+        <span id="t2Noivo">—</span>
+        <span class="amp">&</span>
+        <span id="t2Noiva">—</span>
+      </h1>
+
+      <div class="t2-leaf-divider"><span>❧</span></div>
+
+      <p class="t2-date" data-t2-data>—</p>
+      <p class="t2-time" data-t2-horario>—</p>
+
+      <div class="t2-home-grid">
+        <a class="t2-home-card" id="cardPresentes" href="#">
+          <span class="t2-home-icon"></span>
+          <strong>Presentes</strong>
+        </a>
+        <a class="t2-home-card" id="cardPresenca" href="#">
+          <span class="t2-home-icon"></span>
+          <strong>Presença</strong>
+        </a>
+        <a class="t2-home-card" id="cardLocal" href="#">
+          <span class="t2-home-icon"></span>
+          <strong>Local</strong>
+        </a>
+        <a class="t2-home-card" id="cardRecados" href="#">
+          <span class="t2-home-icon"></span>
+          <strong>Recados</strong>
+        </a>
+        <a class="t2-home-card" id="cardGaleria" href="#">
+          <span class="t2-home-icon"></span>
+          <strong>Galeria</strong>
+        </a>
+        <a class="t2-home-card" id="cardMusica" href="#">
+          <span class="t2-home-icon"></span>
+          <strong>Músicas</strong>
+        </a>
       </div>
-    </div>
-    <div class="hero-art">
-      <div class="frame">
-        <div class="photo">
-          <span>SAVE THE DATE</span>
-          <strong id="iniciais">P · A</strong>
-          <small id="dataCurta">07 · 09 · 2026</small>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <section class="ticker"><div>AMOR • CELEBRAÇÃO • FAMÍLIA • MEMÓRIAS • AMOR • CELEBRAÇÃO • FAMÍLIA • MEMÓRIAS •</div></section>
+      <p class="t2-home-quote">Que bom ter você aqui! ♡</p>
+    </section>
+  </main>
 
-  <section class="section story" id="historia">
-    <aside><span>01</span><p>NOSSA HISTÓRIA</p></aside>
-    <div>
-      <h2>Uma história que escolhemos continuar para sempre.</h2>
-      <div class="story-text">
-        <p>Entre encontros, planos, risadas e sonhos, chegamos até aqui. Agora queremos celebrar esse novo capítulo ao lado de pessoas que fazem parte da nossa história.</p>
-        <blockquote>“Que seja infinito enquanto durar — e que dure para sempre.”</blockquote>
-      </div>
-    </div>
-  </section>
+  <div id="t2Footer"></div>
+</div>
 
-  <section class="countdown-section">
-    <small>O GRANDE DIA ACONTECERÁ EM</small>
-    <div class="countdown">
-      <div><strong id="dias">000</strong><span>DIAS</span></div>
-      <div><strong id="horas">00</strong><span>HORAS</span></div>
-      <div><strong id="minutos">00</strong><span>MIN</span></div>
-      <div><strong id="segundos">00</strong><span>SEG</span></div>
-    </div>
-  </section>
-
-  <section class="section" id="informacoes">
-    <div class="heading">
-      <small>INFORMAÇÕES</small>
-      <h2>Tudo para viver esse dia com a gente.</h2>
-    </div>
-    <div class="info-grid">
-      <article><span>01</span><small>DATA & HORÁRIO</small><h3 id="cardData">07 de Setembro</h3><p id="cardHorario">15h30</p></article>
-      <article><span>02</span><small>LOCAL</small><h3 id="localNome">Local da cerimônia</h3><p id="localEndereco">Endereço do evento</p><a id="mapLink" href="#" target="_blank">ABRIR NO MAPA ↗</a></article>
-      <article><span>03</span><small>PRESENÇA</small><h3>Esperamos por você.</h3><p>Confirme sua presença para nos ajudar na organização.</p><a id="cardPresenca" href="#">CONFIRMAR ↗</a></article>
-    </div>
-  </section>
-
-  <section class="gift-banner">
-    <div><small>LISTA DE PRESENTES</small><h2>O melhor presente é ter você conosco.</h2><p>Mas, se quiser nos presentear, preparamos uma lista com carinho.</p></div>
-    <a id="giftBannerLink" class="btn light" href="#">VER LISTA DE PRESENTES</a>
-  </section>
-
-  <section class="section" id="momentos">
-    <div class="heading center"><small>NOSSOS MOMENTOS</small><h2>Alguns capítulos antes do “sim”.</h2></div>
-    <div class="gallery">
-      <div class="photo-card tall"><span>01</span><p>Nossa história</p></div>
-      <div class="photo-card"><span>02</span><p>Memórias</p></div>
-      <div class="photo-card"><span>03</span><p>Até aqui</p></div>
-    </div>
-  </section>
-
-  <section class="message-section">
-    <div>
-      <small>DEIXE SEU CARINHO</small>
-      <h2>Escreva uma mensagem para nós.</h2>
-      <p>Vamos guardar cada palavra como parte das lembranças deste momento.</p>
-    </div>
-    <form id="recadoForm">
-      <label>Seu nome</label><input id="nomeRecado" required>
-      <label>Sua mensagem</label><textarea id="mensagemRecado" rows="4" required></textarea>
-      <button class="btn primary" type="submit">ENVIAR RECADO</button>
-      <p id="recadoStatus"></p>
-    </form>
-  </section>
-
-  <section class="final">
-    <span>07 • 09 • 2026</span>
-    <h2>Nos encontramos<br><em>no altar.</em></h2>
-    <div id="iniciaisFinal">P & A</div>
-  </section>
-</main>
-
-<footer><strong>ASGARD WEDDING</strong><span>por Asgard Tech</span></footer>
-
-<audio id="weddingAudio" loop preload="none"></audio>
-<script src="template-02.js"></script>
+<script src="template-02-common.js"></script>
+<script src="template-02-home.js"></script>
 </body>
 </html>
