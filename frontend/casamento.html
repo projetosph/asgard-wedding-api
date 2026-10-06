@@ -22,12 +22,22 @@
     const API = "https://asgard-wedding-api.onrender.com";
 
     function normalizarTemplate(valor) {
-      const t = String(valor || "template-01").trim().toLowerCase();
+  const t = String(valor || "template-01").trim().toLowerCase();
 
-      if (["template-03","template03","03","3"].includes(t)) return "template-03";
-      if (["template-02","template02","02","2"].includes(t)) return "template-02";
-      return "template-01";
-    }
+  if (["template-04", "template04", "04", "4"].includes(t)) {
+    return "template-04";
+  }
+
+  if (["template-03", "template03", "03", "3"].includes(t)) {
+    return "template-03";
+  }
+
+  if (["template-02", "template02", "02", "2"].includes(t)) {
+    return "template-02";
+  }
+
+  return "template-01";
+  }
 
     async function iniciar() {
       const params = new URLSearchParams(window.location.search);
