@@ -178,7 +178,31 @@ async function criarSite(e) {
       })
     });
 
-    msg.textContent = "Site criado como rascunho ✓";
+    const emailCasal = document.getElementById("novoEmailCasal").value.trim();
+    const senhaCasal = document.getElementById("novoSenhaCasal").value;
+
+    if ((emailCasal && !senhaCasal) || (!emailCasal && senhaCasal)) {
+      throw new Error("Para criar o acesso do casal, informe e-mail e senha.");
+    }
+
+    if (senhaCasal && senhaCasal.length < 8) {
+      throw new Error("A senha do casal precisa ter pelo menos 8 caracteres.");
+    }
+
+    if (emailCasal && senhaCasal) {
+      await api(`/api/admin/casamentos/${site.id}/usuario-casal`, {
+        method:"POST",
+        body:JSON.stringify({
+          nome:`${site.noivo} & ${site.noiva}`,
+          email:emailCasal,
+          senha:senhaCasal
+        })
+      });
+      msg.textContent = "Site e acesso do casal criados ✓";
+    } else {
+      msg.textContent = "Site criado como rascunho ✓";
+    }
+
     e.target.reset();
     await carregar();
     mudarView("sites");
@@ -240,6 +264,28 @@ async function abrirSite(id) {
       <iframe id="editPreview" src="${previewUrl(s)}"></iframe>
     </div>
 
+    <div class="access-box" style="margin-top:22px">
+      <span class="eyebrow">ACESSO DO CASAL</span>
+      <h3>Criar ou redefinir login</h3>
+      <p class="muted">Use estes campos para criar o acesso ou trocar e-mail/senha do casal.</p>
+
+      <div class="details-grid">
+        <label class="full">
+          E-mail
+          <input id="editEmailCasal" type="email" autocomplete="off" placeholder="casal@email.com">
+        </label>
+        <label class="full">
+          Nova senha
+          <input id="editSenhaCasal" type="password" autocomplete="new-password" minlength="8" placeholder="Mínimo 8 caracteres">
+        </label>
+      </div>
+
+      <button class="secondary" id="btnSalvarAcessoCasal" type="button">
+        Salvar acesso do casal
+      </button>
+      <span id="msgAcessoCasal" class="muted" style="display:block;margin-top:8px"></span>
+    </div>
+
     <h3>Ciclo de vida</h3>
     <div class="lifecycle">
       ${["publicado","pausado","concluido","cancelado","arquivado"].map(st => `
@@ -296,6 +342,40 @@ async function abrirSite(id) {
     });
     await carregar();
     fecharModal("modalSite");
+  };
+
+  document.getElementById("btnSalvarAcessoCasal").onclick = async () => {
+    const msg = document.getElementById("msgAcessoCasal");
+    const email = document.getElementById("editEmailCasal").value.trim();
+    const senha = document.getElementById("editSenhaCasal").value;
+
+    if (!email || !senha) {
+      msg.textContent = "Informe e-mail e senha.";
+      return;
+    }
+
+    if (senha.length < 8) {
+      msg.textContent = "A senha precisa ter pelo menos 8 caracteres.";
+      return;
+    }
+
+    msg.textContent = "Salvando...";
+
+    try {
+      await api(`/api/admin/casamentos/${id}/usuario-casal`, {
+        method:"POST",
+        body:JSON.stringify({
+          nome:`${s.noivo} & ${s.noiva}`,
+          email,
+          senha
+        })
+      });
+
+      document.getElementById("editSenhaCasal").value = "";
+      msg.textContent = "Acesso do casal salvo ✓";
+    } catch (err) {
+      msg.textContent = err.message;
+    }
   };
 
   document.getElementById("btnHistoricoModal").onclick = () => verHistorico(id);
