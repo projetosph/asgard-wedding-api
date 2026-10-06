@@ -281,6 +281,19 @@ function montarCompra(tipo) {
   };
 }
 
+
+function rolarParaAreaPagamento(atraso = 80) {
+  const area = document.getElementById("areaPagamento");
+  if (!area) return;
+
+  window.setTimeout(() => {
+    area.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    });
+  }, atraso);
+}
+
 async function continuarPagamento(tipo) {
   if (!produtoCheckout) return;
 
@@ -367,6 +380,8 @@ async function gerarPix(compra) {
         </p>
       </div>
     `;
+
+    rolarParaAreaPagamento(100);
 
     iniciarConsultaStatus(
       dados.orderId || dados.pagamentoId,
@@ -458,6 +473,8 @@ async function abrirFormularioCartao(compra) {
     </div>
   `;
 
+  rolarParaAreaPagamento(90);
+
   try {
     const { bricksBuilder } =
       await obterMercadoPago();
@@ -482,7 +499,9 @@ async function abrirFormularioCartao(compra) {
       },
 
       callbacks: {
-        onReady: () => {},
+        onReady: () => {
+          rolarParaAreaPagamento(60);
+        },
 
         onSubmit: (formData) =>
           processarCartao(
@@ -720,6 +739,8 @@ function mostrarPagamentoAprovado(compra) {
       </p>
     </div>
   `;
+
+  rolarParaAreaPagamento(60);
 }
 
 function formatarMoeda(valor) {

@@ -1,0 +1,364 @@
+/*
+  ASGARD WEDDING - CHECKOUT PADRÃO
+  --------------------------------------------------
+  Este arquivo é compartilhado entre todos os templates.
+  Ele NÃO impõe uma paleta única: usa as variáveis do template atual.
+*/
+
+:root {
+  --checkout-accent:
+    var(--t2-sage-deep,
+      var(--sage-deep,
+        var(--forest2,
+          var(--ink, #354f46))));
+  --checkout-accent-soft:
+    var(--t2-sage,
+      var(--sage,
+        var(--deep, #789083)));
+  --checkout-paper:
+    var(--t2-paper-solid,
+      var(--paper, #fffdf8));
+  --checkout-ink:
+    var(--t2-ink,
+      var(--ink, #2f312d));
+  --checkout-muted:
+    var(--t2-muted,
+      var(--muted, #77796f));
+  --checkout-line:
+    var(--t2-line,
+      var(--line, rgba(70,78,72,.15)));
+  --checkout-radius: 15px;
+}
+
+/* Garante que a área gerada pelo JS não herde estilos crus do navegador */
+#areaPagamento {
+  width: 100%;
+  margin-top: 22px;
+  scroll-margin-top: 105px;
+}
+
+.checkoutFormGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.checkoutField {
+  display: grid;
+  gap: 7px;
+}
+
+.checkoutField label,
+.checkoutField > span {
+  color: var(--checkout-ink);
+  font-size: 9px;
+  font-weight: 850;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+}
+
+.checkoutField input,
+.checkoutConteudo > input,
+#valorContribuicao {
+  width: 100%;
+  min-height: 48px;
+  padding: 11px 13px;
+  border: 1px solid var(--checkout-line);
+  border-radius: 10px;
+  outline: none;
+  background: rgba(255,255,255,.92);
+  color: var(--checkout-ink);
+  font: inherit;
+}
+
+.checkoutField input:focus,
+.checkoutConteudo > input:focus,
+#valorContribuicao:focus {
+  border-color: var(--checkout-accent-soft);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--checkout-accent-soft) 13%, transparent);
+}
+
+.checkoutPergunta {
+  margin: 22px 0 10px;
+  color: var(--checkout-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.checkoutCard {
+  margin-top: 11px;
+  overflow: hidden;
+  border: 1px solid var(--checkout-line);
+  border-radius: var(--checkout-radius);
+  background: rgba(255,255,255,.72);
+}
+
+.checkoutTitulo {
+  position: relative;
+  padding: 15px 17px;
+  cursor: pointer;
+  transition:
+    background .18s ease,
+    border-color .18s ease;
+}
+
+.checkoutTitulo:hover {
+  background: color-mix(in srgb, var(--checkout-accent-soft) 9%, transparent);
+}
+
+.checkoutTitulo strong,
+.checkoutTitulo small {
+  display: block;
+}
+
+.checkoutTitulo strong {
+  color: var(--checkout-ink);
+  font-size: 12px;
+  letter-spacing: .2px;
+}
+
+.checkoutTitulo small {
+  margin-top: 5px;
+  color: var(--checkout-muted);
+  font-size: 11px;
+  line-height: 1.45;
+}
+
+.checkoutConteudo {
+  display: none;
+  padding: 2px 15px 15px;
+}
+
+.checkoutConteudo.ativo {
+  display: block;
+}
+
+.checkoutConteudo h4 {
+  margin: 18px 0 8px;
+  color: var(--checkout-ink);
+  font-size: 12px;
+}
+
+.opcao {
+  width: 100%;
+  min-height: 46px;
+  margin: 8px 0;
+  padding: 0 13px;
+  border: 1px solid var(--checkout-line);
+  border-radius: 10px;
+  background: rgba(255,255,255,.90);
+  color: var(--checkout-ink);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.opcao:hover {
+  transform: translateY(-1px);
+  border-color: var(--checkout-accent-soft);
+  background: color-mix(in srgb, var(--checkout-accent-soft) 8%, white);
+}
+
+.opcao.selecionado,
+.opcao.ativa {
+  border-color: var(--checkout-accent) !important;
+  background: var(--checkout-accent) !important;
+  color: #fff !important;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--checkout-accent) 20%, transparent);
+}
+
+.opcao.selecionado span,
+.opcao.ativa span {
+  color: #fff !important;
+}
+
+.btnFinalizar,
+.btnPix {
+  width: 100%;
+  min-height: 45px;
+  margin-top: 12px;
+  padding: 0 17px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--checkout-accent);
+  color: #fff;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, opacity .18s ease;
+}
+
+.btnFinalizar:hover,
+.btnPix:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 9px 22px color-mix(in srgb, var(--checkout-accent) 18%, transparent);
+}
+
+.btnFinalizar:disabled,
+.btnPix:disabled {
+  cursor: wait;
+  opacity: .65;
+}
+
+/* PIX */
+.pixMercadoPago,
+.cartaoMercadoPago,
+.resumoPagamentoPendente {
+  width: 100%;
+  padding: 22px;
+  border: 1px solid var(--checkout-line);
+  border-radius: var(--checkout-radius);
+  background: color-mix(in srgb, var(--checkout-paper) 94%, white);
+  color: var(--checkout-ink);
+  box-shadow: 0 12px 32px rgba(40,48,43,.06);
+}
+
+.pixMercadoPago {
+  text-align: center;
+}
+
+.pixMercadoPago h3,
+.cartaoMercadoPago h3,
+.resumoPagamentoPendente h3 {
+  margin: 0 0 8px;
+  color: var(--checkout-ink);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 25px;
+  font-weight: 400;
+}
+
+.pixMercadoPago > p,
+.cartaoMercadoPago > p,
+.resumoPagamentoPendente > p {
+  color: var(--checkout-muted);
+  line-height: 1.5;
+}
+
+.pixMercadoPago > img {
+  width: min(250px, 74vw) !important;
+  height: auto !important;
+  margin: 18px auto !important;
+  padding: 10px;
+  border: 1px solid var(--checkout-line);
+  border-radius: 13px;
+  background: #fff;
+  object-fit: contain;
+}
+
+#codigoPixCopiaCola {
+  display: block;
+  width: min(560px, 100%);
+  min-height: 68px;
+  max-height: 88px;
+  margin: 10px auto 0;
+  padding: 11px 12px;
+  border: 1px solid var(--checkout-line);
+  border-radius: 10px;
+  outline: none;
+  resize: none;
+  overflow: auto;
+  background: rgba(255,255,255,.92);
+  color: var(--checkout-ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  word-break: break-all;
+  white-space: normal;
+}
+
+.pixMercadoPago .btnPix {
+  width: min(300px, 100%);
+  margin: 12px auto 0;
+}
+
+#statusPagamentoPix,
+#statusPagamentoCartao {
+  margin: 13px 0 0;
+  color: var(--checkout-muted);
+  font-size: 12px;
+}
+
+/* CARTÃO / Mercado Pago Brick */
+.cartaoMercadoPago {
+  text-align: left;
+}
+
+.valorCartaoCheckout {
+  margin-bottom: 16px;
+}
+
+#cardPaymentBrick_container {
+  width: 100%;
+  min-height: 120px;
+  padding: 4px 0 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/*
+ O SDK do Mercado Pago injeta iframes. Não alteramos o conteúdo interno,
+ apenas garantimos largura total e encaixe visual.
+*/
+#cardPaymentBrick_container iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.resumoPagamentoPendente {
+  text-align: center;
+}
+
+/* Cartão lateral / resumo */
+.checkoutSummaryCard img,
+.t2-checkout-product img,
+.checkout-product img,
+.checkoutProduct img {
+  width: 100%;
+  max-height: 310px;
+  object-fit: cover;
+}
+
+.checkoutSummaryCard h2,
+.t2-checkout-product h2,
+.checkout-product h2,
+.checkoutProduct h2 {
+  overflow-wrap: anywhere;
+}
+
+/* Desktop: mantém o checkout alinhado, mas não esticado */
+.checkoutStandardMain {
+  min-width: 0;
+}
+
+@media (max-width: 760px) {
+  .checkoutFormGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .pixMercadoPago,
+  .cartaoMercadoPago,
+  .resumoPagamentoPendente {
+    padding: 17px;
+  }
+
+  .pixMercadoPago > img {
+    width: min(220px, 74vw) !important;
+  }
+
+  #areaPagamento {
+    scroll-margin-top: 84px;
+  }
+}
