@@ -983,3 +983,38 @@ img { display: block; max-width: 100%; }
     display: none;
   }
 }
+
+.opcao {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 13px;
+  border: 1px solid var(--t2-line);
+  border-radius: 11px;
+  margin: 8px 0;
+  background: rgba(255,255,255,.82);
+  cursor: pointer;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    color .18s ease,
+    transform .18s ease,
+    box-shadow .18s ease;
+}
+
+.opcao:hover {
+  border-color: rgba(103,115,94,.45);
+  background: rgba(240,244,236,.95);
+  transform: translateY(-1px);
+}
+
+.opcao.selecionado {
+  border-color: var(--t2-sage-deep);
+  background: var(--t2-sage-deep);
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(103,115,94,.18);
+}
+
+.opcao.selecionado span:last-child {
+  color: #fff;
+}
