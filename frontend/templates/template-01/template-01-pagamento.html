@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Pagamento</title>
+  <link rel="stylesheet" href="template-01.css">
+  <link rel="stylesheet" href="../../checkout-standard.css">
+</head>
+<body>
+<div class="t1-shell">
+  <div id="t1Header"></div>
+
+  <main class="t1-page-main" style="display:grid;place-items:center;padding-top:70px">
+    <section class="t1-card t1-music">
+      <div class="t1-music-icon">♡</div>
+      <h2>Pagamento</h2>
+      <p id="paymentSummary">As informações do pagamento aparecerão aqui.</p>
+      <div id="areaPagamento"></div>
+      <a id="backGift" class="t1-btn">Voltar à lista de presentes</a>
+    </section>
+  </main>
+
+  <div id="t1Footer"></div>
+</div>
+
+<script src="template-01-common.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  await t1Init("");
+  document.getElementById("backGift").href = t1Link("template-01-presentes.html");
+
+  const compra = JSON.parse(localStorage.getItem("compraAtual") || "null");
+  if (compra) {
+    document.getElementById("paymentSummary").textContent =
+      `${compra.produtoNome || "Presente"} · ${t1Money(compra.valor || 0)}`;
+  }
+});
+</script>
+</body>
+</html>

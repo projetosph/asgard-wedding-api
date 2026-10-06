@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Confirme sua presença</title>
+  <link rel="stylesheet" href="template-01.css">
+</head>
+<body>
+<div class="t1-shell">
+  <div id="t1Header"></div>
+
+  <section class="t1-page-hero">
+    <div>
+      <span style="font-size:9px;letter-spacing:3px;text-transform:uppercase">Presença</span>
+      <h1>Confirme sua presença</h1>
+      <p>Será uma alegria compartilhar esse momento com você.</p>
+    </div>
+  </section>
+
+  <main class="t1-page-main">
+    <section class="t1-two-col">
+      <article class="t1-card">
+        <h2>Sua confirmação</h2>
+
+        <form id="rsvpForm">
+          <div class="t1-field">
+            <label>Seu nome</label>
+            <input id="rsvpName" required>
+          </div>
+
+          <div class="t1-field">
+            <label>Quantidade de pessoas</label>
+            <input id="rsvpQty" type="number" min="1" max="20" required>
+          </div>
+
+          <div id="rsvpExtra"></div>
+
+          <div class="t1-field">
+            <label>Mensagem (opcional)</label>
+            <textarea id="rsvpMsg"></textarea>
+          </div>
+
+          <button class="t1-btn" style="margin-top:14px" type="submit">
+            Confirmar presença
+          </button>
+
+          <p id="rsvpStatus"></p>
+        </form>
+      </article>
+
+      <aside class="t1-card">
+        <h2>Nosso grande dia</h2>
+
+        <div class="t1-detail">
+          <div><small>Data</small><strong data-t1-date>—</strong></div>
+          <div><small>Horário</small><strong id="rsvpHour">—</strong></div>
+          <div><small>Local</small><strong id="rsvpPlace">—</strong></div>
+        </div>
+      </aside>
+    </section>
+  </main>
+
+  <div id="t1Footer"></div>
+</div>
+
+<script src="template-01-common.js"></script>
+<script src="template-01-presenca.js"></script>
+</body>
+</html>
