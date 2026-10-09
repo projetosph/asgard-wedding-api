@@ -1,4 +1,5 @@
 const express = require("express");
+const crypto = require("crypto");
 const { pool } = require("./db");
 const { autenticar, somenteAdmin } = require("./middleware/auth");
 const { hashSenha } = require("./services/senha");
@@ -21,6 +22,70 @@ const TEMPLATES_VALIDOS = new Set([
   "template-03",
   "template-04"
 ]);
+
+
+function chaveCredenciais() {
+  const segredo =
+    process.env.ADMIN_CREDENTIALS_KEY ||
+    process.env.JWT_SECRET ||
+    "";
+
+  if (!segredo || segredo.length < 16) {
+    throw new Error(
+      "Defina ADMIN_CREDENTIALS_KEY no Render com uma chave longa e secreta."
+    );
+  }
+
+  return crypto.createHash("sha256").update(segredo).digest();
+}
+
+function criptografarSenhaPainel(senha) {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv(
+    "aes-256-gcm",
+    chaveCredenciais(),
+    iv
+  );
+
+  const ciphertext = Buffer.concat([
+    cipher.update(String(senha), "utf8"),
+    cipher.final()
+  ]);
+
+  const tag = cipher.getAuthTag();
+
+  return [
+    "v1",
+    iv.toString("base64"),
+    tag.toString("base64"),
+    ciphertext.toString("base64")
+  ].join(":");
+}
+
+function descriptografarSenhaPainel(valor) {
+  if (!valor) return null;
+
+  const [versao, ivB64, tagB64, cifraB64] = String(valor).split(":");
+
+  if (versao !== "v1" || !ivB64 || !tagB64 || !cifraB64) {
+    return null;
+  }
+
+  const decipher = crypto.createDecipheriv(
+    "aes-256-gcm",
+    chaveCredenciais(),
+    Buffer.from(ivB64, "base64")
+  );
+
+  decipher.setAuthTag(Buffer.from(tagB64, "base64"));
+
+  const plain = Buffer.concat([
+    decipher.update(Buffer.from(cifraB64, "base64")),
+    decipher.final()
+  ]);
+
+  return plain.toString("utf8");
+}
 
 function slugSeguro(valor) {
   return String(valor || "")
@@ -111,11 +176,22 @@ router.get("/api/admin/casamentos", async (req,res) => {
          c.cor_primaria,c.cor_secundaria,c.foto_capa,
          c.status_atualizado_em,c.arquivado_em,
          (mp.casamento_id IS NOT NULL) mercadopago_conectado,
+         uc.email AS casal_email,
+         (uc.senha_admin_enc IS NOT NULL) AS casal_tem_senha_salva,
          COALESCE(p.total_presentes,0)::int total_presentes,
          COALESCE(pr.total_confirmados,0)::int total_confirmados,
          COALESCE(pg.total_pagamentos,0)::int total_pagamentos
        FROM casamentos c
        LEFT JOIN casamento_mercadopago mp ON mp.casamento_id=c.id
+       LEFT JOIN LATERAL (
+         SELECT u.email,u.senha_admin_enc
+         FROM usuarios u
+         WHERE u.casamento_id=c.id
+           AND u.perfil='casal'
+           AND COALESCE(u.ativo,TRUE)=TRUE
+         ORDER BY u.id DESC
+         LIMIT 1
+       ) uc ON TRUE
        LEFT JOIN (
          SELECT casamento_id, COUNT(*) total_presentes
          FROM casamento_presentes
@@ -803,20 +879,27 @@ router.post("/api/admin/casamentos/:id/usuario-casal", async (req,res) => {
 
     const { rows } = await pool.query(
       `INSERT INTO usuarios (
-         casamento_id,nome,email,senha_hash,perfil
+         casamento_id,nome,email,senha_hash,senha_admin_enc,perfil
        )
-       VALUES ($1,$2,$3,$4,'casal')
+       VALUES ($1,$2,$3,$4,$5,'casal')
        ON CONFLICT (email)
        DO UPDATE SET
          casamento_id=EXCLUDED.casamento_id,
          nome=EXCLUDED.nome,
          senha_hash=EXCLUDED.senha_hash,
+         senha_admin_enc=EXCLUDED.senha_admin_enc,
          perfil='casal',
          ativo=TRUE,
          atualizado_em=NOW()
        WHERE usuarios.perfil <> 'admin'
        RETURNING id,casamento_id,nome,email,perfil,ativo`,
-      [casamentoId,nome,email,hashSenha(senha)]
+      [
+        casamentoId,
+        nome,
+        email,
+        hashSenha(senha),
+        criptografarSenhaPainel(senha)
+      ]
     );
 
     if (!rows[0]) {
@@ -829,6 +912,72 @@ router.post("/api/admin/casamentos/:id/usuario-casal", async (req,res) => {
   } catch (erro) {
     console.error(erro);
     res.status(500).json({ erro:"Não foi possível criar o acesso do casal." });
+  }
+});
+
+
+// =====================================================
+// CREDENCIAIS DO CASAL — somente ADM
+// A senha é descriptografada apenas quando o ADM clica
+// no botão de olho. Ela não é enviada na listagem geral.
+// =====================================================
+
+router.get("/api/admin/casamentos/:id/credenciais", async (req,res) => {
+  try {
+    const casamentoId = Number(req.params.id);
+
+    if (!Number.isInteger(casamentoId) || casamentoId <= 0) {
+      return res.status(400).json({ erro:"ID do casamento inválido." });
+    }
+
+    const { rows } = await pool.query(
+      `SELECT id,email,senha_admin_enc
+       FROM usuarios
+       WHERE casamento_id=$1
+         AND perfil='casal'
+         AND COALESCE(ativo,TRUE)=TRUE
+       ORDER BY id DESC
+       LIMIT 1`,
+      [casamentoId]
+    );
+
+    const usuario = rows[0];
+
+    if (!usuario) {
+      return res.status(404).json({
+        erro:"Este casal ainda não possui login cadastrado."
+      });
+    }
+
+    if (!usuario.senha_admin_enc) {
+      return res.status(409).json({
+        erro:
+          "A senha antiga não pode ser recuperada. " +
+          "Redefina a senha uma vez no ADM para ela passar a ficar disponível pelo olho."
+      });
+    }
+
+    const senha = descriptografarSenhaPainel(usuario.senha_admin_enc);
+
+    if (!senha) {
+      return res.status(500).json({
+        erro:"Não foi possível abrir a senha salva."
+      });
+    }
+
+    return res.json({
+      email:usuario.email,
+      senha
+    });
+
+  } catch (erro) {
+    console.error("Erro ao abrir credenciais do casal:", erro);
+
+    return res.status(500).json({
+      erro:
+        erro.message ||
+        "Não foi possível carregar as credenciais do casal."
+    });
   }
 });
 

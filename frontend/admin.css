@@ -23,3 +23,127 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
 .access-box .muted{
   margin-top:0;
 }
+
+
+/* Dados rápidos do site no card do ADM */
+.site-admin-info{
+  display:grid;
+  gap:8px;
+  margin:0 0 16px;
+  padding:12px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fafbf9;
+}
+.admin-info-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  min-width:0;
+}
+.admin-info-row>span{
+  color:var(--muted);
+  font-size:9px;
+  font-weight:800;
+  letter-spacing:.7px;
+  text-transform:uppercase;
+}
+.admin-info-row strong,
+.admin-info-row a{
+  min-width:0;
+  max-width:64%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  font-size:11px;
+}
+.admin-info-row a{
+  color:var(--green);
+  font-weight:800;
+  text-decoration:none;
+}
+.admin-info-row a:hover{text-decoration:underline}
+
+.connection-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:9px;
+  font-weight:900;
+  white-space:nowrap;
+}
+.connection-badge.connected{
+  background:#e1f2e9;
+  color:#276044;
+}
+.connection-badge.disconnected{
+  background:#f2eeee;
+  color:#7b6666;
+}
+
+.password-display{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:7px;
+  min-width:0;
+}
+.eye-btn{
+  width:32px;
+  height:30px;
+  flex:0 0 auto;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:white;
+  color:var(--green);
+  font-size:16px;
+  cursor:pointer;
+}
+.eye-btn:hover{
+  background:#edf4f0;
+}
+
+.credential-summary{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:20px 0;
+  padding:15px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  background:#fafbf9;
+}
+.credential-summary>div{
+  min-width:0;
+}
+.credential-summary small{
+  display:block;
+  margin-bottom:6px;
+  color:var(--muted);
+  font-size:8px;
+  font-weight:800;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.credential-summary strong,
+.credential-summary a{
+  font-size:11px;
+}
+.credential-summary a{
+  display:block;
+  color:var(--green);
+  font-weight:700;
+  overflow-wrap:anywhere;
+  text-decoration:none;
+}
+.credential-summary a:hover{text-decoration:underline}
+
+@media(max-width:760px){
+  .credential-summary{grid-template-columns:1fr}
+  .admin-info-row{align-items:flex-start;flex-direction:column;gap:5px}
+  .admin-info-row strong,.admin-info-row a{max-width:100%}
+  .password-display{justify-content:flex-start}
+}

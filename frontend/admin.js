@@ -106,6 +106,45 @@ function formatarData(v) {
   return d.toLocaleDateString("pt-BR");
 }
 
+
+function siteUrl(site) {
+  const base =
+    `${location.origin}${location.pathname.replace(/admin\.html.*$/,"")}`;
+
+  return `${base}casamento.html?casamento=${encodeURIComponent(site.slug)}`;
+}
+
+function mpLabel(site) {
+  return site.mercadopago_conectado
+    ? `<span class="connection-badge connected">● Conectado</span>`
+    : `<span class="connection-badge disconnected">● Não conectado</span>`;
+}
+
+async function revelarSenha(id, botao) {
+  const alvo = document.getElementById(`senhaCasal-${id}`);
+  if (!alvo) return;
+
+  if (alvo.dataset.visible === "1") {
+    alvo.textContent = "••••••••";
+    alvo.dataset.visible = "0";
+    if (botao) botao.textContent = "◉";
+    return;
+  }
+
+  alvo.textContent = "Carregando...";
+
+  try {
+    const cred = await api(`/api/admin/casamentos/${id}/credenciais`);
+    alvo.textContent = cred.senha;
+    alvo.dataset.visible = "1";
+    if (botao) botao.textContent = "◌";
+  } catch (erro) {
+    alvo.textContent = "••••••••";
+    alvo.dataset.visible = "0";
+    alert(erro.message);
+  }
+}
+
 function renderSites() {
   const busca = document.getElementById("busca").value.trim().toLowerCase();
   const filtro = document.getElementById("filtroStatus").value;
@@ -131,6 +170,38 @@ function renderSites() {
           <div class="meta"><small>Data</small><strong>${formatarData(s.data_casamento)}</strong></div>
           <div class="meta"><small>Presentes</small><strong>${s.total_presentes || 0}</strong></div>
           <div class="meta"><small>Confirmados</small><strong>${s.total_confirmados || 0}</strong></div>
+        </div>
+
+        <div class="site-admin-info">
+          <div class="admin-info-row">
+            <span>Mercado Pago</span>
+            ${mpLabel(s)}
+          </div>
+
+          <div class="admin-info-row site-link-row">
+            <span>Site</span>
+            <a href="${attr(siteUrl(s))}" target="_blank" rel="noopener noreferrer">
+              Abrir site ↗
+            </a>
+          </div>
+
+          <div class="admin-info-row">
+            <span>E-mail do casal</span>
+            <strong>${s.casal_email ? esc(s.casal_email) : "Não cadastrado"}</strong>
+          </div>
+
+          <div class="admin-info-row password-row">
+            <span>Senha</span>
+            <div class="password-display">
+              <strong id="senhaCasal-${s.id}" data-visible="0">
+                ${s.casal_tem_senha_salva ? "••••••••" : "Não disponível"}
+              </strong>
+              ${s.casal_tem_senha_salva
+                ? `<button class="eye-btn" type="button" title="Mostrar/ocultar senha" onclick="revelarSenha(${s.id},this)">◉</button>`
+                : ``
+              }
+            </div>
+          </div>
         </div>
 
         <div class="site-actions">
@@ -272,7 +343,7 @@ async function abrirSite(id) {
       <div class="details-grid">
         <label class="full">
           E-mail
-          <input id="editEmailCasal" type="email" autocomplete="off" placeholder="casal@email.com">
+          <input id="editEmailCasal" type="email" autocomplete="off" placeholder="casal@email.com" value="${attr(s.casal_email || "")}">
         </label>
         <label class="full">
           Nova senha
@@ -284,6 +355,38 @@ async function abrirSite(id) {
         Salvar acesso do casal
       </button>
       <span id="msgAcessoCasal" class="muted" style="display:block;margin-top:8px"></span>
+    </div>
+
+    <div class="credential-summary">
+      <div>
+        <small>Mercado Pago</small>
+        ${mpLabel(s)}
+      </div>
+
+      <div>
+        <small>Link do site</small>
+        <a href="${attr(siteUrl(s))}" target="_blank" rel="noopener noreferrer">
+          ${esc(siteUrl(s))}
+        </a>
+      </div>
+
+      <div>
+        <small>E-mail salvo</small>
+        <strong>${s.casal_email ? esc(s.casal_email) : "Não cadastrado"}</strong>
+      </div>
+
+      <div>
+        <small>Senha salva</small>
+        <div class="password-display">
+          <strong id="senhaModal-${s.id}" data-visible="0">
+            ${s.casal_tem_senha_salva ? "••••••••" : "Não disponível"}
+          </strong>
+          ${s.casal_tem_senha_salva
+            ? `<button class="eye-btn" type="button" id="olhoModal-${s.id}">◉</button>`
+            : ``
+          }
+        </div>
+      </div>
     </div>
 
     <h3>Ciclo de vida</h3>
@@ -344,6 +447,33 @@ async function abrirSite(id) {
     fecharModal("modalSite");
   };
 
+  const olhoModal = document.getElementById(`olhoModal-${id}`);
+  if (olhoModal) {
+    olhoModal.onclick = async () => {
+      const alvo = document.getElementById(`senhaModal-${id}`);
+
+      if (alvo.dataset.visible === "1") {
+        alvo.textContent = "••••••••";
+        alvo.dataset.visible = "0";
+        olhoModal.textContent = "◉";
+        return;
+      }
+
+      alvo.textContent = "Carregando...";
+
+      try {
+        const cred = await api(`/api/admin/casamentos/${id}/credenciais`);
+        alvo.textContent = cred.senha;
+        alvo.dataset.visible = "1";
+        olhoModal.textContent = "◌";
+      } catch (erro) {
+        alvo.textContent = "••••••••";
+        alvo.dataset.visible = "0";
+        alert(erro.message);
+      }
+    };
+  }
+
   document.getElementById("btnSalvarAcessoCasal").onclick = async () => {
     const msg = document.getElementById("msgAcessoCasal");
     const email = document.getElementById("editEmailCasal").value.trim();
@@ -373,6 +503,12 @@ async function abrirSite(id) {
 
       document.getElementById("editSenhaCasal").value = "";
       msg.textContent = "Acesso do casal salvo ✓";
+      await carregar();
+
+      const atualizado = sitePorId(id);
+      if (atualizado) {
+        setTimeout(() => abrirSite(id), 120);
+      }
     } catch (err) {
       msg.textContent = err.message;
     }
