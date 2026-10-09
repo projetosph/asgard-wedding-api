@@ -397,16 +397,27 @@ async function mudarStatus(id, status, recarregarModal = true) {
 
   if (!confirm(`${statusLabel(status)}?\n\n${mensagens[status] || ""}`)) return;
 
-  await api(`/api/admin/casamentos/${id}/status`, {
-    method:"POST",
-    body:JSON.stringify({
-      status,
-      observacao:`Alterado pelo ADM para ${statusLabel(status)}`
-    })
-  });
+  try {
+    await api(`/api/admin/casamentos/${id}/status`, {
+      method:"POST",
+      body:JSON.stringify({
+        status,
+        observacao:`Alterado pelo ADM para ${statusLabel(status)}`
+      })
+    });
 
-  await carregar();
-  if (recarregarModal && site) renderSites();
+    await carregar();
+
+    if (recarregarModal && site) {
+      renderSites();
+    }
+
+    alert(`Status alterado para: ${statusLabel(status)}.`);
+  } catch (erro) {
+    console.error("Erro ao alterar status:", erro);
+    alert(`Não foi possível alterar o status.\n\n${erro.message}`);
+    throw erro;
+  }
 }
 
 async function verHistorico(id) {
@@ -492,10 +503,16 @@ function confirmarExclusao(id) {
       alert("Digite EXCLUIR exatamente.");
       return;
     }
-    await api(`/api/admin/casamentos/${id}`, {method:"DELETE"});
-    fecharModal("modalConfirmacao");
-    fecharModal("modalSite");
-    await carregar();
+    try {
+      await api(`/api/admin/casamentos/${id}`, {method:"DELETE"});
+      fecharModal("modalConfirmacao");
+      fecharModal("modalSite");
+      await carregar();
+      alert("Casamento excluído definitivamente.");
+    } catch (erro) {
+      console.error("Erro ao excluir casamento:", erro);
+      alert(`Não foi possível excluir.\n\n${erro.message}`);
+    }
   };
 
   abrirModal("modalConfirmacao");
