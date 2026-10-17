@@ -106,9 +106,9 @@ function t2Footer() {
   return `
     <footer class="t2-footer">
       <div class="t2-footer-brand">
-        <strong>Asgard Wedding</strong>
+        <strong>Noivaria</strong>
         <span>—</span>
-        <small>por Asgard Tech</small>
+        <small>por Azgard</small>
       </div>
 
       <div class="t2-social">
