@@ -11,11 +11,11 @@ if (casamentoSlug) {
 const WHATSAPP_EMPRESA = "5575999207455";
 
 const MENSAGEM_ORCAMENTO =
-  "Olá! Conheci a Asgard Wedding e gostaria de fazer um orçamento para um site de casamento.";
+  "Olá! Conheci a Noivaria e gostaria de fazer um orçamento para um site de casamento.";
 
 function abrirWhatsApp() {
   if (!WHATSAPP_EMPRESA) {
-    alert("Configure o número do WhatsApp da Asgard Tech no arquivo lobby.js.");
+    alert("Configure o número do WhatsApp da Azgard no arquivo lobby.js.");
     return;
   }
 

@@ -108,7 +108,7 @@ function t1Footer() {
   return `
     <footer class="t1-footer">
       <div class="t1-footer-brand">
-        <strong>ASGARD TECH</strong>
+        <img src="../../assets/branding/noivaria-logo.svg" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:8px"><strong>AZGARD</strong>
         <span>Feito com ❤ para todos os casais</span>
       </div>
 
@@ -118,7 +118,7 @@ function t1Footer() {
         <a href="${T1_SOCIAL.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a>
       </div>
 
-      <small>© 2026 Asgard TECH</small>
+      <small>© 2026 Azgard</small>
     </footer>
   `;
 }

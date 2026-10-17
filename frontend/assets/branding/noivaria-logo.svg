@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1050" role="img" aria-labelledby="title desc">
+<title id="title">Noivaria</title>
+<desc id="desc">Símbolo da Noivaria com dois arcos verdes entrelaçados.</desc>
+<defs>
+  <linearGradient id="left" x1="280" y1="120" x2="760" y2="930" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#173E30"/>
+    <stop offset="1" stop-color="#2F644D"/>
+  </linearGradient>
+  <linearGradient id="right" x1="760" y1="280" x2="1160" y2="930" gradientUnits="userSpaceOnUse">
+    <stop offset="0" stop-color="#6F927B"/>
+    <stop offset="1" stop-color="#5C806A"/>
+  </linearGradient>
+</defs>
+<path d="M268 930V482C268 289 411 139 582 139c151 0 275 116 275 286V930H579V589c0-136 98-246 253-274-40-106-133-177-250-177-171 0-314 150-314 344V930Z" fill="url(#left)"/>
+<path d="M579 930V592c0-163 132-294 294-294s294 131 294 294v338H856V592c0-70-56-126-125-126s-126 56-126 126v338Z" fill="url(#right)"/>
+</svg>

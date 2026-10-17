@@ -3,14 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Asgard Wedding</title>
+  <title>Noivaria</title>
   <style>
     *{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:#f6f3ed;color:#26332e;font-family:Inter,Arial,sans-serif}.box{max-width:600px;padding:36px;text-align:center}.box h1{font:400 42px Georgia,serif;margin:8px 0}.box p{color:#6f7772;line-height:1.6}.tag{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase}.spinner{width:32px;height:32px;margin:18px auto;border:3px solid #ddd;border-top-color:#35584d;border-radius:50%;animation:s .8s linear infinite}@keyframes s{to{transform:rotate(360deg)}}
   </style>
+  <link rel="icon" type="image/svg+xml" href="assets/branding/noivaria-logo.svg">
 </head>
 <body>
 <div class="box" id="estado">
-  <span class="tag">Asgard Wedding</span>
+  <span class="tag">Noivaria</span>
   <h1>Carregando...</h1>
   <div class="spinner"></div>
 </div>
@@ -37,7 +38,7 @@ function mensagemForaDoAr(c){
     rascunho:"Este site ainda não foi publicado."
   };
   document.getElementById("estado").innerHTML=`
-    <span class="tag">Asgard Wedding</span>
+    <span class="tag">Noivaria</span>
     <h1>${nomes}</h1>
     <p>${textos[c.status]||"Este site não está disponível no momento."}</p>
   `;
