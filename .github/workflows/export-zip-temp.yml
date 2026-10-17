@@ -1,0 +1,21 @@
+name: Export ZIP
+on:
+  push:
+    branches:
+      - export-zip-temp
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build ZIP
+        run: |
+          rm -rf .git
+          zip -qr noivaria-site-atualizado.zip . -x "noivaria-site-atualizado.zip"
+      - name: Upload ZIP
+        uses: actions/upload-artifact@v4
+        with:
+          name: noivaria-site-atualizado
+          path: noivaria-site-atualizado.zip
+          if-no-files-found: error
+          retention-days: 1
