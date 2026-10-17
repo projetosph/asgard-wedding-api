@@ -57,7 +57,7 @@ function t3Footer(){
   <footer class="t3-footer">
     <div class="footer-brand">
       <span>Feito para celebrar histórias.</span>
-      <span><strong>NOIVARIA</strong> · por Azgard</span>
+      <span><img src="../../assets/branding/noivaria-logo.svg" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:8px"><strong>NOIVARIA</strong> · por Azgard</span>
     </div>
 
     <div class="footer-social">
