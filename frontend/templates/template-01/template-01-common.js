@@ -108,7 +108,7 @@ function t1Footer() {
   return `
     <footer class="t1-footer">
       <div class="t1-footer-brand">
-        <strong>AZGARD</strong>
+        <img src="../../assets/branding/noivaria-logo.svg" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:8px"><strong>AZGARD</strong>
         <span>Feito com ❤ para todos os casais</span>
       </div>
 
