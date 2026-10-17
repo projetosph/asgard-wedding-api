@@ -1,16 +1,39 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 1050" role="img" aria-labelledby="title desc">
-<title id="title">Noivaria</title>
-<desc id="desc">Símbolo da Noivaria com dois arcos verdes entrelaçados.</desc>
-<defs>
-  <linearGradient id="left" x1="280" y1="120" x2="760" y2="930" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#173E30"/>
-    <stop offset="1" stop-color="#2F644D"/>
-  </linearGradient>
-  <linearGradient id="right" x1="760" y1="280" x2="1160" y2="930" gradientUnits="userSpaceOnUse">
-    <stop offset="0" stop-color="#6F927B"/>
-    <stop offset="1" stop-color="#5C806A"/>
-  </linearGradient>
-</defs>
-<path d="M268 930V482C268 289 411 139 582 139c151 0 275 116 275 286V930H579V589c0-136 98-246 253-274-40-106-133-177-250-177-171 0-314 150-314 344V930Z" fill="url(#left)"/>
-<path d="M579 930V592c0-163 132-294 294-294s294 131 294 294v338H856V592c0-70-56-126-125-126s-126 56-126 126v338Z" fill="url(#right)"/>
+  <title id="title">Noivaria</title>
+  <desc id="desc">Símbolo da Noivaria formado por dois arcos verdes entrelaçados.</desc>
+  <defs>
+    <linearGradient id="dark" x1="280" y1="130" x2="760" y2="940" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#173B2D"/>
+      <stop offset="1" stop-color="#2E604A"/>
+    </linearGradient>
+    <linearGradient id="light" x1="650" y1="300" x2="1160" y2="940" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#789A84"/>
+      <stop offset="1" stop-color="#5C806A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- arco esquerdo -->
+  <path d="
+    M 267 934
+    L 267 486
+    C 267 293 406 138 580 138
+    C 719 138 835 244 854 386
+    C 725 418 580 503 580 624
+    L 580 934
+    Z"
+    fill="url(#dark)"/>
+
+  <!-- arco direito -->
+  <path d="
+    M 580 934
+    L 580 607
+    C 580 445 711 315 872 315
+    C 1033 315 1169 445 1169 607
+    L 1169 934
+    L 855 934
+    L 855 607
+    C 855 527 790 462 710 462
+    C 630 462 580 527 580 607
+    Z"
+    fill="url(#light)"/>
 </svg>
