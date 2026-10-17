@@ -57,7 +57,7 @@ function t3Footer(){
   <footer class="t3-footer">
     <div class="footer-brand">
       <span>Feito para celebrar histórias.</span>
-      <span><strong>ASGARD WEDDING</strong> · por Asgard Tech</span>
+      <span><strong>NOIVARIA</strong> · por Azgard</span>
     </div>
 
     <div class="footer-social">
