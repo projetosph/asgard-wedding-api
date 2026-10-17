@@ -1,5 +1,5 @@
 const API = "https://asgard-wedding-api.onrender.com";
-const SITE_BASE = "https://projetosph.github.io/asgard-wedding-api";
+const SITE_BASE = "https://noivaria.onrender.com";
 
 const token = sessionStorage.getItem("asgard_casal_token");
 const usuario = JSON.parse(sessionStorage.getItem("asgard_casal_usuario") || "null");
@@ -502,7 +502,7 @@ function baixarPdfPresencas() {
     doc.line(margemX, altura - 17, largura - margemX, altura - 17);
     doc.setFontSize(8.5);
     doc.setTextColor(95);
-    doc.text("Asgard Wedding · por Asgard Tech", margemX, altura - 11);
+    doc.text("Noivaria · por Azgard", margemX, altura - 11);
     doc.text(`Página ${pagina} de ${totalPaginas}`, largura - margemX, altura - 11, { align: "right" });
     doc.setTextColor(0);
   }
