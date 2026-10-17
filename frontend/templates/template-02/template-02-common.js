@@ -106,7 +106,7 @@ function t2Footer() {
   return `
     <footer class="t2-footer">
       <div class="t2-footer-brand">
-        <strong>Noivaria</strong>
+        <img src="../../assets/branding/noivaria-logo.svg" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:8px"><strong>Noivaria</strong>
         <span>—</span>
         <small>por Azgard</small>
       </div>
