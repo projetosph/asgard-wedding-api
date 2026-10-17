@@ -108,7 +108,7 @@ function t1Footer() {
   return `
     <footer class="t1-footer">
       <div class="t1-footer-brand">
-        <strong>ASGARD TECH</strong>
+        <strong>AZGARD</strong>
         <span>Feito com ❤ para todos os casais</span>
       </div>
 
@@ -118,7 +118,7 @@ function t1Footer() {
         <a href="${T1_SOCIAL.facebook}" target="_blank" rel="noopener noreferrer">Facebook</a>
       </div>
 
-      <small>© 2026 Asgard TECH</small>
+      <small>© 2026 Azgard</small>
     </footer>
   `;
 }
