@@ -149,3 +149,29 @@ html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);
   .settings-form-grid .full{grid-column:1}
   .settings-save-row{align-items:flex-start;flex-direction:column}
 }
+
+
+/* ===== IDENTIDADE NOIVARIA / LOGIN E PAINEL ===== */
+.brand-logo-img{width:46px;height:46px;object-fit:contain;flex:0 0 auto}
+.login-box-logo{width:64px;height:64px;display:block;margin-bottom:15px}
+.auth-page{background:
+  radial-gradient(circle at 12% 15%,rgba(118,147,127,.19),transparent 25%),
+  linear-gradient(135deg,#f4f6f2,#e9efea)}
+.auth-brand{position:relative;overflow:hidden;background:
+  radial-gradient(circle at 20% 12%,rgba(255,255,255,.55),transparent 24%),
+  linear-gradient(145deg,#e8efea,#dfe8e1)}
+.auth-brand::before,.auth-brand::after{content:"";position:absolute;pointer-events:none;border-radius:999px 999px 0 0;opacity:.13}
+.auth-brand::before{width:360px;height:560px;left:-110px;bottom:-180px;background:linear-gradient(180deg,#173e30,#2f644d)}
+.auth-brand::after{width:280px;height:440px;right:-80px;top:120px;background:linear-gradient(180deg,#71957d,#5c806a)}
+.auth-brand>.brand,.auth-copy{position:relative;z-index:1}
+.login-panel{background:rgba(255,255,255,.72);backdrop-filter:blur(12px)}
+.login-box{padding:34px;border:1px solid rgba(33,76,58,.1);border-radius:24px;background:rgba(255,255,255,.84);box-shadow:0 30px 80px rgba(31,64,50,.1)}
+.login-box input:focus{outline:none;border-color:var(--sage);box-shadow:0 0 0 3px rgba(141,163,151,.13)}
+.dashboard-page{background:
+  radial-gradient(circle at 92% 3%,rgba(118,147,127,.09),transparent 19%),
+  var(--bg)}
+.side-logo{filter:brightness(0) invert(1);opacity:.96}
+.sidebar{background:
+  radial-gradient(circle at 25% 0,rgba(118,147,127,.2),transparent 22%),
+  linear-gradient(180deg,#173a2c,#162d25)}
+.metric,.panel-card,.table-card,.list-card,.mp-card,.message-card,.gift-card{box-shadow:0 14px 38px rgba(31,64,50,.045)}
