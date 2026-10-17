@@ -147,3 +147,17 @@ button,input,select{font:inherit}.app{min-height:100vh;display:grid;grid-templat
   .admin-info-row strong,.admin-info-row a{max-width:100%}
   .password-display{justify-content:flex-start}
 }
+
+
+/* ===== IDENTIDADE NOIVARIA ===== */
+.admin-brand{display:flex;align-items:center;gap:11px}
+.admin-brand img{width:46px;height:46px;object-fit:contain;filter:brightness(0) invert(1);opacity:.96}
+.admin-brand>span{display:block}.admin-brand strong{display:block}.admin-brand small{display:block}
+.sidebar{background:
+  radial-gradient(circle at 20% 0,rgba(118,147,127,.23),transparent 24%),
+  linear-gradient(180deg,#173a2c 0%,#18352b 55%,#142b23 100%)}
+.main{background:
+  radial-gradient(circle at 96% 4%,rgba(118,147,127,.09),transparent 20%),
+  var(--bg)}
+.panel,.site-card,.metric,.modal-card{box-shadow:0 15px 40px rgba(31,64,50,.055)}
+.topbar{padding:3px 2px}.primary{box-shadow:0 8px 20px rgba(37,72,62,.14)}
