@@ -1095,7 +1095,7 @@ img { display: block; max-width: 100%; }
 .t2-social a{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--t2-line);border-radius:50%;color:var(--t2-muted);transition:.2s}
 .t2-social a:hover{transform:translateY(-2px);background:rgba(74,76,67,.06)}
 .t2-social a span{display:none}
-.t2-social svg{width:16px;height:16px;fill:currentColor;stroke:none}
+.t2-social svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 @media(max-width:820px){
   .t2-footer{align-items:flex-start}
   .t2-social{width:auto;margin-left:0;justify-content:flex-start}
