@@ -31,19 +31,20 @@ function chaveCredenciais() {
     "";
 
   if (!segredo || segredo.length < 16) {
-    throw new Error(
-      "Defina ADMIN_CREDENTIALS_KEY no Render com uma chave longa e secreta."
-    );
+    return null;
   }
 
   return crypto.createHash("sha256").update(segredo).digest();
 }
 
 function criptografarSenhaPainel(senha) {
+  const chave = chaveCredenciais();
+  if (!chave) return null;
+
   const iv = crypto.randomBytes(12);
   const cipher = crypto.createCipheriv(
     "aes-256-gcm",
-    chaveCredenciais(),
+    chave,
     iv
   );
 
@@ -71,9 +72,12 @@ function descriptografarSenhaPainel(valor) {
     return null;
   }
 
+  const chave = chaveCredenciais();
+  if (!chave) return null;
+
   const decipher = crypto.createDecipheriv(
     "aes-256-gcm",
-    chaveCredenciais(),
+    chave,
     Buffer.from(ivB64, "base64")
   );
 
@@ -854,64 +858,128 @@ router.post("/api/admin/casamentos/:id/reutilizar", async (req,res) => {
 });
 
 router.post("/api/admin/casamentos/:id/usuario-casal", async (req,res) => {
+  const client = await pool.connect();
+
   try {
     const casamentoId = Number(req.params.id);
     const nome = String(req.body.nome || "").trim();
     const email = String(req.body.email || "").trim().toLowerCase();
     const senha = String(req.body.senha || "");
 
-    if (!Number.isInteger(casamentoId) || !nome || !email || senha.length < 8) {
+    if (!Number.isInteger(casamentoId) || casamentoId <= 0 || !nome || !email || senha.length < 8) {
       return res.status(400).json({
         erro:"Informe casamento, nome, e-mail e senha com pelo menos 8 caracteres."
       });
     }
 
-    const { rows: usuarioExistente } = await pool.query(
-      `SELECT id,perfil FROM usuarios WHERE email=$1 LIMIT 1`,
+    const casamento = await client.query(
+      `SELECT id FROM casamentos WHERE id=$1 LIMIT 1`,
+      [casamentoId]
+    );
+
+    if (!casamento.rows[0]) {
+      return res.status(404).json({ erro:"Casamento não encontrado." });
+    }
+
+    const existente = await client.query(
+      `SELECT id,perfil,casamento_id
+       FROM usuarios
+       WHERE email=$1
+       LIMIT 1`,
       [email]
     );
 
-    if (usuarioExistente[0]?.perfil === "admin") {
+    if (existente.rows[0]?.perfil === "admin") {
       return res.status(409).json({
         erro:"Este e-mail pertence ao administrador e não pode ser usado como acesso de casal."
       });
     }
 
-    const { rows } = await pool.query(
-      `INSERT INTO usuarios (
-         casamento_id,nome,email,senha_hash,senha_admin_enc,perfil
-       )
-       VALUES ($1,$2,$3,$4,$5,'casal')
-       ON CONFLICT (email)
-       DO UPDATE SET
-         casamento_id=EXCLUDED.casamento_id,
-         nome=EXCLUDED.nome,
-         senha_hash=EXCLUDED.senha_hash,
-         senha_admin_enc=EXCLUDED.senha_admin_enc,
-         perfil='casal',
-         ativo=TRUE,
-         atualizado_em=NOW()
-       WHERE usuarios.perfil <> 'admin'
-       RETURNING id,casamento_id,nome,email,perfil,ativo`,
-      [
-        casamentoId,
-        nome,
-        email,
-        hashSenha(senha),
-        criptografarSenhaPainel(senha)
-      ]
-    );
+    const senhaEnc = criptografarSenhaPainel(senha);
+    const senhaHash = hashSenha(senha);
 
-    if (!rows[0]) {
+    let usuario;
+
+    if (existente.rows[0]) {
+      const atualizado = await client.query(
+        `UPDATE usuarios
+         SET
+           casamento_id=$1,
+           nome=$2,
+           senha_hash=$3,
+           senha_admin_enc=$4,
+           perfil='casal',
+           ativo=TRUE
+         WHERE id=$5
+           AND perfil <> 'admin'
+         RETURNING id,casamento_id,nome,email,perfil,ativo`,
+        [
+          casamentoId,
+          nome,
+          senhaHash,
+          senhaEnc,
+          existente.rows[0].id
+        ]
+      );
+      usuario = atualizado.rows[0];
+    } else {
+      const criado = await client.query(
+        `INSERT INTO usuarios (
+           casamento_id,nome,email,senha_hash,senha_admin_enc,perfil,ativo
+         )
+         VALUES ($1,$2,$3,$4,$5,'casal',TRUE)
+         RETURNING id,casamento_id,nome,email,perfil,ativo`,
+        [
+          casamentoId,
+          nome,
+          email,
+          senhaHash,
+          senhaEnc
+        ]
+      );
+      usuario = criado.rows[0];
+    }
+
+    if (!usuario) {
       return res.status(409).json({
         erro:"Este e-mail não pode ser usado para o casal."
       });
     }
 
-    res.status(201).json({ criado:true, usuario:rows[0] });
+    return res.status(201).json({
+      criado:true,
+      usuario,
+      senhaVisualizavel:Boolean(senhaEnc),
+      aviso: senhaEnc
+        ? null
+        : "Login criado normalmente. Para visualizar a senha pelo botão de olho, configure ADMIN_CREDENTIALS_KEY no Render e redefina a senha uma vez."
+    });
   } catch (erro) {
-    console.error(erro);
-    res.status(500).json({ erro:"Não foi possível criar o acesso do casal." });
+    console.error("Erro ao criar/redefinir acesso do casal:", erro);
+
+    if (erro.code === "42703") {
+      return res.status(500).json({
+        erro:
+          "A estrutura da tabela usuarios está desatualizada. " +
+          "Execute a migration de credenciais do ADM e tente novamente.",
+        codigo:erro.code
+      });
+    }
+
+    if (erro.code === "23505") {
+      return res.status(409).json({
+        erro:"Este e-mail já está sendo usado por outro usuário.",
+        codigo:erro.code
+      });
+    }
+
+    return res.status(500).json({
+      erro: erro.message
+        ? `Não foi possível criar o acesso do casal: ${erro.message}`
+        : "Não foi possível criar o acesso do casal."
+    });
+  } finally {
+    client.release();
   }
 });
 
