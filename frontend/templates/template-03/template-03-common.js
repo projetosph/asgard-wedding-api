@@ -56,8 +56,11 @@ function t3Footer(){
   return `
   <footer class="t3-footer">
     <div class="footer-brand">
+      <div class="footer-brand-main">
+        <img src="../../assets/branding/noivaria-logo.svg" alt="">
+        <div><strong>NOIVARIA</strong><small>por Azgard</small></div>
+      </div>
       <span>Feito para celebrar histórias.</span>
-      <span><img src="../../assets/branding/noivaria-logo.svg" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:8px"><strong>NOIVARIA</strong> · por Azgard</span>
     </div>
 
     <div class="footer-social">
@@ -73,7 +76,7 @@ function t3Footer(){
       </a>
 
       <a
-        href="https://www.instagram.com/asgardtec?stkn=MXA4dHZtNnd3aTI1Mg%3D%3D&utm_source=qr"
+        href="https://www.instagram.com/azgard.br?stkn=MXA4dHZtNnd3aTI1Mg%3D%3D&utm_source=qr"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Instagram"
@@ -84,7 +87,7 @@ function t3Footer(){
       </a>
 
       <a
-        href="https://www.facebook.com/share/19WMXVyN5B/?mibextid=wwXIfr"
+        href="https://www.facebook.com/people/Azgard-Solu%C3%A7%C3%B5es-Digitais/61575165721932/?mibextid=wwXIfr&rdid=OC62yg32hqhWkWQX&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19WMXVyN5B%2F%3Fmibextid%3DwwXIfr"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Facebook"
