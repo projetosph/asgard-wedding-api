@@ -6,6 +6,3 @@ ALTER TABLE usuarios
 
 ALTER TABLE usuarios
   ADD COLUMN IF NOT EXISTS atualizado_em TIMESTAMPTZ NOT NULL DEFAULT NOW();
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_usuarios_email_unique
-  ON usuarios (LOWER(email));
