@@ -32,10 +32,12 @@ async function carregarPresentes() {
       return `
         <article class="t1-product ${livre ? "contribuicaoLivreCard" : ""}">
           <div class="t1-product-media">
-            ${p.imagem
-              ? `<img src="${t1Esc(p.imagem)}" alt="${t1Esc(p.nome || "Presente")}" loading="lazy">`
-              : "SEM IMAGEM"
-            }
+            <div class="t1-product-media-fit">
+              ${p.imagem
+                ? `<img src="${t1Esc(p.imagem)}" alt="${t1Esc(p.nome || "Presente")}" loading="lazy">`
+                : `<span class="t1-product-no-image">SEM IMAGEM</span>`
+              }
+            </div>
           </div>
 
           <div class="t1-product-body">
