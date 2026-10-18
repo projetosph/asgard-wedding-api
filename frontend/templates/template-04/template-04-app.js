@@ -64,11 +64,13 @@ async function gifts() {
         return `
           <article class="gift ${livre ? "free-gift" : ""}">
             <div class="giftImg">
-              ${
-                p.imagem
-                  ? `<img src="${esc(p.imagem)}" alt="${esc(p.nome || "Presente")}">`
-                  : "SEM IMAGEM"
-              }
+              <div class="giftImgFit">
+                ${
+                  p.imagem
+                    ? `<img src="${esc(p.imagem)}" alt="${esc(p.nome || "Presente")}">`
+                    : `<span class="giftNoImage">SEM IMAGEM</span>`
+                }
+              </div>
             </div>
 
             <div class="giftBody">
