@@ -492,7 +492,7 @@ async function abrirSite(id) {
     msg.textContent = "Salvando...";
 
     try {
-      await api(`/api/admin/casamentos/${id}/usuario-casal`, {
+      const respostaAcesso = await api(`/api/admin/casamentos/${id}/usuario-casal`, {
         method:"POST",
         body:JSON.stringify({
           nome:`${s.noivo} & ${s.noiva}`,
@@ -502,7 +502,9 @@ async function abrirSite(id) {
       });
 
       document.getElementById("editSenhaCasal").value = "";
-      msg.textContent = "Acesso do casal salvo ✓";
+      msg.textContent = respostaAcesso.aviso
+        ? `Acesso salvo ✓ ${respostaAcesso.aviso}`
+        : "Acesso do casal salvo ✓";
       await carregar();
 
       const atualizado = sitePorId(id);
