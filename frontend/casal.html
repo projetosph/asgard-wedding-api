@@ -304,14 +304,42 @@
       <h2 id="modalPresenteTitulo">Novo presente</h2>
       <form id="formPresente" class="gift-form">
         <input id="presenteId" type="hidden">
+
+        <div class="gift-link-import">
+          <label for="presenteLink">Link do produto</label>
+          <div class="gift-link-row">
+            <input id="presenteLink" type="url" placeholder="Cole o link da loja aqui">
+            <button id="btnBuscarProduto" type="button" class="secondary-btn">BUSCAR</button>
+          </div>
+          <small>Ao colar o link, a Noivaria tenta preencher nome, imagem, valor e descrição. Você pode editar tudo antes de salvar.</small>
+          <p id="presenteBuscaMensagem"></p>
+        </div>
+
+        <div id="presentePreview" class="gift-import-preview hidden">
+          <div class="gift-import-image">
+            <img id="presentePreviewImagem" alt="Prévia do produto">
+            <span id="presentePreviewSemImagem">SEM IMAGEM</span>
+          </div>
+          <div class="gift-import-copy">
+            <span id="presentePreviewLoja" class="eyebrow">PRÉVIA</span>
+            <strong id="presentePreviewNome">Produto</strong>
+            <small id="presentePreviewValor">—</small>
+          </div>
+        </div>
+
         <label>Nome</label><input id="presenteNome" required maxlength="160">
         <label>Descrição</label><textarea id="presenteDescricao" rows="3"></textarea>
         <div class="two-cols">
           <div><label>Valor (R$)</label><input id="presenteValor" type="number" min="1" step="0.01" required></div>
-          <div><label>Imagem (URL)</label><input id="presenteImagem" type="url"></div>
+          <div><label>Imagem (URL)</label><input id="presenteImagem" type="url" placeholder="https://..."></div>
         </div>
-        <label>Link da loja (opcional)</label><input id="presenteLink" type="url">
-        <button type="submit" class="primary-btn">SALVAR PRESENTE</button>
+
+        <p class="gift-link-note">O link acima será usado também no botão <strong>Ver produto</strong> do site.</p>
+
+        <div class="gift-modal-actions">
+          <button id="cancelarPresente" type="button" class="ghost-btn">CANCELAR</button>
+          <button type="submit" class="primary-btn">SALVAR PRESENTE</button>
+        </div>
         <p id="presenteMensagem"></p>
       </form>
     </div>
