@@ -18,6 +18,7 @@ let musica = null;
 let filtroPresentes = "";
 let presenteArrastadoId = null;
 let fotoGaleriaArrastadaId = null;
+let arquivosGaleriaSelecionados = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btnSair").addEventListener("click", sair);
@@ -43,6 +44,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   document.getElementById("btnBaixarPdfPresencas").addEventListener("click", baixarPdfPresencas);
   document.getElementById("formGaleria").addEventListener("submit", adicionarFotoGaleria);
+  configurarUploadGaleria();
   document.getElementById("formMusica").addEventListener("submit", salvarMusica);
   document.getElementById("btnRemoverMusica").addEventListener("click", removerMusica);
   document.getElementById("formConfiguracoes").addEventListener("submit", salvarConfiguracoes);
@@ -645,6 +647,256 @@ async function salvarConfiguracoes(evento) {
   }
 }
 
+function configurarUploadGaleria() {
+  const dropzone = document.getElementById("galleryDropzone");
+  const input = document.getElementById("galeriaArquivos");
+  const limpar = document.getElementById("galeriaLimparSelecao");
+  const enviar = document.getElementById("galeriaEnviarFotos");
+
+  if (!dropzone || !input) return;
+
+  const abrirSeletor = () => input.click();
+
+  dropzone.addEventListener("click", abrirSeletor);
+  dropzone.addEventListener("keydown", (evento) => {
+    if (evento.key === "Enter" || evento.key === " ") {
+      evento.preventDefault();
+      abrirSeletor();
+    }
+  });
+
+  ["dragenter", "dragover"].forEach((tipo) => {
+    dropzone.addEventListener(tipo, (evento) => {
+      evento.preventDefault();
+      dropzone.classList.add("drag-over");
+    });
+  });
+
+  ["dragleave", "drop"].forEach((tipo) => {
+    dropzone.addEventListener(tipo, (evento) => {
+      evento.preventDefault();
+      dropzone.classList.remove("drag-over");
+    });
+  });
+
+  dropzone.addEventListener("drop", (evento) => {
+    selecionarArquivosGaleria(evento.dataTransfer?.files || []);
+  });
+
+  input.addEventListener("change", () => {
+    selecionarArquivosGaleria(input.files || []);
+    input.value = "";
+  });
+
+  limpar?.addEventListener("click", limparSelecaoGaleria);
+  enviar?.addEventListener("click", enviarFotosGaleria);
+}
+
+function selecionarArquivosGaleria(fileList) {
+  const mensagem = document.getElementById("galeriaUploadMensagem");
+  const permitidos = new Set([
+    "image/jpeg",
+    "image/png",
+    "image/webp",
+    "image/heic",
+    "image/heif"
+  ]);
+  const limiteBytes = 15 * 1024 * 1024;
+  const novos = Array.from(fileList || []).filter((arquivo) => {
+    const extensaoAceita = /\.(jpe?g|png|webp|heic|heif)$/i.test(arquivo.name || "");
+    return (permitidos.has(arquivo.type) || extensaoAceita) && arquivo.size <= limiteBytes;
+  });
+
+  if (!novos.length) {
+    if (mensagem) {
+      mensagem.textContent = "Escolha imagens JPG, PNG, WEBP ou HEIC de até 15 MB.";
+      mensagem.className = "error-text";
+    }
+    return;
+  }
+
+  const combinados = [...arquivosGaleriaSelecionados, ...novos];
+  arquivosGaleriaSelecionados = combinados.slice(0, 30);
+  renderSelecaoGaleria();
+
+  if (mensagem) {
+    mensagem.textContent =
+      combinados.length > 30
+        ? "O limite é de 30 fotos por envio. As 30 primeiras foram selecionadas."
+        : "";
+    mensagem.className = combinados.length > 30 ? "error-text" : "";
+  }
+}
+
+function renderSelecaoGaleria() {
+  const bloco = document.getElementById("galeriaSelecao");
+  const preview = document.getElementById("galeriaPreview");
+  const titulo = document.getElementById("galeriaSelecaoTitulo");
+
+  if (!bloco || !preview) return;
+
+  if (!arquivosGaleriaSelecionados.length) {
+    bloco.classList.add("hidden");
+    preview.innerHTML = "";
+    return;
+  }
+
+  bloco.classList.remove("hidden");
+  titulo.textContent = `${arquivosGaleriaSelecionados.length} foto(s) selecionada(s)`;
+
+  preview.innerHTML = arquivosGaleriaSelecionados.map((arquivo, indice) => {
+    const url = URL.createObjectURL(arquivo);
+    return `
+      <article class="gallery-preview-item" data-preview-index="${indice}">
+        <img src="${url}" alt="${escapeAttr(arquivo.name)}" onload="URL.revokeObjectURL(this.src)">
+        <button type="button" data-remove-preview="${indice}" aria-label="Remover foto">×</button>
+        <small>${escapeHtml(arquivo.name)}</small>
+        <div class="gallery-upload-progress"><i style="width:0%"></i></div>
+        <span class="gallery-upload-status">Aguardando</span>
+      </article>
+    `;
+  }).join("");
+
+  preview.querySelectorAll("[data-remove-preview]").forEach((botao) => {
+    botao.addEventListener("click", () => {
+      arquivosGaleriaSelecionados.splice(Number(botao.dataset.removePreview), 1);
+      renderSelecaoGaleria();
+    });
+  });
+}
+
+function limparSelecaoGaleria() {
+  arquivosGaleriaSelecionados = [];
+  document.getElementById("galeriaLegendaUpload").value = "";
+  document.getElementById("galeriaUploadMensagem").textContent = "";
+  renderSelecaoGaleria();
+}
+
+async function enviarFotosGaleria() {
+  if (!arquivosGaleriaSelecionados.length) return;
+
+  const botao = document.getElementById("galeriaEnviarFotos");
+  const mensagem = document.getElementById("galeriaUploadMensagem");
+  const legenda = document.getElementById("galeriaLegendaUpload").value.trim();
+
+  botao.disabled = true;
+  botao.textContent = "ENVIANDO...";
+  mensagem.textContent = "Preparando upload seguro...";
+  mensagem.className = "";
+
+  try {
+    const assinatura = await api("/api/casal/galeria/cloudinary-assinatura", {
+      method: "POST",
+      body: JSON.stringify({})
+    });
+
+    let enviados = 0;
+
+    // Envio sequencial reduz picos de memória e funciona melhor em celulares.
+    for (let indice = 0; indice < arquivosGaleriaSelecionados.length; indice++) {
+      const arquivo = arquivosGaleriaSelecionados[indice];
+      const card = document.querySelector(`[data-preview-index="${indice}"]`);
+      const barra = card?.querySelector(".gallery-upload-progress i");
+      const status = card?.querySelector(".gallery-upload-status");
+
+      if (status) status.textContent = "Enviando...";
+
+      const resultado = await uploadArquivoCloudinary(
+        arquivo,
+        assinatura,
+        (percentual) => {
+          if (barra) barra.style.width = `${percentual}%`;
+          if (status) status.textContent = `Enviando ${percentual}%`;
+        }
+      );
+
+      const imagemOtimizada = otimizarUrlCloudinary(resultado.secure_url);
+
+      await api("/api/casal/galeria", {
+        method: "POST",
+        body: JSON.stringify({
+          imagemUrl: imagemOtimizada,
+          legenda,
+          cloudinaryPublicId: resultado.public_id
+        })
+      });
+
+      enviados++;
+      if (barra) barra.style.width = "100%";
+      if (status) status.textContent = "Enviada ✓";
+      mensagem.textContent = `${enviados} de ${arquivosGaleriaSelecionados.length} foto(s) enviadas.`;
+    }
+
+    arquivosGaleriaSelecionados = [];
+    document.getElementById("galeriaLegendaUpload").value = "";
+    renderSelecaoGaleria();
+    mensagem.textContent = "Fotos adicionadas à galeria ✓";
+    await carregarTudo();
+  } catch (e) {
+    mensagem.textContent = e.message || "Não foi possível enviar as fotos.";
+    mensagem.className = "error-text";
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "ENVIAR FOTOS";
+  }
+}
+
+function uploadArquivoCloudinary(arquivo, assinatura, aoProgredir) {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    const url = `https://api.cloudinary.com/v1_1/${encodeURIComponent(assinatura.cloudName)}/image/upload`;
+
+    xhr.open("POST", url);
+
+    xhr.upload.addEventListener("progress", (evento) => {
+      if (!evento.lengthComputable) return;
+      const percentual = Math.max(
+        1,
+        Math.min(99, Math.round((evento.loaded / evento.total) * 100))
+      );
+      aoProgredir?.(percentual);
+    });
+
+    xhr.addEventListener("load", () => {
+      let dados = {};
+      try {
+        dados = JSON.parse(xhr.responseText || "{}");
+      } catch {}
+
+      if (xhr.status >= 200 && xhr.status < 300 && dados.secure_url && dados.public_id) {
+        aoProgredir?.(100);
+        resolve(dados);
+      } else {
+        reject(new Error(dados.error?.message || "Falha ao enviar imagem ao Cloudinary."));
+      }
+    });
+
+    xhr.addEventListener("error", () => {
+      reject(new Error("Falha de conexão durante o envio da imagem."));
+    });
+
+    const form = new FormData();
+    form.append("file", arquivo);
+    form.append("api_key", assinatura.apiKey);
+    form.append("timestamp", String(assinatura.timestamp));
+    form.append("signature", assinatura.signature);
+    form.append("folder", assinatura.folder);
+    xhr.send(form);
+  });
+}
+
+function otimizarUrlCloudinary(url) {
+  const valor = String(url || "");
+  if (!valor.includes("res.cloudinary.com") || !valor.includes("/upload/")) {
+    return valor;
+  }
+
+  return valor.replace(
+    "/upload/",
+    "/upload/f_auto,q_auto,w_1600,c_limit/"
+  );
+}
+
 function renderGaleria() {
   const container = document.getElementById("listaGaleriaPainel");
 
@@ -770,6 +1022,12 @@ async function adicionarFotoGaleria(evento) {
   const mensagem = document.getElementById("galeriaMensagem");
   const imagemUrl = document.getElementById("galeriaImagemUrl").value.trim();
   const legenda = document.getElementById("galeriaLegenda").value.trim();
+
+  if (!imagemUrl) {
+    mensagem.textContent = "Informe uma URL ou use o envio de fotos acima.";
+    mensagem.className = "error-text";
+    return;
+  }
 
   try {
     mensagem.textContent = "Salvando...";
