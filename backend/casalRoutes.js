@@ -1,4 +1,6 @@
 const express = require("express");
+const dns = require("node:dns").promises;
+const net = require("node:net");
 const { pool } = require("./db");
 const cloudinary = require("cloudinary").v2;
 
@@ -37,6 +39,283 @@ function horarioValido(valor) {
   if (!valor) return false;
   return /^([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/.test(String(valor));
 }
+
+
+function ipPrivado(ip) {
+  const versao = net.isIP(ip);
+  if (!versao) return true;
+
+  if (versao === 4) {
+    const [a, b] = ip.split(".").map(Number);
+    return (
+      a === 10 ||
+      a === 127 ||
+      a === 0 ||
+      (a === 169 && b === 254) ||
+      (a === 172 && b >= 16 && b <= 31) ||
+      (a === 192 && b === 168) ||
+      (a === 100 && b >= 64 && b <= 127) ||
+      a >= 224
+    );
+  }
+
+  const normal = ip.toLowerCase();
+  return (
+    normal === "::1" ||
+    normal === "::" ||
+    normal.startsWith("fe80:") ||
+    normal.startsWith("fc") ||
+    normal.startsWith("fd") ||
+    normal.startsWith("::ffff:127.") ||
+    normal.startsWith("::ffff:10.") ||
+    normal.startsWith("::ffff:192.168.")
+  );
+}
+
+async function validarUrlPublica(valor) {
+  let url;
+  try {
+    url = new URL(String(valor || "").trim());
+  } catch {
+    throw new Error("Link do produto inválido.");
+  }
+
+  if (!["http:", "https:"].includes(url.protocol)) {
+    throw new Error("Use um link HTTP ou HTTPS.");
+  }
+
+  if (!url.hostname || url.username || url.password) {
+    throw new Error("Link do produto inválido.");
+  }
+
+  const host = url.hostname.toLowerCase();
+  if (
+    host === "localhost" ||
+    host.endsWith(".localhost") ||
+    host.endsWith(".local") ||
+    host.endsWith(".internal")
+  ) {
+    throw new Error("Este endereço não pode ser consultado.");
+  }
+
+  const enderecos = await dns.lookup(host, { all: true, verbatim: true });
+  if (!enderecos.length || enderecos.some((item) => ipPrivado(item.address))) {
+    throw new Error("Este endereço não pode ser consultado.");
+  }
+
+  return url;
+}
+
+function decodeHtml(texto) {
+  return String(texto || "")
+    .replace(/&amp;/gi, "&")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#39;|&apos;/gi, "'")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&#x2F;/gi, "/")
+    .replace(/&#(\d+);/g, (_, n) => String.fromCharCode(Number(n)))
+    .trim();
+}
+
+function atributosHtml(tag) {
+  const attrs = {};
+  String(tag || "").replace(
+    /([:\w-]+)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/g,
+    (_, nome, a, b, d) => {
+      attrs[String(nome).toLowerCase()] = decodeHtml(a ?? b ?? d ?? "");
+      return "";
+    }
+  );
+  return attrs;
+}
+
+function metaDoHtml(html, nomes) {
+  const procurados = new Set(nomes.map((x) => x.toLowerCase()));
+  const tags = String(html || "").match(/<meta\b[^>]*>/gi) || [];
+
+  for (const tag of tags) {
+    const attrs = atributosHtml(tag);
+    const chave = String(attrs.property || attrs.name || attrs.itemprop || "").toLowerCase();
+    if (procurados.has(chave) && attrs.content) {
+      return attrs.content.trim();
+    }
+  }
+  return null;
+}
+
+function normalizarImagemProduto(valor) {
+  if (!valor) return null;
+  if (typeof valor === "string") return valor;
+  if (Array.isArray(valor)) {
+    for (const item of valor) {
+      const encontrada = normalizarImagemProduto(item);
+      if (encontrada) return encontrada;
+    }
+    return null;
+  }
+  if (typeof valor === "object") {
+    return valor.url || valor.contentUrl || valor.secure_url || null;
+  }
+  return null;
+}
+
+function procurarProdutoJsonLd(no) {
+  if (!no) return null;
+  if (Array.isArray(no)) {
+    for (const item of no) {
+      const achado = procurarProdutoJsonLd(item);
+      if (achado) return achado;
+    }
+    return null;
+  }
+  if (typeof no !== "object") return null;
+
+  const tipo = no["@type"];
+  const tipos = Array.isArray(tipo) ? tipo : [tipo];
+  if (tipos.some((x) => String(x || "").toLowerCase() === "product")) {
+    return no;
+  }
+
+  if (no["@graph"]) {
+    const achado = procurarProdutoJsonLd(no["@graph"]);
+    if (achado) return achado;
+  }
+
+  for (const valor of Object.values(no)) {
+    const achado = procurarProdutoJsonLd(valor);
+    if (achado) return achado;
+  }
+  return null;
+}
+
+function produtoDoJsonLd(html) {
+  const scripts = String(html || "").match(
+    /<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>[\s\S]*?<\/script>/gi
+  ) || [];
+
+  for (const bloco of scripts) {
+    const conteudo = bloco
+      .replace(/^<script\b[^>]*>/i, "")
+      .replace(/<\/script>$/i, "")
+      .trim();
+
+    try {
+      const json = JSON.parse(conteudo);
+      const produto = procurarProdutoJsonLd(json);
+      if (produto) return produto;
+    } catch {
+      // Alguns sites publicam JSON-LD inválido; nesse caso seguimos para meta tags.
+    }
+  }
+
+  return null;
+}
+
+function precoDoProduto(produto, html) {
+  const ofertas = produto?.offers;
+  const lista = Array.isArray(ofertas) ? ofertas : (ofertas ? [ofertas] : []);
+
+  for (const oferta of lista) {
+    const bruto =
+      oferta?.price ??
+      oferta?.lowPrice ??
+      oferta?.highPrice ??
+      oferta?.priceSpecification?.price;
+
+    const numero = Number(String(bruto ?? "").replace(",", "."));
+    if (Number.isFinite(numero) && numero > 0) return numero;
+  }
+
+  const meta = metaDoHtml(html, [
+    "product:price:amount",
+    "og:price:amount",
+    "price"
+  ]);
+  const numero = Number(String(meta ?? "").replace(/[^0-9,.-]/g, "").replace(",", "."));
+  return Number.isFinite(numero) && numero > 0 ? numero : null;
+}
+
+async function baixarHtmlProduto(urlInicial) {
+  let atual = await validarUrlPublica(urlInicial);
+
+  for (let redirecionamentos = 0; redirecionamentos <= 4; redirecionamentos++) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 8000);
+
+    let resposta;
+    try {
+      resposta = await fetch(atual, {
+        method: "GET",
+        redirect: "manual",
+        signal: controller.signal,
+        headers: {
+          "User-Agent": "Mozilla/5.0 (compatible; NoivariaProductPreview/1.0)",
+          "Accept": "text/html,application/xhtml+xml"
+        }
+      });
+    } finally {
+      clearTimeout(timer);
+    }
+
+    if ([301, 302, 303, 307, 308].includes(resposta.status)) {
+      const local = resposta.headers.get("location");
+      if (!local) throw new Error("O site retornou um redirecionamento inválido.");
+      atual = await validarUrlPublica(new URL(local, atual).href);
+      continue;
+    }
+
+    if (!resposta.ok) {
+      throw new Error("A loja não permitiu consultar esse produto.");
+    }
+
+    const tipo = String(resposta.headers.get("content-type") || "").toLowerCase();
+    if (!tipo.includes("text/html") && !tipo.includes("application/xhtml+xml")) {
+      throw new Error("O link informado não parece ser uma página de produto.");
+    }
+
+    const limite = 2 * 1024 * 1024;
+    const reader = resposta.body?.getReader();
+    if (!reader) {
+      const texto = await resposta.text();
+      if (Buffer.byteLength(texto) > limite) {
+        throw new Error("A página do produto é grande demais para leitura automática.");
+      }
+      return { html: texto, urlFinal: atual };
+    }
+
+    const partes = [];
+    let total = 0;
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      total += value.byteLength;
+      if (total > limite) {
+        await reader.cancel();
+        throw new Error("A página do produto é grande demais para leitura automática.");
+      }
+      partes.push(Buffer.from(value));
+    }
+
+    return {
+      html: Buffer.concat(partes).toString("utf8"),
+      urlFinal: atual
+    };
+  }
+
+  throw new Error("A loja redirecionou o link muitas vezes.");
+}
+
+function resolverUrl(valor, base) {
+  if (!valor) return null;
+  try {
+    return new URL(valor, base).href;
+  } catch {
+    return null;
+  }
+}
+
 
 router.get("/api/casal/painel", async (req, res) => {
   try {
@@ -354,6 +633,50 @@ router.get("/api/casal/mercadopago/status", async (req, res) => {
     console.error("Erro status MP casal:", erro);
     return res.status(500).json({
       erro: "Não foi possível consultar o Mercado Pago."
+    });
+  }
+});
+
+router.post("/api/casal/presentes/preview-link", async (req, res) => {
+  try {
+    const linkOriginal = textoOuNull(req.body.link, 3000);
+    if (!linkOriginal) {
+      return res.status(400).json({ erro: "Informe o link do produto." });
+    }
+
+    const { html, urlFinal } = await baixarHtmlProduto(linkOriginal);
+    const produto = produtoDoJsonLd(html);
+
+    const tituloHtml = (String(html).match(/<title[^>]*>([\s\S]*?)<\/title>/i) || [])[1];
+    const nome =
+      textoOuNull(produto?.name, 160) ||
+      textoOuNull(metaDoHtml(html, ["og:title", "twitter:title"]), 160) ||
+      textoOuNull(decodeHtml(tituloHtml), 160);
+
+    const descricao =
+      textoOuNull(produto?.description, 1000) ||
+      textoOuNull(metaDoHtml(html, ["og:description", "twitter:description", "description"]), 1000);
+
+    const imagemBruta =
+      normalizarImagemProduto(produto?.image) ||
+      metaDoHtml(html, ["og:image:secure_url", "og:image", "twitter:image"]);
+
+    const imagem = resolverUrl(imagemBruta, urlFinal.href);
+    const valor = precoDoProduto(produto, html);
+
+    return res.json({
+      nome: nome || null,
+      descricao: descricao || null,
+      valor,
+      imagem: imagem || null,
+      link: linkOriginal,
+      dominio: new URL(linkOriginal).hostname.replace(/^www\./, ""),
+      encontrado: Boolean(nome || descricao || valor || imagem)
+    });
+  } catch (erro) {
+    console.error("Erro preview de produto:", erro);
+    return res.status(422).json({
+      erro: erro.message || "Não foi possível ler esse produto automaticamente."
     });
   }
 });

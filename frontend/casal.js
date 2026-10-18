@@ -19,6 +19,7 @@ let filtroPresentes = "";
 let presenteArrastadoId = null;
 let fotoGaleriaArrastadaId = null;
 let arquivosGaleriaSelecionados = [];
+let buscaPresenteTimer = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btnSair").addEventListener("click", sair);
@@ -34,6 +35,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   document.getElementById("btnNovoPresente").addEventListener("click", () => abrirModalPresente());
   document.getElementById("fecharModal").addEventListener("click", fecharModal);
   document.getElementById("formPresente").addEventListener("submit", salvarPresente);
+  document.getElementById("cancelarPresente").addEventListener("click", fecharModal);
+  document.getElementById("btnBuscarProduto").addEventListener("click", () => buscarProdutoDoLink(true));
+  document.getElementById("presenteLink").addEventListener("input", agendarBuscaProduto);
+  ["presenteNome", "presenteValor", "presenteImagem"].forEach((id) => {
+    document.getElementById(id).addEventListener("input", atualizarPreviewPresente);
+  });
   document.getElementById("mpResumoBotao").addEventListener("click", () => abrirView("mercadopago"));
   document.getElementById("btnConectarMp").addEventListener("click", conectarMercadoPago);
 
@@ -1169,6 +1176,118 @@ async function conectarMercadoPago() {
   }
 }
 
+function agendarBuscaProduto() {
+  atualizarPreviewPresente();
+  clearTimeout(buscaPresenteTimer);
+
+  const link = document.getElementById("presenteLink").value.trim();
+  if (!/^https?:\/\//i.test(link)) return;
+
+  buscaPresenteTimer = setTimeout(() => buscarProdutoDoLink(false), 700);
+}
+
+async function buscarProdutoDoLink(forcar = false) {
+  clearTimeout(buscaPresenteTimer);
+
+  const linkInput = document.getElementById("presenteLink");
+  const mensagem = document.getElementById("presenteBuscaMensagem");
+  const botao = document.getElementById("btnBuscarProduto");
+  const link = linkInput.value.trim();
+
+  if (!link) {
+    if (forcar) {
+      mensagem.textContent = "Cole primeiro o link do produto.";
+      mensagem.className = "error-text";
+    }
+    return;
+  }
+
+  if (!/^https?:\/\//i.test(link)) {
+    if (forcar) {
+      mensagem.textContent = "Use um link começando com http:// ou https://.";
+      mensagem.className = "error-text";
+    }
+    return;
+  }
+
+  try {
+    mensagem.textContent = "Buscando informações do produto...";
+    mensagem.className = "";
+    botao.disabled = true;
+    botao.textContent = "BUSCANDO...";
+
+    const dados = await api("/api/casal/presentes/preview-link", {
+      method: "POST",
+      body: JSON.stringify({ link })
+    });
+
+    if (dados.nome) document.getElementById("presenteNome").value = dados.nome;
+    if (dados.descricao) document.getElementById("presenteDescricao").value = dados.descricao;
+    if (Number(dados.valor) > 0) document.getElementById("presenteValor").value = Number(dados.valor).toFixed(2);
+    if (dados.imagem) document.getElementById("presenteImagem").value = dados.imagem;
+
+    mensagem.textContent = dados.encontrado
+      ? "Informações encontradas. Confira e edite o que quiser antes de salvar."
+      : "A loja respondeu, mas não encontramos dados automáticos. Preencha manualmente.";
+    mensagem.className = dados.encontrado ? "success-text" : "";
+    atualizarPreviewPresente(dados.dominio || "");
+  } catch (e) {
+    mensagem.textContent = `${e.message} Você ainda pode preencher os campos manualmente.`;
+    mensagem.className = "error-text";
+  } finally {
+    botao.disabled = false;
+    botao.textContent = "BUSCAR";
+  }
+}
+
+function atualizarPreviewPresente(dominio = "") {
+  const preview = document.getElementById("presentePreview");
+  const imagem = document.getElementById("presenteImagem").value.trim();
+  const nome = document.getElementById("presenteNome").value.trim();
+  const valor = Number(document.getElementById("presenteValor").value);
+  const link = document.getElementById("presenteLink").value.trim();
+
+  if (!imagem && !nome && !valor && !link) {
+    preview.classList.add("hidden");
+    return;
+  }
+
+  preview.classList.remove("hidden");
+
+  const img = document.getElementById("presentePreviewImagem");
+  const semImagem = document.getElementById("presentePreviewSemImagem");
+
+  if (imagem) {
+    img.src = imagem;
+    img.hidden = false;
+    semImagem.hidden = true;
+    img.onerror = () => {
+      img.hidden = true;
+      semImagem.hidden = false;
+    };
+  } else {
+    img.removeAttribute("src");
+    img.hidden = true;
+    semImagem.hidden = false;
+  }
+
+  let loja = dominio;
+  if (!loja && link) {
+    try {
+      loja = new URL(link).hostname.replace(/^www\./, "");
+    } catch {}
+  }
+
+  document.getElementById("presentePreviewLoja").textContent =
+    loja ? loja.toUpperCase() : "PRÉVIA";
+
+  document.getElementById("presentePreviewNome").textContent =
+    nome || "Nome do produto";
+
+  document.getElementById("presentePreviewValor").textContent =
+    Number.isFinite(valor) && valor > 0 ? moeda(valor) : "Valor ainda não informado";
+}
+
 function abrirModalPresente(presente = null) {
   document.getElementById("modalPresenteTitulo").textContent =
     presente ? "Editar presente" : "Novo presente";
@@ -1180,11 +1299,15 @@ function abrirModalPresente(presente = null) {
   document.getElementById("presenteImagem").value = presente?.imagem || "";
   document.getElementById("presenteLink").value = presente?.link || "";
   document.getElementById("presenteMensagem").textContent = "";
+  document.getElementById("presenteBuscaMensagem").textContent = "";
+  document.getElementById("presenteBuscaMensagem").className = "";
+  atualizarPreviewPresente();
 
   document.getElementById("modalPresente").classList.remove("hidden");
 }
 
 function fecharModal() {
+  clearTimeout(buscaPresenteTimer);
   document.getElementById("modalPresente").classList.add("hidden");
 }
 
