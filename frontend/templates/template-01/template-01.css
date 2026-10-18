@@ -298,3 +298,20 @@ button{cursor:pointer}
   .t1-footer-brand{align-items:flex-start;flex-direction:column;gap:7px}
   .t1-social{margin-left:0}
 }
+
+
+/* ===== IMAGENS DE PRESENTES — PADRÃO VISUAL ===== */
+.t1-product-media{
+  position:relative;
+  background:#fff;
+  box-shadow:inset 0 0 28px rgba(49,65,61,.18);
+}
+.t1-product-media img{
+  width:auto;
+  height:auto;
+  max-width:calc(100% - 18px);
+  max-height:calc(100% - 18px);
+  object-fit:contain;
+  object-position:center;
+  padding:0;
+}
