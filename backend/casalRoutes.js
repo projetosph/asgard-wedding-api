@@ -1,5 +1,13 @@
 const express = require("express");
 const { pool } = require("./db");
+const cloudinary = require("cloudinary").v2;
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+  secure: true
+});
 const {
   autenticar,
   somenteCasal
@@ -161,7 +169,8 @@ router.get("/api/casal/painel", async (req, res) => {
            id,
            imagem_url,
            legenda,
-           ordem
+           ordem,
+           cloudinary_public_id
          FROM casamento_galeria
          WHERE casamento_id = $1
            AND ativo = TRUE
@@ -606,16 +615,95 @@ router.delete("/api/casal/presencas/:id", async (req, res) => {
   }
 });
 
+function cloudinaryConfigurado() {
+  return Boolean(
+    process.env.CLOUDINARY_CLOUD_NAME &&
+    process.env.CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+}
+
+async function slugDoCasamento(casamentoId) {
+  const { rows } = await pool.query(
+    `SELECT slug
+     FROM casamentos
+     WHERE id = $1
+     LIMIT 1`,
+    [casamentoId]
+  );
+
+  return rows[0]?.slug || null;
+}
+
+function pastaCloudinary(slug) {
+  return `noivaria/${String(slug || "").replace(/[^a-z0-9-]/gi, "-").toLowerCase()}/galeria`;
+}
+
+router.post("/api/casal/galeria/cloudinary-assinatura", async (req, res) => {
+  try {
+    if (!cloudinaryConfigurado()) {
+      return res.status(503).json({
+        erro: "O upload de fotos ainda não está configurado."
+      });
+    }
+
+    const casamentoId = casamentoIdDoUsuario(req);
+    const slug = await slugDoCasamento(casamentoId);
+
+    if (!slug) {
+      return res.status(404).json({
+        erro: "Casamento não encontrado."
+      });
+    }
+
+    const timestamp = Math.floor(Date.now() / 1000);
+    const folder = pastaCloudinary(slug);
+
+    const signature = cloudinary.utils.api_sign_request(
+      { timestamp, folder },
+      process.env.CLOUDINARY_API_SECRET
+    );
+
+    return res.json({
+      cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: process.env.CLOUDINARY_API_KEY,
+      timestamp,
+      folder,
+      signature
+    });
+  } catch (erro) {
+    console.error("Erro assinatura Cloudinary:", erro);
+    return res.status(500).json({
+      erro: "Não foi possível preparar o envio das fotos."
+    });
+  }
+});
+
 router.post("/api/casal/galeria", async (req, res) => {
   try {
     const casamentoId = casamentoIdDoUsuario(req);
     const imagemUrl = textoOuNull(req.body.imagemUrl, 3000);
     const legenda = textoOuNull(req.body.legenda, 240);
+    const cloudinaryPublicId = textoOuNull(req.body.cloudinaryPublicId, 500);
 
     if (!imagemUrl) {
       return res.status(400).json({
-        erro: "Informe a URL da foto."
+        erro: "Informe a foto."
       });
+    }
+
+    if (cloudinaryPublicId) {
+      const slug = await slugDoCasamento(casamentoId);
+      const prefixoEsperado = `${pastaCloudinary(slug)}/`;
+
+      if (
+        !imagemUrl.startsWith("https://res.cloudinary.com/") ||
+        !cloudinaryPublicId.startsWith(prefixoEsperado)
+      ) {
+        return res.status(400).json({
+          erro: "A foto enviada não pertence a este casamento."
+        });
+      }
     }
 
     const { rows: ordemRows } = await pool.query(
@@ -634,11 +722,12 @@ router.post("/api/casal/galeria", async (req, res) => {
          imagem_url,
          legenda,
          ordem,
-         ativo
+         ativo,
+         cloudinary_public_id
        )
-       VALUES ($1,$2,$3,$4,TRUE)
-       RETURNING id, imagem_url, legenda, ordem`,
-      [casamentoId, imagemUrl, legenda, ordem]
+       VALUES ($1,$2,$3,$4,TRUE,$5)
+       RETURNING id, imagem_url, legenda, ordem, cloudinary_public_id`,
+      [casamentoId, imagemUrl, legenda, ordem, cloudinaryPublicId]
     );
 
     return res.status(201).json(rows[0]);
@@ -708,20 +797,45 @@ router.delete("/api/casal/galeria/:id", async (req, res) => {
     const casamentoId = casamentoIdDoUsuario(req);
     const id = Number(req.params.id);
 
-    const { rows } = await pool.query(
-      `UPDATE casamento_galeria
-       SET ativo = FALSE
+    const { rows: fotos } = await pool.query(
+      `SELECT id, cloudinary_public_id
+       FROM casamento_galeria
        WHERE id = $1
          AND casamento_id = $2
-       RETURNING id`,
+         AND ativo = TRUE
+       LIMIT 1`,
       [id, casamentoId]
     );
 
-    if (!rows[0]) {
+    const foto = fotos[0];
+
+    if (!foto) {
       return res.status(404).json({
         erro: "Foto não encontrada."
       });
     }
+
+    if (foto.cloudinary_public_id && cloudinaryConfigurado()) {
+      const resultado = await cloudinary.uploader.destroy(
+        foto.cloudinary_public_id,
+        {
+          resource_type: "image",
+          invalidate: true
+        }
+      );
+
+      if (!["ok", "not found"].includes(resultado?.result)) {
+        throw new Error("O Cloudinary não confirmou a remoção da imagem.");
+      }
+    }
+
+    await pool.query(
+      `UPDATE casamento_galeria
+       SET ativo = FALSE
+       WHERE id = $1
+         AND casamento_id = $2`,
+      [id, casamentoId]
+    );
 
     return res.json({ removido: true });
   } catch (erro) {
