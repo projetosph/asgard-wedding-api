@@ -78,3 +78,23 @@ footer{min-height:76px;margin-top:auto;padding:18px max(22px,calc((100vw - 1160p
 .product-card-actions, .gift-card-actions, .t1-actions {
   margin-top: auto;
 }
+
+
+/* ===== RODAPÉ NOIVARIA / AZGARD ===== */
+footer{min-height:74px;gap:28px}
+.footerBrand{display:flex;align-items:center;gap:9px;min-width:0}
+.footerBrand>img{width:30px;height:30px;object-fit:contain}
+.footerBrand>div{display:grid;line-height:1.05}
+.footerBrand strong{font-size:10px;letter-spacing:1.3px}
+.footerBrand small{margin-top:4px;color:var(--muted);font-size:7px;letter-spacing:.7px}
+.footerBrand>span{margin-left:10px;color:var(--muted);font-size:9px;white-space:nowrap}
+.social{margin-left:auto;display:flex;align-items:center;gap:8px}
+.social a{width:34px;height:34px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--muted);transition:.2s}
+.social a:hover{transform:translateY(-2px);background:rgba(199,165,150,.10)}
+.social svg{width:16px;height:16px;fill:currentColor}
+@media(max-width:820px){
+  footer{align-items:flex-start}
+  .footerBrand{align-items:flex-start;flex-wrap:wrap}
+  .footerBrand>span{width:100%;margin-left:39px}
+  .social{margin-left:0}
+}

@@ -238,3 +238,104 @@ html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);
   .gift-modal-actions{flex-direction:column-reverse}
   .gift-modal-actions .primary-btn,.gift-modal-actions .ghost-btn{width:100%}
 }
+
+
+/* ===== PRESENTES COMPACTOS / ADMINISTRAÇÃO RÁPIDA ===== */
+#view-presentes .gift-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:12px;
+  align-items:stretch;
+}
+#view-presentes .gift-card{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+  height:100%;
+  overflow:hidden;
+}
+#view-presentes .gift-image{
+  height:172px;
+  aspect-ratio:auto;
+  padding:10px;
+  background:#f4f5f2;
+  border-bottom:1px solid var(--line);
+}
+#view-presentes .gift-image img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  display:block;
+}
+#view-presentes .gift-content{
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  min-height:245px;
+  padding:13px;
+}
+#view-presentes .gift-title-row{
+  gap:8px;
+}
+#view-presentes .gift-content h3{
+  min-height:54px;
+  margin:0;
+  font-size:14px;
+  line-height:1.3;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:3;
+  overflow:hidden;
+}
+#view-presentes .gift-content>p{
+  min-height:34px;
+  max-height:34px;
+  margin:8px 0 10px;
+  font-size:11px;
+  line-height:1.45;
+  display:-webkit-box;
+  -webkit-box-orient:vertical;
+  -webkit-line-clamp:2;
+  overflow:hidden;
+}
+#view-presentes .gift-order-actions{
+  gap:4px;
+}
+#view-presentes .gift-order-actions button{
+  width:29px;
+  height:29px;
+  border-radius:7px;
+  font-size:14px;
+}
+#view-presentes .gift-value{
+  margin-top:auto;
+  margin-bottom:10px;
+  align-items:end;
+  font-size:11px;
+}
+#view-presentes .gift-value span,
+#view-presentes .gift-value strong{
+  min-width:0;
+}
+#view-presentes .gift-value strong{
+  text-align:right;
+  white-space:nowrap;
+}
+#view-presentes .gift-actions{
+  gap:6px;
+}
+#view-presentes .gift-actions button{
+  min-height:34px;
+  padding:7px 8px;
+  font-size:9px;
+}
+@media(max-width:1320px){
+  #view-presentes .gift-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:980px){
+  #view-presentes .gift-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+  #view-presentes .gift-grid{grid-template-columns:1fr}
+  #view-presentes .gift-image{height:210px}
+  #view-presentes .gift-content{min-height:0}
+}

@@ -277,3 +277,24 @@ button{cursor:pointer}
   .t1-footer{flex-direction:column;align-items:flex-start}
   .t1-social{flex-wrap:wrap}
 }
+
+
+/* ===== RODAPÉ NOIVARIA / AZGARD ===== */
+.t1-footer{padding:18px max(24px,calc((100vw - 1180px)/2));gap:28px}
+.t1-footer-brand{display:flex;align-items:center;gap:18px;min-width:0}
+.t1-footer-brandline{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.t1-footer-brandline img{width:30px;height:30px;object-fit:contain}
+.t1-footer-brandline>div{display:grid;line-height:1.05}
+.t1-footer-brandline strong{font-size:11px;letter-spacing:1.5px}
+.t1-footer-brandline small{margin-top:4px;color:#6e7775;font-size:8px;letter-spacing:.8px}
+.t1-footer-brand>span{color:#6e7775;font-size:9px;white-space:nowrap}
+.t1-social{display:flex;align-items:center;gap:8px;margin-left:auto}
+.t1-social a{width:34px;height:34px;display:grid;place-items:center;border:1px solid rgba(47,62,58,.15);border-radius:50%;color:#44534e;background:rgba(255,255,255,.55);transition:.2s}
+.t1-social a:hover{transform:translateY(-2px);background:#fff}
+.t1-social svg{width:16px;height:16px;fill:currentColor}
+.t1-footer-copy{white-space:nowrap}
+@media(max-width:700px){
+  .t1-footer{align-items:flex-start;flex-direction:column}
+  .t1-footer-brand{align-items:flex-start;flex-direction:column;gap:7px}
+  .t1-social{margin-left:0}
+}
