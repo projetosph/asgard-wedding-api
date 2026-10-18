@@ -83,11 +83,13 @@ async function carregarPresentes() {
           return `
             <article class="t2-product ${livre ? "contribuicao-livre-card" : ""}">
               <div class="t2-product-media">
-                ${
-                  presente.imagem
-                    ? `<img src="${t2EscapeAttr(presente.imagem)}" alt="${t2EscapeAttr(presente.nome || "Presente")}" loading="lazy">`
-                    : `<div class="t2-no-image">SEM IMAGEM</div>`
-                }
+                <div class="t2-product-media-fit">
+                  ${
+                    presente.imagem
+                      ? `<img src="${t2EscapeAttr(presente.imagem)}" alt="${t2EscapeAttr(presente.nome || "Presente")}" loading="lazy">`
+                      : `<div class="t2-no-image">SEM IMAGEM</div>`
+                  }
+                </div>
               </div>
 
               <div class="t2-product-body">

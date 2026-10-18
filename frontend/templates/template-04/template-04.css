@@ -215,3 +215,35 @@ footer{min-height:74px;gap:28px}
   .gift{min-height:410px}
   .giftImg{flex-basis:200px;height:200px;min-height:200px;max-height:200px}
 }
+
+
+/* ===== FIT DEFINITIVO DAS IMAGENS DOS PRESENTES ===== */
+.giftImg{
+  display:grid;
+  place-items:center;
+}
+.giftImgFit{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+}
+.giftImgFit img{
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:100%;
+  min-width:0;
+  min-height:0;
+  object-fit:contain;
+  object-position:center;
+}
+.giftNoImage{
+  color:var(--muted);
+  font-size:10px;
+}
