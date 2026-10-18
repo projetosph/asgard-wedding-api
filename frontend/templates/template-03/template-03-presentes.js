@@ -78,8 +78,8 @@ async function carregarPresentes() {
             <article class="cardPresente ${livre ? "contribuicaoLivreCard" : ""}">
               ${
                 presente.imagem
-                  ? `<img src="${escapar(presente.imagem)}" alt="${escapar(presente.nome || "Presente")}">`
-                  : `<div class="cardPresenteSemImagem">SEM IMAGEM</div>`
+                  ? `<div class="cardPresenteMedia"><img src="${escapar(presente.imagem)}" alt="${escapar(presente.nome || "Presente")}"></div>`
+                  : `<div class="cardPresenteMedia"><div class="cardPresenteSemImagem">SEM IMAGEM</div></div>`
               }
 
               <h3>${escapar(presente.nome || "Presente")}</h3>

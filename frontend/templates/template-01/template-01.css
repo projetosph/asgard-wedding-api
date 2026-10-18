@@ -315,3 +315,45 @@ button{cursor:pointer}
   object-position:center;
   padding:0;
 }
+
+
+/* ===== AJUSTE FINAL DOS PRESENTES / FUNDO ===== */
+body{
+  background:
+    linear-gradient(rgba(255,255,255,.67),rgba(255,255,255,.67)),
+    url("https://images.unsplash.com/photo-1547911139-c06c87da7115?auto=format&fit=crop&fm=jpg&q=82&w=2400") center center / cover fixed no-repeat;
+}
+body::before{
+  background:
+    linear-gradient(90deg,rgba(255,255,255,.48),rgba(255,255,255,.14) 40%,rgba(255,255,255,.34)),
+    radial-gradient(circle at 72% 34%,rgba(255,255,255,.12),rgba(255,255,255,.42) 78%);
+}
+.t1-product-media{
+  position:relative;
+  height:190px;
+  aspect-ratio:auto;
+  padding:10px;
+  overflow:hidden;
+  background:#fff;
+  box-shadow:none;
+}
+.t1-product-media img{
+  position:relative;
+  z-index:1;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  padding:0;
+  object-fit:contain;
+  object-position:center;
+}
+.t1-product-media::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:radial-gradient(circle at center,transparent 58%,rgba(36,45,42,.055) 100%);
+  box-shadow:inset 0 0 30px rgba(36,45,42,.08);
+}
