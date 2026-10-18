@@ -1102,3 +1102,19 @@ img { display: block; max-width: 100%; }
   .t2-footer{align-items:flex-start}
   .t2-social{width:auto;margin-left:0;justify-content:flex-start}
 }
+
+
+/* ===== IMAGENS DE PRESENTES — PADRÃO VISUAL ===== */
+.t2-product-media{
+  background:#fff;
+  box-shadow:inset 0 0 28px rgba(103,115,94,.18);
+}
+.t2-product-media img{
+  width:auto;
+  height:auto;
+  max-width:calc(100% - 18px);
+  max-height:calc(100% - 18px);
+  object-fit:contain;
+  object-position:center;
+  padding:0;
+}
