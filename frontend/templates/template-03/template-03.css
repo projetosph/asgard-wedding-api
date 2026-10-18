@@ -308,3 +308,20 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
 .product-card-actions, .gift-card-actions, .t1-actions {
   margin-top: auto;
 }
+
+
+/* ===== RODAPÉ NOIVARIA / AZGARD ===== */
+.t3-footer{min-height:72px;padding:14px max(22px,calc((100vw - 1180px)/2));gap:26px}
+.footer-brand{display:flex;align-items:center;gap:18px;min-width:0;flex-wrap:nowrap}
+.footer-brand-main{display:flex;align-items:center;gap:9px;white-space:nowrap}
+.footer-brand-main img{width:30px;height:30px;object-fit:contain}
+.footer-brand-main>div{display:grid;line-height:1.05}
+.footer-brand-main strong{font-size:10px;letter-spacing:1.4px}
+.footer-brand-main small{margin-top:4px;color:#aeb6b1;font-size:7px;letter-spacing:.7px}
+.footer-brand>span{white-space:nowrap;color:#aeb6b1}
+.footer-social{margin-left:auto}
+@media(max-width:640px){
+  .t3-footer{align-items:flex-start}
+  .footer-brand{width:100%;align-items:flex-start;flex-direction:column;gap:7px}
+  .footer-social{margin-left:0}
+}
