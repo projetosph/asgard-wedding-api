@@ -37,3 +37,46 @@ menuToggle?.addEventListener("click", () => {
 });
 
 
+
+
+/* ===== DEMONSTRAÇÃO DOS TEMPLATES REAIS ===== */
+const TEMPLATE_DEMO_SLUG = "joao-e-maria";
+const templateFrame = document.getElementById("templateDemoFrame");
+const templateOpen = document.getElementById("abrirTemplateDemo");
+const templateLabel = document.getElementById("templateBrowserLabel");
+const templateTabs = document.querySelectorAll("[data-template]");
+
+function selecionarTemplateDemo(template) {
+  const valido = ["template-01","template-02","template-03","template-04"].includes(template)
+    ? template
+    : "template-01";
+
+  templateTabs.forEach((botao) => {
+    const ativo = botao.dataset.template === valido;
+    botao.classList.toggle("active", ativo);
+    botao.setAttribute("aria-selected", ativo ? "true" : "false");
+  });
+
+  const numero = valido.slice(-2);
+
+  if (templateLabel) {
+    templateLabel.textContent = `Prévia real · Template ${numero}`;
+  }
+
+  if (templateFrame) {
+    templateFrame.title = `Prévia real do Template ${numero}`;
+    templateFrame.src =
+      `admin-template-preview.html?template=${encodeURIComponent(valido)}`;
+  }
+
+  if (templateOpen) {
+    templateOpen.href =
+      `templates/${valido}/${valido}.html?casamento=${encodeURIComponent(TEMPLATE_DEMO_SLUG)}`;
+  }
+}
+
+templateTabs.forEach((botao) => {
+  botao.addEventListener("click", () => {
+    selecionarTemplateDemo(botao.dataset.template);
+  });
+});
