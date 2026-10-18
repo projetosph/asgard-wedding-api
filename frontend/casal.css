@@ -209,3 +209,32 @@ html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--bg);
 @media(max-width:1050px){.gallery-preview-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:760px){.gallery-preview-grid{grid-template-columns:repeat(2,1fr)}.gallery-dropzone{min-height:165px;padding:22px 16px}}
 @media(max-width:460px){.gallery-preview-grid{grid-template-columns:1fr 1fr}}
+
+
+/* ===== IMPORTAÇÃO DE PRESENTE POR LINK ===== */
+.gift-link-import{display:grid;gap:8px;padding:15px;border:1px solid var(--line);border-radius:14px;background:#f7f9f7}
+.gift-link-import>label{margin:0}
+.gift-link-import>small{color:var(--muted);font-size:10px;line-height:1.5}
+.gift-link-row{display:grid;grid-template-columns:1fr auto;gap:8px}
+.gift-link-row input{min-width:0}
+#presenteBuscaMensagem{min-height:16px;margin:0;font-size:11px}
+.success-text{color:var(--ok);font-size:12px}
+.gift-import-preview{display:grid;grid-template-columns:110px 1fr;gap:15px;padding:13px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.gift-import-preview.hidden{display:none}
+.gift-import-image{height:92px;border-radius:11px;overflow:hidden;background:#ece9e0;display:grid;place-items:center}
+.gift-import-image img{width:100%;height:100%;object-fit:cover}
+.gift-import-image span{padding:8px;color:var(--muted);font-size:9px;text-align:center}
+.gift-import-copy{display:flex;flex-direction:column;justify-content:center;min-width:0}
+.gift-import-copy .eyebrow{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.gift-import-copy strong{margin:7px 0 5px;font-size:15px}
+.gift-import-copy small{color:var(--muted)}
+.gift-link-note{margin:2px 0 0;color:var(--muted);font-size:10px}
+.gift-modal-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:4px}
+@media(max-width:620px){
+  .gift-link-row{grid-template-columns:1fr}
+  .gift-link-row .secondary-btn{width:100%}
+  .gift-import-preview{grid-template-columns:86px 1fr}
+  .gift-import-image{height:78px}
+  .gift-modal-actions{flex-direction:column-reverse}
+  .gift-modal-actions .primary-btn,.gift-modal-actions .ghost-btn{width:100%}
+}
