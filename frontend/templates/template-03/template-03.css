@@ -379,3 +379,54 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
 .cardPresente>.cardPresenteSemImagem{
   display:none;
 }
+
+
+/* ===== CHECKOUT: IMAGEM COMPLETA + DEGRADÊ ===== */
+.checkoutProductMedia{
+  position:relative;
+  width:100%;
+  aspect-ratio:4/3;
+  padding:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  border-radius:14px;
+  background:#fff;
+}
+.checkoutProductMedia img{
+  position:relative;
+  z-index:1;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:100%!important;
+  aspect-ratio:auto!important;
+  object-fit:contain!important;
+  object-position:center!important;
+  background:transparent!important;
+}
+.checkoutProductMedia::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:2;
+  pointer-events:none;
+  background:radial-gradient(circle at center,transparent 58%,rgba(42,46,43,.05) 100%);
+  box-shadow:inset 0 0 30px rgba(42,46,43,.075);
+}
+.installment-note{
+  margin:-4px 0 18px;
+  padding:13px 16px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  border:1px solid var(--line);
+  border-radius:14px;
+  background:rgba(255,253,250,.82);
+  color:var(--muted);
+}
+.installment-note strong{color:var(--sage-deep);font-size:11px;letter-spacing:.7px;text-transform:uppercase}
+.installment-note span{font-size:10px;text-align:right}
+@media(max-width:700px){.installment-note{align-items:flex-start;flex-direction:column}.installment-note span{text-align:left}}
