@@ -4,8 +4,8 @@ const T2_DEFAULT_BG =
 
 const T2_SOCIAL = {
   whatsapp: "https://wa.me/5575999207455",
-  instagram: "https://www.instagram.com/asgardtec?stkn=MXA4dHZtNnd3aTI1Mg%3D%3D&utm_source=qr",
-  facebook: "https://www.facebook.com/share/19WMXVyN5B/?mibextid=wwXIfr"
+  instagram: "https://www.instagram.com/azgard.br?stkn=MXA4dHZtNnd3aTI1Mg%3D%3D&utm_source=qr",
+  facebook: "https://www.facebook.com/people/Azgard-Solu%C3%A7%C3%B5es-Digitais/61575165721932/?mibextid=wwXIfr&rdid=OC62yg32hqhWkWQX&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F19WMXVyN5B%2F%3Fmibextid%3DwwXIfr"
 };
 
 function t2Slug() {
@@ -106,9 +106,7 @@ function t2Footer() {
   return `
     <footer class="t2-footer">
       <div class="t2-footer-brand">
-        <img src="../../assets/branding/noivaria-logo.svg" alt="" style="width:28px;height:28px;object-fit:contain;vertical-align:middle;margin-right:8px"><strong>Noivaria</strong>
-        <span>—</span>
-        <small>por Azgard</small>
+        <img src="../../assets/branding/noivaria-logo.svg" alt=""><div><strong>Noivaria</strong><small>por Azgard</small></div>
       </div>
 
       <div class="t2-social">
@@ -116,12 +114,10 @@ function t2Footer() {
           <svg viewBox="0 0 24 24"><path d="M12 2a9.8 9.8 0 0 0-8.5 14.8L2 22l5.3-1.4A10 10 0 1 0 12 2Zm0 18a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 20Z"/><path d="M8.4 7.7c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.7 1.7c.1.3.1.5-.1.7l-.6.7c-.2.2-.1.4 0 .6.6 1.1 1.5 2 2.6 2.6.2.1.4.2.6 0l.9-1c.2-.2.4-.3.7-.2l1.8.8c.3.1.4.3.4.6 0 .7-.3 1.5-.9 2-.6.5-1.3.8-2.1.7-1.3-.2-3-.9-4.8-2.5-1.4-1.3-2.4-2.9-2.8-4.2-.3-1-.1-1.8.2-2.5Z"/></svg>
           <span>WhatsApp</span>
         </a>
-        <i></i>
         <a href="${T2_SOCIAL.instagram}" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
           <span>Instagram</span>
         </a>
-        <i></i>
         <a href="${T2_SOCIAL.facebook}" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
           <svg viewBox="0 0 24 24"><path d="M14 8h3V4h-3c-3 0-5 2-5 5v3H6v4h3v6h4v-6h3l1-4h-4V9c0-.7.3-1 1-1Z"/></svg>
           <span>Facebook</span>
