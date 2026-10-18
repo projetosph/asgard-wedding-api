@@ -325,3 +325,19 @@ input:focus,textarea:focus{border-color:rgba(82,104,92,.4);box-shadow:0 0 0 3px 
   .footer-brand{width:100%;align-items:flex-start;flex-direction:column;gap:7px}
   .footer-social{margin-left:0}
 }
+
+
+/* ===== IMAGENS DE PRESENTES — PADRÃO VISUAL ===== */
+.cardPresente>img,
+.cardPresenteSemImagem{
+  background:#fff;
+  box-shadow:inset 0 0 28px rgba(82,104,92,.18);
+}
+.cardPresente>img{
+  width:100%;
+  height:auto;
+  aspect-ratio:4/3;
+  object-fit:contain;
+  object-position:center;
+  padding:10px;
+}
