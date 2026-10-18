@@ -147,20 +147,47 @@
         <p>Escolha o estilo que mais combina com vocês. Todos os modelos usam os mesmos recursos da plataforma.</p>
       </div>
 
-      <article class="template-card">
-        <div class="template-preview">
-          <div class="template-card-top"><span>Template 01</span><span class="available">DEMONSTRAÇÃO</span></div>
-          <div class="template-scene">
-            <small>Save the date</small>
-            <h3>Paulo <span>&</span> Alana</h3>
-            <p>07 • 09 • 2026</p>
+      <article class="template-showcase">
+        <div class="template-showcase-toolbar">
+          <div class="template-tabs" role="tablist" aria-label="Escolher template para visualizar">
+            <button class="template-tab active" type="button" data-template="template-01">Template 01</button>
+            <button class="template-tab" type="button" data-template="template-02">Template 02</button>
+            <button class="template-tab" type="button" data-template="template-03">Template 03</button>
+            <button class="template-tab" type="button" data-template="template-04">Template 04</button>
           </div>
+
+          <a
+            id="abrirTemplateDemo"
+            class="btn btn-primary template-open-btn"
+            href="templates/template-01/template-01.html?casamento=joao-e-maria"
+            target="_blank"
+            rel="noopener noreferrer">
+            ABRIR EM TELA CHEIA
+          </a>
         </div>
-        <div class="template-info">
-          <span class="section-kicker">ELEGANTE & ROMÂNTICO</span>
-          <h3>Conheça por dentro</h3>
-          <p>Veja uma demonstração completa com presentes, presença, localização, galeria, música e muito mais.</p>
-          <a class="btn btn-primary" href="casamento.html?casamento=paulo-e-alana" target="_blank" rel="noopener noreferrer">ABRIR DEMONSTRAÇÃO</a>
+
+        <div class="template-browser">
+          <div class="template-browser-bar" aria-hidden="true">
+            <span></span><span></span><span></span>
+            <small id="templateBrowserLabel">Prévia real · Template 01</small>
+          </div>
+
+          <iframe
+            id="templateDemoFrame"
+            class="template-demo-frame"
+            src="admin-template-preview.html?template=template-01"
+            title="Prévia real do Template 01"
+            loading="lazy">
+          </iframe>
+        </div>
+
+        <div class="template-showcase-note">
+          <div>
+            <span class="section-kicker">DEMONSTRAÇÃO REAL</span>
+            <h3>Explore os modelos antes de escolher</h3>
+            <p>Use os botões acima para alternar entre os quatro templates reais da Noivaria. Você pode navegar dentro da prévia como se fosse um site de casamento publicado.</p>
+          </div>
+          <span class="template-demo-tip">Dica: no celular, toque em “Abrir em tela cheia” para ver melhor.</span>
         </div>
       </article>
     </section>
