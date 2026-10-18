@@ -192,7 +192,7 @@ button{cursor:pointer}
   box-shadow:0 10px 24px rgba(34,47,44,.08);backdrop-filter:blur(4px)
 }
 .t1-product-media{aspect-ratio:1.25;background:rgba(255,255,255,.45);display:grid;place-items:center;color:#707a77;font-size:10px;overflow:hidden}
-.t1-product-media img{width:100%;height:100%;object-fit:cover}
+.t1-product-media img{width:100%;height:100%;object-fit:contain;object-position:center;padding:8px}
 .t1-product-body{padding:14px;display:flex;flex-direction:column;gap:8px}
 .t1-product h3{margin:0;font-size:16px;font-weight:600}
 .t1-product p{margin:0;color:#66706e;font-size:11px;line-height:1.5;min-height:32px}
