@@ -214,14 +214,47 @@
       </div>
 
       <article class="panel-card gallery-form-card">
-        <form id="formGaleria" class="gallery-form">
-          <label>URL da foto</label>
-          <input id="galeriaImagemUrl" type="url" required placeholder="https://...">
-          <label>Legenda (opcional)</label>
-          <input id="galeriaLegenda" maxlength="240" placeholder="Nosso pré-wedding, por exemplo">
-          <button type="submit" class="primary-btn">+ ADICIONAR FOTO</button>
-          <p id="galeriaMensagem"></p>
-        </form>
+        <div class="gallery-upload-head">
+          <div>
+            <span class="eyebrow">UPLOAD DIRETO</span>
+            <h2>Adicionar fotos</h2>
+            <p class="muted">Envie fotos do celular ou computador. A Noivaria cuida da hospedagem e otimização automaticamente.</p>
+          </div>
+        </div>
+
+        <div id="galleryDropzone" class="gallery-dropzone" tabindex="0" role="button" aria-label="Selecionar fotos da galeria">
+          <input id="galeriaArquivos" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif,.jpg,.jpeg,.png,.webp,.heic,.heif" multiple hidden>
+          <div class="gallery-drop-icon">＋</div>
+          <strong>Arraste suas fotos aqui</strong>
+          <span>ou clique para escolher do celular/computador</span>
+          <small>JPG, PNG, WEBP ou HEIC · até 15 MB por foto · máximo 30 por envio</small>
+        </div>
+
+        <div id="galeriaSelecao" class="gallery-selection hidden">
+          <div class="gallery-selection-head">
+            <strong id="galeriaSelecaoTitulo">Fotos selecionadas</strong>
+            <button id="galeriaLimparSelecao" class="ghost-btn" type="button">LIMPAR</button>
+          </div>
+          <div id="galeriaPreview" class="gallery-preview-grid"></div>
+          <label class="gallery-caption-label">
+            Legenda para estas fotos (opcional)
+            <input id="galeriaLegendaUpload" maxlength="240" placeholder="Ex.: Nosso pré-wedding">
+          </label>
+          <button id="galeriaEnviarFotos" class="primary-btn" type="button">ENVIAR FOTOS</button>
+          <p id="galeriaUploadMensagem"></p>
+        </div>
+
+        <details class="gallery-url-fallback">
+          <summary>Adicionar por URL</summary>
+          <form id="formGaleria" class="gallery-form">
+            <label>URL da foto</label>
+            <input id="galeriaImagemUrl" type="url" placeholder="https://...">
+            <label>Legenda (opcional)</label>
+            <input id="galeriaLegenda" maxlength="240" placeholder="Nosso pré-wedding, por exemplo">
+            <button type="submit" class="secondary-btn">ADICIONAR POR URL</button>
+            <p id="galeriaMensagem"></p>
+          </form>
+        </details>
       </article>
 
       <div id="listaGaleriaPainel" class="gallery-admin-grid"></div>
